@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- android:opacity="opaque" need for don`t show black screen -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:opacity="opaque">
+
+    <!-- Color background, like main activity -->
+    <item android:drawable="@android:color/white"/>
+
+    <!-- Logo icon set 144dp -->
+    <item>
+        <bitmap
+            android:src="@drawable/img_splash_screen"
+            android:gravity="center"/>
+    </item>
+
+</layer-list>
