@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Messenger</string>
+
+    <!--  On Boarding Screens  (obs)-->
+    <string name="obs_title_one">Lorem ipsum</string>
+    <string name="obs_title_two">Lorem ipsum</string>
+    <string name="obs_title_three">Lorem ipsum</string>
+    <string name="obs_description_one">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</string>
+    <string name="obs_description_two">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</string>
+    <string name="obs_description_three">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s</string>
+    <!--  Files  -->
+    <string name="settings">Settings</string>
+    <!--  Lorem ipsum  -->
+    <string name="lorem_ipsum_title">Lorem ipsum</string>
+    <string name="lorem_ipsum_desc">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</string>
+    <!--  Buttons  -->
+    <string name="obs_button">Get started</string>
+
 </resources>
