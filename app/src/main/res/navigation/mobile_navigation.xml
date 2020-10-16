@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/messagesFragment">
+    <fragment
+        android:id="@+id/messagesFragment"
+        android:name="com.kabasonic.messenger.ui.bottomnavigation.messages.MessagesFragment"
+        android:label="@string/mobile_nav_messages"
+        tools:layout="@layout/messages_fragment" />
+    <fragment
+        android:id="@+id/contactsFragment"
+        android:name="com.kabasonic.messenger.ui.bottomnavigation.contacts.ContactsFragment"
+        android:label="@string/mobile_nav_contacts"
+        tools:layout="@layout/contacts_fragment" />
+    <fragment
+        android:id="@+id/groupsFragment"
+        android:name="com.kabasonic.messenger.ui.bottomnavigation.groups.GroupsFragment"
+        android:label="@string/mobile_nav_groups"
+        tools:layout="@layout/groups_fragment" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.kabasonic.messenger.ui.bottomnavigation.profile.ProfileFragment"
+        android:label="@string/mobile_nav_profile"
+        tools:layout="@layout/profile_fragment" />
+</navigation>

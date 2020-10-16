@@ -9,7 +9,7 @@
         <ImageView
             android:layout_width="300dp"
             android:layout_height="300dp"
-            android:src="@drawable/onboarding_page3"
+            android:src="@drawable/onboarding_page_3"
             android:layout_margin="32sp"
             android:layout_gravity="center"
             android:id="@+id/image"/>
