@@ -1,16 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".ui.bottomnavigation.groups.GroupsFragment">
 
-    <TextView
-        android:id="@+id/text"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/groups_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_all_groups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tab_one_groups" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_my_groups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tab_two_groups"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_request_groups"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tab_three_groups"/>
+
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp_groups"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Groups"
-        android:gravity="center"/>
+        android:layout_below="@id/groups_tab"/>
 
-</LinearLayout>
+</RelativeLayout>

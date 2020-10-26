@@ -1,18 +1,20 @@
-package com.kabasonic.messenger.ui.bottomnavigation.groups;
+package com.kabasonic.messenger.ui.bottomnavigation.groups.tabs;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class GroupsViewModel extends ViewModel {
+public class MyGroupsViewModel extends ViewModel {
+
     private MutableLiveData<String> mText;
 
-    public GroupsViewModel() {
+    public MyGroupsViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("Groups");
+        mText.setValue("My groups fragment");
     }
 
-    public LiveData<String> getText() {
+    public LiveData<String> getText(){
         return mText;
     }
+
 }

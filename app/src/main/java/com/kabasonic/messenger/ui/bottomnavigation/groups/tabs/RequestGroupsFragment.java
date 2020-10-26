@@ -1,4 +1,4 @@
-package com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs;
+package com.kabasonic.messenger.ui.bottomnavigation.groups.tabs;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,18 +14,18 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.kabasonic.messenger.R;
 
-public class AllContactsFragment extends Fragment {
+public class RequestGroupsFragment extends Fragment {
 
-    private AllContactsViewModel allContactsViewModel;
+    private RequestGroupsViewModel requestGroupsViewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        allContactsViewModel =
-                ViewModelProviders.of(this).get(AllContactsViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_all_contacts, container, false);
+        requestGroupsViewModel =
+                ViewModelProviders.of(this).get(RequestGroupsViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_request_groups, container, false);
         final TextView textView = root.findViewById(R.id.text);
-        allContactsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        requestGroupsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

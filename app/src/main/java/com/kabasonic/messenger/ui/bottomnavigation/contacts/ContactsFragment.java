@@ -1,10 +1,13 @@
 package com.kabasonic.messenger.ui.bottomnavigation.contacts;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,5 +59,31 @@ public class ContactsFragment extends Fragment{
 
             }
         });
+    }
+    // Create app top bar menu
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.main_menu,menu);
+        menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
+        menu.findItem(R.id.menu_settings).setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int idMenuItem = item.getItemId();
+        switch (idMenuItem){
+            case R.id.menu_search:
+                Log.i(TAG,"Click search button");
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
