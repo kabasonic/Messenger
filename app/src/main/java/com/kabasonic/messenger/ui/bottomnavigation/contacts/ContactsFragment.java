@@ -1,39 +1,60 @@
 package com.kabasonic.messenger.ui.bottomnavigation.contacts;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
+import com.google.android.material.tabs.TabLayout;
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.AdapterTabsContacts;
 
-public class ContactsFragment extends Fragment {
+public class ContactsFragment extends Fragment{
+    public static final String TAG = "ContactsFragment";
+    private AdapterTabsContacts adapterTabsContacts;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
 
-    private ContactsViewModel contactsViewModel;
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View root;
+        root = inflater.inflate(R.layout.contacts_fragment,container,false);
+        return root;
+    }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        initTabsViewPager(view);
+    }
 
-        contactsViewModel =
-                ViewModelProviders.of(this).get(ContactsViewModel.class);
-        View root = inflater.inflate(R.layout.contacts_fragment, container, false);
-        final TextView textView = root.findViewById(R.id.text);
-        contactsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+    private void initTabsViewPager(View view) {
+        tabLayout = view.findViewById(R.id.contacts_tab);
+        adapterTabsContacts = new AdapterTabsContacts(getChildFragmentManager(),tabLayout.getTabCount());
+        viewPager = view.findViewById(R.id.vp_contacts);
+        viewPager.setAdapter(adapterTabsContacts);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         });
-        return root;
     }
 }

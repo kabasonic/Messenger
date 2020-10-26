@@ -1,18 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.bottomnavigation.contacts.ContactsFragment">
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/contacts_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true">
 
-    <TextView
-        android:id="@+id/text"
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_all_contacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tab_one_contacts" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tab_online_contacts"
+            android:text="@string/tab_two_contacts"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tab_request_contacts"
+            android:text="@string/tab_three_contacts"/>
+
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/vp_contacts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Contacts"
-        android:gravity="center"/>
+        android:layout_below="@id/contacts_tab"/>
 
-
-</LinearLayout>
+</RelativeLayout>

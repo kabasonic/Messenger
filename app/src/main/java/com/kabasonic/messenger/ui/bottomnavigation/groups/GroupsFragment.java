@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.kabasonic.messenger.R;
-import com.kabasonic.messenger.ui.bottomnavigation.contacts.ContactsViewModel;
 
 public class GroupsFragment extends Fragment {
 

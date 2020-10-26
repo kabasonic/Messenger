@@ -26,4 +26,15 @@
     <string name="mobile_nav_groups">Groups</string>
     <string name="mobile_nav_profile">Profile</string>
 
+    <!--  Tabs Contacts  -->
+    <string name="tab_one_contacts">All</string>
+    <string name="tab_two_contacts">Online</string>
+    <string name="tab_three_contacts">Request</string>
+
+    <!--  Tabs Groups  -->
+    <string name="tab_one_groups">All</string>
+    <string name="tab_two_groups">My</string>
+    <string name="tab_three_groups">Request</string>
+
+
 </resources>
