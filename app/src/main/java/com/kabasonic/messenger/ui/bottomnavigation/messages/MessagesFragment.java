@@ -1,5 +1,6 @@
 package com.kabasonic.messenger.ui.bottomnavigation.messages;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -17,13 +18,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.kabasonic.messenger.R;
 
 public class MessagesFragment extends Fragment {
     public static final String TAG = "MessagesFragment";
     private MessagesViewModel messagesViewModel;
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class MessagesFragment extends Fragment {
                 textView.setText(s);
             }
         });
+
         return root;
     }
 
@@ -51,7 +53,7 @@ public class MessagesFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu,menu);
         menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
-        menu.findItem(R.id.menu_settings).setVisible(false);
+        menu.findItem(R.id.menu_logout).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

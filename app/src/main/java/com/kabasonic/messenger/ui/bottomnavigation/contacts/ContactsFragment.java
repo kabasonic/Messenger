@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -29,6 +30,7 @@ public class ContactsFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root;
         root = inflater.inflate(R.layout.contacts_fragment,container,false);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
         return root;
     }
 
@@ -72,7 +74,7 @@ public class ContactsFragment extends Fragment{
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu,menu);
         menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
-        menu.findItem(R.id.menu_settings).setVisible(false);
+        menu.findItem(R.id.menu_logout).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

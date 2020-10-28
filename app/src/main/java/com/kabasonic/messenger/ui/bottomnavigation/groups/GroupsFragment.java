@@ -1,5 +1,6 @@
 package com.kabasonic.messenger.ui.bottomnavigation.groups;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -34,6 +35,7 @@ public class GroupsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.groups_fragment,container,false);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
         return root;
     }
 
@@ -77,7 +79,7 @@ public class GroupsFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu,menu);
         menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
-        menu.findItem(R.id.menu_settings).setVisible(false);
+        menu.findItem(R.id.menu_logout).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

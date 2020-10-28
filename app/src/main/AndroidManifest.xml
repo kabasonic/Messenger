@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!-- Add android:theme="@style/AppTheme.Launcher" for Splash screen-->
+        <!-- Add android:theme="@style/AppTheme.Launcher" for Splash screen -->
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.Launcher">
@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.onboarding.ScreenSlidePagerActivity"/>
+        <activity android:name=".ui.onboarding.ScreenSlidePagerActivity" />
     </application>
 
 </manifest>
