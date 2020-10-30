@@ -21,8 +21,9 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.kabasonic.messenger.ui.onboarding.ScreenSlidePagerActivity;
+import com.kabasonic.messenger.ui.onboarding.pages.ScreenSlidePageFragmentOne;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
     public static final String TAG = "com.kabasonic.messenger";
 
     SharedPreferences  settings = null;
@@ -68,14 +69,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void checkStartOnBoarding(){
+    public void checkStartOnBoarding(){
         settings = getSharedPreferences(getString(R.string.settings), Context.MODE_PRIVATE);
         //Create variable settings for preferences
         if(!settings.getBoolean("StartOnBoarding",false)){
             //First run application
             //Write the fact that the app has been started at least once
             Log.i(TAG,"First run application");
-            settings.edit().putBoolean("StartOnBoarding",true).apply();
+            //settings.edit().putBoolean("StartOnBoarding",true).apply();
             startActivity(new Intent(this, ScreenSlidePagerActivity.class));
         }else{
             Log.i(TAG,"Not first run application");

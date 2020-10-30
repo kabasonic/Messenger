@@ -1,6 +1,9 @@
 package com.kabasonic.messenger.ui.onboarding;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -8,13 +11,16 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.ui.onboarding.pages.OnBoarding;
 import com.kabasonic.messenger.ui.onboarding.pages.ScreenSlidePageFragmentOne;
 import com.kabasonic.messenger.ui.onboarding.pages.ScreenSlidePageFragmentThree;
 import com.kabasonic.messenger.ui.onboarding.pages.ScreenSlidePageFragmentTwo;
+import com.kabasonic.messenger.ui.onboarding.pages.ScreenSlidePagerAdapter;
 
 import java.util.ArrayList;
 
-public class ScreenSlidePagerActivity extends FragmentActivity {
+public class ScreenSlidePagerActivity extends FragmentActivity implements OnBoarding {
+    public static final String TAG = "ScreenSlidePagerActivity";
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
@@ -40,6 +46,17 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
         viewPager = findViewById(R.id.pager);
         pagerAdapter = new ScreenSlidePagerAdapter(this,fragmentArrayList);
         viewPager.setAdapter(pagerAdapter);
+
+    }
+
+    @SuppressLint("LongLogTag")
+    @Override
+    public boolean checkButton(boolean check) {
+        if(check){
+            Log.i(TAG,"Pressed button GET STARTED");
+            finish();
+        }
+        return check;
     }
 
     @Override
@@ -55,27 +72,4 @@ public class ScreenSlidePagerActivity extends FragmentActivity {
 //        }
     }
 
-    /**
-     * A simple pager adapter that represents 3 ScreenSlidePageFragment objects, in
-     * sequence.
-     */
-    private class ScreenSlidePagerAdapter extends FragmentStateAdapter {
-
-        private ArrayList<Fragment> fragments;
-
-        public ScreenSlidePagerAdapter(FragmentActivity fa,ArrayList<Fragment> fragments) {
-            super(fa);
-            this.fragments = fragments;
-        }
-
-        @Override
-        public Fragment createFragment(int position) {
-            return fragments.get(position);
-        }
-
-        @Override
-        public int getItemCount() {
-            return fragments.size();
-        }
-    }
 }

@@ -25,4 +25,9 @@
         android:name="com.kabasonic.messenger.ui.bottomnavigation.profile.ProfileFragment"
         android:label="@string/mobile_nav_profile"
         tools:layout="@layout/profile_fragment" />
+    <fragment
+        android:id="@+id/OTPNumberFragment"
+        android:name="com.kabasonic.messenger.ui.authorization.otpnumber.OTPNumberFragment"
+        android:label="fragment_o_t_p_number"
+        tools:layout="@layout/fragment_o_t_p_number" />
 </navigation>
