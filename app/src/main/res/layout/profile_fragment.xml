@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
+    android:id="@+id/clProfileFragment"
     tools:context=".ui.bottomnavigation.profile.ProfileFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -15,18 +16,17 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:title="Title"
             android:theme="@style/ProfileToolbar"
+            app:contentScrim="@color/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:contentScrim="@color/colorPrimary">
+            app:title="Title">
 
             <ImageView
                 android:id="@+id/image_profile_app_bar"
                 android:layout_width="match_parent"
-                android:layout_height="245dp"
-                android:src="@drawable/image_profile_test"
-                android:scaleType="centerCrop"/>
-
+                android:layout_height="240dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_profile_test" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar_profile"
@@ -39,26 +39,45 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
+
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedsv_profile_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <!--    Your code    -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/firstLV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite" />
+
+            <ListView
+                android:id="@+id/secondLV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@color/colorWhite" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/edit_profile_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:src="@drawable/ic_round_edit_24"
         app:layout_anchor="@id/app_bar_profile"
-        app:layout_anchorGravity="bottom|right|end"
-        android:layout_marginRight="16dp"
-        app:tint="@color/colorWhite"/>
-
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbars="none"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-    <!--    Your code    -->
-
-    </androidx.core.widget.NestedScrollView>
-
+        app:layout_anchorGravity="bottom|right|end" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

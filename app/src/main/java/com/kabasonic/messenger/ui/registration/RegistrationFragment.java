@@ -11,16 +11,17 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kabasonic.messenger.R;
 
 public class RegistrationFragment extends Fragment {
 
-    private RegistrationViewModel mViewModel;
+    public static final String TAG = "RegistrationFragment";
 
-    public static RegistrationFragment newInstance() {
-        return new RegistrationFragment();
-    }
+    EditText firstName, lastName;
+    FloatingActionButton submitRegistration;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -29,10 +30,10 @@ public class RegistrationFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(RegistrationViewModel.class);
-        // TODO: Use the ViewModel
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        firstName = (EditText) view.findViewById(R.id.firstName);
+        lastName = (EditText) view.findViewById(R.id.lastName);
+        submitRegistration = (FloatingActionButton) view.findViewById(R.id.submitRegistration);
     }
-
 }

@@ -36,5 +36,28 @@
     <string name="tab_two_groups">My</string>
     <string name="tab_three_groups">Request</string>
 
+    <!--  First list profile titles  -->
+    <string-array name="listOneTitleProfile">
+        <item>Nickname</item>
+        <item>+48 731 468 217</item>
+        <item>Jacek, 18 lat, przekladam tarcze, alkoholik.</item>
+    </string-array>
+
+    <!--  First list profile subtitles -->
+    <string-array name="listOneSubtitleProfile">
+        <item>User name</item>
+        <item>Phone number</item>
+        <item>Bio</item>
+    </string-array>
+
+    <!--  Second list profile titles -->
+    <string-array name="listTwoTitleProfile">
+        <item>Notifications</item>
+        <item>Security</item>
+        <item>Themes and colors</item>
+        <item>Languages</item>
+        <item>Ask a question</item>
+        <item>Help</item>
+    </string-array>
 
 </resources>

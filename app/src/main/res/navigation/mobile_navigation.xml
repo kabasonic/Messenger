@@ -9,7 +9,11 @@
         android:id="@+id/messagesFragment"
         android:name="com.kabasonic.messenger.ui.bottomnavigation.messages.MessagesFragment"
         android:label="@string/mobile_nav_messages"
-        tools:layout="@layout/messages_fragment" />
+        tools:layout="@layout/messages_fragment" >
+        <action
+            android:id="@+id/action_messagesFragment_to_OTPNumberFragment"
+            app:destination="@id/OTPNumberFragment" />
+    </fragment>
     <fragment
         android:id="@+id/contactsFragment"
         android:name="com.kabasonic.messenger.ui.bottomnavigation.contacts.ContactsFragment"
@@ -24,10 +28,51 @@
         android:id="@+id/profileFragment"
         android:name="com.kabasonic.messenger.ui.bottomnavigation.profile.ProfileFragment"
         android:label="@string/mobile_nav_profile"
-        tools:layout="@layout/profile_fragment" />
+        tools:layout="@layout/profile_fragment">
+        <action
+            android:id="@+id/action_profileFragment_to_OTPNumberFragment"
+            app:popUpTo="@+id/profileFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/OTPNumberFragment" />
+    </fragment>
     <fragment
         android:id="@+id/OTPNumberFragment"
         android:name="com.kabasonic.messenger.ui.authorization.otpnumber.OTPNumberFragment"
-        android:label="fragment_o_t_p_number"
-        tools:layout="@layout/fragment_o_t_p_number" />
+        android:label="Messenger"
+        tools:layout="@layout/fragment_o_t_p_number" >
+        <action
+            android:id="@+id/action_OTPNumberFragment_to_OTPCodeFragment"
+            app:destination="@id/OTPCodeFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/OTPCodeFragment"
+        android:name="com.kabasonic.messenger.ui.authorization.otpcode.OTPCodeFragment"
+        android:label="Messenger"
+        tools:layout="@layout/fragment_o_t_p_code" >
+        <argument
+            android:name="arg"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="Null" />
+        <action
+            android:id="@+id/action_OTPCodeFragment_to_messagesFragment"
+            app:destination="@id/messagesFragment" />
+        <action
+            android:id="@+id/action_OTPCodeFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.kabasonic.messenger.ui.registration.RegistrationFragment"
+        android:label="Registration"
+        tools:layout="@layout/registration_fragment" >
+        <action
+            android:id="@+id/action_registrationFragment_to_messagesFragment"
+            app:destination="@id/messagesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/allContactsFragment"
+        android:name="com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.AllContactsFragment"
+        android:label="AllContactsFragment" />
+
 </navigation>

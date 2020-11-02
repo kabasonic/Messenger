@@ -3,17 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".ui.authorization.otpcode.OTPCodeFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
 
         <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center"
             android:layout_marginTop="32dp"
             android:src="@drawable/registration_page_2"
@@ -34,7 +31,7 @@
             android:layout_height="wrap_content"
             android:text="Enter the OTP sent to"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
             android:gravity="center"
@@ -44,19 +41,22 @@
             android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
+            android:orientation="horizontal">
+
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Your code"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:hint="Code">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="215dp"
+                    android:id="@+id/otpCode"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16sp" />
-
+                    android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -76,6 +76,7 @@
                 android:textSize="16sp"
                 />
             <TextView
+                android:id="@+id/resendCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="RESEND CODE"
@@ -83,21 +84,54 @@
                 android:textColor="@color/colorOrange"
                 android:gravity="center"
                 android:textSize="16sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="resendCode"
+
                 />
         </LinearLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_submit_otp"
-            android:layout_width="215dp"
+        <LinearLayout
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Get otp"
-            android:textSize="18sp"
-            android:layout_marginTop="56sp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:backgroundTint="@color/colorOrange"/>
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You will receive your next code through:"
+                android:layout_marginRight="8dp"
+                android:gravity="center"
+                android:textSize="14sp"
+                />
 
+            <TextView
+                android:id="@+id/textTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="59"
+                android:layout_marginRight="4dp"
+                android:gravity="center"
+                android:textSize="14sp"
+                />
+
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="end"
+        android:orientation="horizontal">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/submitButtonCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_round_done_24"
+            android:layout_margin="16dp"
+            android:visibility="visible"
+            app:tint="@color/colorWhite"/>
+    </LinearLayout>
 
 </LinearLayout>

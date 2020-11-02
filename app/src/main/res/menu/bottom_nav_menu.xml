@@ -5,21 +5,24 @@
         android:id="@+id/contactsFragment"
         android:icon="@drawable/ic_round_person_24"
         android:title="@string/mobile_nav_contacts"
+        android:enabled="true"
         />
 
     <item
         android:id="@+id/groupsFragment"
         android:icon="@drawable/ic_round_people_24"
-        android:title="@string/mobile_nav_groups"  />
+        android:title="@string/mobile_nav_groups"
+        android:enabled="true"/>
 
     <item
         android:id="@+id/messagesFragment"
         android:icon="@drawable/ic_round_mail_24"
-        android:title="@string/mobile_nav_messages" />
+        android:title="@string/mobile_nav_messages"
+        android:enabled="true"/>
 
     <item
         android:id="@+id/profileFragment"
-
+        android:enabled="true"
         android:icon="@drawable/ic_round_account_circle_24"
         android:title="@string/mobile_nav_profile" />
 

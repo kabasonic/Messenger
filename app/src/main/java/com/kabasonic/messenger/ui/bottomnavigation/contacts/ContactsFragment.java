@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,9 +22,12 @@ import com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.AdapterTabsCont
 
 public class ContactsFragment extends Fragment{
     public static final String TAG = "ContactsFragment";
+
     private AdapterTabsContacts adapterTabsContacts;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+
+
 
     @Nullable
     @Override
