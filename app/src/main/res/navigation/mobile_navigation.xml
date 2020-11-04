@@ -12,7 +12,11 @@
         tools:layout="@layout/messages_fragment" >
         <action
             android:id="@+id/action_messagesFragment_to_OTPNumberFragment"
-            app:destination="@id/OTPNumberFragment" />
+            app:destination="@id/OTPNumberFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/contactsFragment"
@@ -33,7 +37,11 @@
             android:id="@+id/action_profileFragment_to_OTPNumberFragment"
             app:popUpTo="@+id/profileFragment"
             app:popUpToInclusive="true"
-            app:destination="@id/OTPNumberFragment" />
+            app:destination="@id/OTPNumberFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/OTPNumberFragment"
@@ -42,7 +50,11 @@
         tools:layout="@layout/fragment_o_t_p_number" >
         <action
             android:id="@+id/action_OTPNumberFragment_to_OTPCodeFragment"
-            app:destination="@id/OTPCodeFragment"/>
+            app:destination="@id/OTPCodeFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/OTPCodeFragment"
@@ -56,10 +68,23 @@
             android:defaultValue="Null" />
         <action
             android:id="@+id/action_OTPCodeFragment_to_messagesFragment"
-            app:destination="@id/messagesFragment" />
+            app:destination="@id/messagesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
         <action
             android:id="@+id/action_OTPCodeFragment_to_registrationFragment"
-            app:destination="@id/registrationFragment" />
+            app:destination="@id/registrationFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <argument
+            android:name="arg1"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null" />
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
@@ -68,7 +93,11 @@
         tools:layout="@layout/registration_fragment" >
         <action
             android:id="@+id/action_registrationFragment_to_messagesFragment"
-            app:destination="@id/messagesFragment" />
+            app:destination="@id/messagesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/allContactsFragment"

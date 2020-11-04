@@ -8,10 +8,10 @@
     tools:context=".ui.authorization.otpnumber.OTPNumberFragment">
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="center"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="8dp"
             android:src="@drawable/registration_page_1"
             />
         <TextView
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:text="OTP Verification"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:textSize="24sp"
             android:textColor="@color/colorBlack"
             android:textStyle="bold"
@@ -73,6 +73,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/codeCountry"
                 android:layout_width="75dp"
+                android:maxLength="6"
                 android:layout_height="wrap_content"
                 android:inputType="number" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -85,16 +86,32 @@
             android:layout_marginLeft="0dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:hint=" Phone number">
+            android:hint="Phone number">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/phoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone" />
+                android:maxLength="11"
+                android:inputType="number" />
         </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Invalid phone number. Please check the number and try again."
+        android:layout_gravity="center"
+        android:textColor="@color/colorRed"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="41dp"
+        android:layout_marginRight="32dp"
+        android:gravity="left"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -103,14 +120,17 @@
         android:layout_gravity="end"
         android:orientation="horizontal">
 
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/submitButtonPhone"
-            android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_round_done_24"
             android:layout_margin="16dp"
-            app:tint="@color/colorWhite"/>
+            android:src="@drawable/ic_round_done_24"
+            android:visibility="invisible"
+            app:tint="@color/colorWhite" />
+
+
     </LinearLayout>
 
 </LinearLayout>

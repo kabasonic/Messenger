@@ -9,10 +9,10 @@
 
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="center"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="8dp"
             android:src="@drawable/registration_page_2"
             />
         <TextView
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:text="OTP Verification"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:textSize="24sp"
             android:textColor="@color/colorBlack"
             android:textStyle="bold"
@@ -38,7 +38,7 @@
             android:textSize="16sp"
             />
         <LinearLayout
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -54,6 +54,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/otpCode"
+                    android:maxLength="6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="phone" />
@@ -86,7 +87,6 @@
                 android:textSize="16sp"
                 android:clickable="true"
                 android:focusable="true"
-                android:onClick="resendCode"
 
                 />
         </LinearLayout>
@@ -98,12 +98,14 @@
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal">
             <TextView
+                android:id="@+id/textForTimer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="You will receive your next code through:"
                 android:layout_marginRight="8dp"
                 android:gravity="center"
                 android:textSize="14sp"
+                android:visibility="invisible"
                 />
 
             <TextView
@@ -114,9 +116,23 @@
                 android:layout_marginRight="4dp"
                 android:gravity="center"
                 android:textSize="14sp"
+                android:visibility="invisible"
                 />
 
         </LinearLayout>
+
+    <TextView
+        android:id="@+id/textErrorCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Please write correct code."
+        android:textColor="@color/colorRed"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -130,7 +146,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_round_done_24"
             android:layout_margin="16dp"
-            android:visibility="visible"
+            android:visibility="invisible"
             app:tint="@color/colorWhite"/>
     </LinearLayout>
 
