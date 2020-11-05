@@ -5,21 +5,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.ui.adapters.AdapterSingleItem;
-import com.kabasonic.messenger.ui.adapters.items.SingleItem;
+import com.kabasonic.messenger.ui.adapters.items.RowItem;
 
 import java.util.ArrayList;
 
@@ -27,7 +24,7 @@ public class AllContactsFragment extends Fragment {
 
     public static final String TAG = "AllContactsFragment";
 
-    public ArrayList<SingleItem> mSingleItems = new ArrayList<>();
+    public ArrayList<RowItem> mRowItems = new ArrayList<>();
     private RecyclerView mRecyclerView;
     private AdapterSingleItem mAdapterSingleItem;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -56,17 +53,17 @@ public class AllContactsFragment extends Fragment {
     }
 
     public void createExampleList() {
-        mSingleItems = new ArrayList<>();
-        mSingleItems.add(new SingleItem(R.drawable.image_profile_test,R.drawable.status_online, "Jacek Bura"));
-        mSingleItems.add(new SingleItem(R.drawable.image_profile_test,R.drawable.status_online, "Filip Duda"));
-        mSingleItems.add(new SingleItem(R.drawable.image_profile_test,R.drawable.status_online, "Yura Shnyt"));
+        mRowItems = new ArrayList<>();
+        mRowItems.add(new RowItem(R.drawable.image_profile_test,R.drawable.status_online, "Jacek Bura"));
+        mRowItems.add(new RowItem(R.drawable.image_profile_test,R.drawable.status_online, "Filip Duda"));
+        mRowItems.add(new RowItem(R.drawable.image_profile_test,R.drawable.status_online, "Yura Shnyt"));
 
     }
     public void buildRecyclerView() {
         mRecyclerView = getView().findViewById(R.id.rvAllContacts);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mActivity);
-        mAdapterSingleItem = new AdapterSingleItem(mSingleItems);
+        mAdapterSingleItem = new AdapterSingleItem(mRowItems);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapterSingleItem);
         mAdapterSingleItem.setOnItemClickListener(new AdapterSingleItem.SingleItemRow() {

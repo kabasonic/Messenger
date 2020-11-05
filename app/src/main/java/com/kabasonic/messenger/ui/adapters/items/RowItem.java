@@ -1,15 +1,31 @@
 package com.kabasonic.messenger.ui.adapters.items;
 
-public class SingleItem {
+public class RowItem {
+
     private int mImageUser;
     private int mStatusUser;
     private String mUsername;
-    private int mButtonMore;
+    private String mUserBio;
 
-    public SingleItem(int mImageUser, int mStatusUser, String mUsername) {
+    public RowItem(int mImageUser, int mStatusUser, String mUsername) {
         this.mImageUser = mImageUser;
         this.mStatusUser = mStatusUser;
         this.mUsername = mUsername;
+    }
+
+    public RowItem(int mImageUser, String mUsername, String mUserBio) {
+        this.mImageUser = mImageUser;
+        this.mUsername = mUsername;
+        this.mUserBio = mUserBio;
+    }
+
+
+    public String getmUserBio() {
+        return mUserBio;
+    }
+
+    public void setmUserBio(String mUserBio) {
+        this.mUserBio = mUserBio;
     }
 
     public int getmImageUser() {
@@ -36,11 +52,4 @@ public class SingleItem {
         this.mUsername = mUsername;
     }
 
-    public int getmButtonMore() {
-        return mButtonMore;
-    }
-
-    public void setmButtonMore(int mButtonMore) {
-        this.mButtonMore = mButtonMore;
-    }
 }

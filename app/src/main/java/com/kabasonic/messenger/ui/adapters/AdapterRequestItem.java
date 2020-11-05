@@ -3,6 +3,7 @@ package com.kabasonic.messenger.ui.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,28 +15,28 @@ import com.kabasonic.messenger.ui.adapters.items.RowItem;
 
 import java.util.ArrayList;
 
-public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.SingleItemViewHolder> {
+public class AdapterRequestItem extends RecyclerView.Adapter<AdapterRequestItem.SingleItemViewHolder> {
 
     private ArrayList<RowItem> mRowItems;
+    private RequestItemRow mListener;
 
-    private SingleItemRow mListener;
-
-    public interface SingleItemRow {
+    public interface RequestItemRow {
 
         void onItemClick(int position);
+        void onItemAccept(int position);
+        void onItemDecline(int position);
 
-        void onMoreButtonClick(int position);
     }
 
-    public void setOnItemClickListener(SingleItemRow listener) {
+    public void setOnItemClickListener(RequestItemRow listener) {
         mListener = listener;
     }
 
     @NonNull
     @Override
     public SingleItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row,parent,false);
-        SingleItemViewHolder singleItemViewHolder = new SingleItemViewHolder(view,mListener);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_row_request,parent,false);
+        SingleItemViewHolder singleItemViewHolder = new SingleItemViewHolder(view, mListener);
         return singleItemViewHolder;
     }
 
@@ -44,8 +45,8 @@ public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.S
         RowItem currentItem = mRowItems.get(position);
 
         holder.mUserImage.setImageResource(currentItem.getmImageUser());
-        holder.mStatusUser.setImageResource(currentItem.getmStatusUser());
         holder.mUsername.setText(currentItem.getmUsername());
+        holder.mUserBio.setText(currentItem.getmUserBio());
     }
 
     @Override
@@ -53,23 +54,24 @@ public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.S
         return mRowItems.size();
     }
 
-    public AdapterSingleItem(ArrayList<RowItem> mRowItems){
+    public AdapterRequestItem(ArrayList<RowItem> mRowItems){
         this.mRowItems = mRowItems;
     }
 
     public class SingleItemViewHolder extends RecyclerView.ViewHolder{
 
         public ImageView mUserImage;
-        public ImageView mStatusUser;
         public TextView mUsername;
-        public ImageView mButtonMore;
+        public TextView mUserBio;
+        public Button mButtonAccept, mButtonDecline;
 
-        public SingleItemViewHolder(@NonNull View itemView, final SingleItemRow listener) {
+        public SingleItemViewHolder(@NonNull View itemView, final RequestItemRow listener) {
             super(itemView);
-            mUserImage = itemView.findViewById(R.id.imageRow);
-            mStatusUser = itemView.findViewById(R.id.statusUserRow);
-            mUsername = itemView.findViewById(R.id.titleRow);
-            mButtonMore = itemView.findViewById(R.id.buttonMore);
+            mUserImage = itemView.findViewById(R.id.imageRequest);
+            mUsername = itemView.findViewById(R.id.titleRequest);
+            mUserBio = itemView.findViewById(R.id.descRequest);
+            mButtonAccept = itemView.findViewById(R.id.submitRequest);
+            mButtonDecline = itemView.findViewById(R.id.declineRequest);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -80,12 +82,21 @@ public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.S
                     }
                 }
             });
-            mButtonMore.setOnClickListener(new View.OnClickListener() {
+            mButtonAccept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        listener.onMoreButtonClick(position);
+                        listener.onItemAccept(position);
+                    }
+                }
+            });
+            mButtonDecline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onItemDecline(position);
                     }
                 }
             });

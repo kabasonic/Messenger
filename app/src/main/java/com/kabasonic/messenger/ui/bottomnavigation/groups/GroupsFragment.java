@@ -1,8 +1,6 @@
 package com.kabasonic.messenger.ui.bottomnavigation.groups;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 
@@ -18,11 +16,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.kabasonic.messenger.R;
-import com.kabasonic.messenger.ui.bottomnavigation.groups.tabs.AdapterTabsGroups;
+import com.kabasonic.messenger.ui.adapters.AdapterTabsGroups;
 
 public class GroupsFragment extends Fragment {
 

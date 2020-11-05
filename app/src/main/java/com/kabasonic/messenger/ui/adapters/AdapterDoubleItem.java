@@ -14,7 +14,7 @@ import com.kabasonic.messenger.ui.adapters.items.RowItem;
 
 import java.util.ArrayList;
 
-public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.SingleItemViewHolder> {
+public class AdapterDoubleItem extends RecyclerView.Adapter<AdapterDoubleItem.SingleItemViewHolder> {
 
     private ArrayList<RowItem> mRowItems;
 
@@ -53,7 +53,7 @@ public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.S
         return mRowItems.size();
     }
 
-    public AdapterSingleItem(ArrayList<RowItem> mRowItems){
+    public AdapterDoubleItem(ArrayList<RowItem> mRowItems){
         this.mRowItems = mRowItems;
     }
 
