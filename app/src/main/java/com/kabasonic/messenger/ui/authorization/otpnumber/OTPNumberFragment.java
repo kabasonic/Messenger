@@ -87,6 +87,8 @@ public class OTPNumberFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
         textViewError = (TextView) view.findViewById(R.id.textError);
         editCodeCountry = (EditText) view.findViewById(R.id.codeCountry);
         editPhoneNumber = (EditText) view.findViewById(R.id.phoneNumber);
@@ -111,7 +113,7 @@ public class OTPNumberFragment extends Fragment {
 
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
-                Toast.makeText(mActivity, "verification failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mActivity, "verification failed", Toast.LENGTH_SHORT).show();
                 Log.d("FirebaseException", e.toString());
             }
 
@@ -121,20 +123,13 @@ public class OTPNumberFragment extends Fragment {
                 verificationCode = s;
                 mResendToken = forceResendingToken;
                 Log.d("VerificationCode", verificationCode);
-                Toast.makeText(mActivity, "Code Sent", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mActivity, "Code Sent", Toast.LENGTH_SHORT).show();
                 OTPNumberFragmentDirections.ActionOTPNumberFragmentToOTPCodeFragment action = OTPNumberFragmentDirections.actionOTPNumberFragmentToOTPCodeFragment();
                 action.setArg(verificationCode);
                 action.setArg1(mPhoneNumber);
                 navController.navigate(action);
             }
         };
-    }
-
-    //Create app top bar menu
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        super.onCreate(savedInstanceState);
     }
 
     @Override

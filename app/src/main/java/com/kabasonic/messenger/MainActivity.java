@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -16,27 +15,24 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.kabasonic.messenger.ui.authorization.otpcode.OTPCodeFragment;
 import com.kabasonic.messenger.ui.authorization.otpnumber.OTPNumberFragment;
 import com.kabasonic.messenger.ui.onboarding.ScreenSlidePagerActivity;
-import com.kabasonic.messenger.ui.onboarding.pages.ScreenSlidePageFragmentOne;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
     public static final String TAG = "com.kabasonic.messenger";
 
-    SharedPreferences  settings = null;
+    SharedPreferences settings = null;
     FirebaseAuth mAuth;
     FirebaseUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Set theme for Splash screen
@@ -54,33 +50,33 @@ public class MainActivity extends AppCompatActivity  {
 
         //Set bottom navigation with fragment
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        NavController navController = Navigation.findNavController(this,R.id.fragment);
+        NavController navController = Navigation.findNavController(this, R.id.fragment);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.contactsFragment,
-                R.id.groupsFragment,R.id.messagesFragment,R.id.profileFragment).build();
+                R.id.groupsFragment, R.id.messagesFragment, R.id.profileFragment,R.id.OTPNumberFragment).build();
 
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(bottomNavigationView,navController);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
                 bottomNavigationView.setVisibility(View.VISIBLE);
-                switch (destination.getId()){
+                switch (destination.getId()) {
                     case R.id.profileFragment:
-                            getSupportActionBar().hide();
+                        getSupportActionBar().hide();
                         break;
                     case R.id.OTPNumberFragment:
 
-                            bottomNavigationView.setVisibility(View.INVISIBLE);
+                        bottomNavigationView.setVisibility(View.INVISIBLE);
                         break;
                     case R.id.OTPCodeFragment:
-                            bottomNavigationView.setVisibility(View.INVISIBLE);
+                        bottomNavigationView.setVisibility(View.INVISIBLE);
                         break;
                     case R.id.registrationFragment:
-                            bottomNavigationView.setVisibility(View.INVISIBLE);
+                        bottomNavigationView.setVisibility(View.INVISIBLE);
                     default:
-                        if(!(destination.getId() == R.id.profileFragment)){
+                        if (!(destination.getId() == R.id.profileFragment)) {
                             setSupportActionBar(toolbar);
                             getSupportActionBar().show();
                         }
@@ -96,23 +92,26 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onBackPressed() {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
-        if (currentFragment instanceof OTPNumberFragment)
+        if (currentFragment instanceof OTPNumberFragment) {
             getSupportFragmentManager().popBackStack();
-        else
+        } else if (currentFragment instanceof OTPCodeFragment) {
+            Toast.makeText(this,"back",Toast.LENGTH_SHORT).show();
+        } else {
             finish();
+        }
     }
 
-    public void checkStartOnBoarding(){
+    public void checkStartOnBoarding() {
         settings = getSharedPreferences(getString(R.string.settings), Context.MODE_PRIVATE);
         //Create variable settings for preferences
-        if(!settings.getBoolean("StartOnBoarding",false)){
+        if (!settings.getBoolean("StartOnBoarding", false)) {
             //First run application
             //Write the fact that the app has been started at least once
-            Log.i(TAG,"First run application");
-            settings.edit().putBoolean("StartOnBoarding",true).apply();
+            Log.i(TAG, "First run application");
+            settings.edit().putBoolean("StartOnBoarding", true).apply();
             startActivity(new Intent(this, ScreenSlidePagerActivity.class));
-        }else{
-            Log.i(TAG,"Not first run application");
+        } else {
+            Log.i(TAG, "Not first run application");
 
         }
     }

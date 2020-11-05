@@ -86,6 +86,13 @@ public class OTPCodeFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         getArgumentsFragment();
+        //[START TEST OTP]
+//        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+//        FirebaseAuthSettings firebaseAuthSettings = firebaseAuth.getFirebaseAuthSettings();
+//
+//        // Configure faking the auto-retrieval with the whitelisted numbers.
+//        firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber(phoneNumber, code);
+        //[END TEST OTP]
 
         submitCode.setOnClickListener(v -> {
             code = otpCode.getText().toString().trim();
