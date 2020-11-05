@@ -11,26 +11,26 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.kabasonic.messenger.R;
 
 public class RequestContactsFragment extends Fragment {
 
-    private RequestContactsViewModel requestContactsViewModel;
+    public static final String TAG = "RequestContactsFragment";
+
+    private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        requestContactsViewModel =
-                ViewModelProviders.of(this).get(RequestContactsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_request_contacts, container, false);
-        final TextView textView = root.findViewById(R.id.text);
-        requestContactsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
         return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recyclerView = view.findViewById(R.id.rvRequestContacts);
     }
 }

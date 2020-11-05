@@ -8,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,7 +17,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.kabasonic.messenger.R;
-import com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.AdapterTabsContacts;
+import com.kabasonic.messenger.ui.adapters.AdapterTabsContacts;
 
 public class ContactsFragment extends Fragment{
     public static final String TAG = "ContactsFragment";

@@ -1,4 +1,4 @@
-package com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs;
+package com.kabasonic.messenger.ui.adapters;
 
 import android.util.Log;
 
@@ -6,6 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.AllContactsFragment;
+import com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.OnlineContactsFragment;
+import com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.RequestContactsFragment;
 
 public class AdapterTabsContacts extends FragmentPagerAdapter {
     public static final String TAG = "AdapterTabsContacts";
