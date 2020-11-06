@@ -2,54 +2,54 @@ package com.kabasonic.messenger.ui.adapters.items;
 
 public class RowItem {
 
-    private int mImageUser;
-    private int mStatusUser;
-    private String mUsername;
-    private String mUserBio;
+    private int mRowImage;
+    private int mRowStatus;
+    private String mRowTitle;
+    private String mRowDesc;
 
-    public RowItem(int mImageUser, int mStatusUser, String mUsername) {
-        this.mImageUser = mImageUser;
-        this.mStatusUser = mStatusUser;
-        this.mUsername = mUsername;
+    public RowItem(int mRowImage, int mRowStatus, String mRowTitle) {
+        this.mRowImage = mRowImage;
+        this.mRowStatus = mRowStatus;
+        this.mRowTitle = mRowTitle;
     }
 
-    public RowItem(int mImageUser, String mUsername, String mUserBio) {
-        this.mImageUser = mImageUser;
-        this.mUsername = mUsername;
-        this.mUserBio = mUserBio;
+    public RowItem(int mRowImage, String mRowTitle, String mRowDesc) {
+        this.mRowImage = mRowImage;
+        this.mRowTitle = mRowTitle;
+        this.mRowDesc = mRowDesc;
     }
 
 
-    public String getmUserBio() {
-        return mUserBio;
+    public String getmRowDesc() {
+        return mRowDesc;
     }
 
-    public void setmUserBio(String mUserBio) {
-        this.mUserBio = mUserBio;
+    public void setmRowDesc(String mRowDesc) {
+        this.mRowDesc = mRowDesc;
     }
 
-    public int getmImageUser() {
-        return mImageUser;
+    public int getmRowImage() {
+        return mRowImage;
     }
 
-    public void setmImageUser(int mImageUser) {
-        this.mImageUser = mImageUser;
+    public void setmRowImage(int mRowImage) {
+        this.mRowImage = mRowImage;
     }
 
-    public int getmStatusUser() {
-        return mStatusUser;
+    public int getmRowStatus() {
+        return mRowStatus;
     }
 
-    public void setmStatusUser(int mStatusUser) {
-        this.mStatusUser = mStatusUser;
+    public void setmRowStatus(int mRowStatus) {
+        this.mRowStatus = mRowStatus;
     }
 
-    public String getmUsername() {
-        return mUsername;
+    public String getmRowTitle() {
+        return mRowTitle;
     }
 
-    public void setmUsername(String mUsername) {
-        this.mUsername = mUsername;
+    public void setmRowTitle(String mRowTitle) {
+        this.mRowTitle = mRowTitle;
     }
 
 }

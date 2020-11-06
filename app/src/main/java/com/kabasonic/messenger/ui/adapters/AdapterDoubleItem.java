@@ -24,7 +24,6 @@ public class AdapterDoubleItem extends RecyclerView.Adapter<AdapterDoubleItem.Si
 
         void onItemClick(int position);
 
-        void onMoreButtonClick(int position);
     }
 
     public void setOnItemClickListener(SingleItemRow listener) {
@@ -34,7 +33,7 @@ public class AdapterDoubleItem extends RecyclerView.Adapter<AdapterDoubleItem.Si
     @NonNull
     @Override
     public SingleItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_row,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.double_row,parent,false);
         SingleItemViewHolder singleItemViewHolder = new SingleItemViewHolder(view,mListener);
         return singleItemViewHolder;
     }
@@ -43,9 +42,9 @@ public class AdapterDoubleItem extends RecyclerView.Adapter<AdapterDoubleItem.Si
     public void onBindViewHolder(@NonNull SingleItemViewHolder holder, int position) {
         RowItem currentItem = mRowItems.get(position);
 
-        holder.mUserImage.setImageResource(currentItem.getmImageUser());
-        holder.mStatusUser.setImageResource(currentItem.getmStatusUser());
-        holder.mUsername.setText(currentItem.getmUsername());
+        holder.mGroupImage.setImageResource(currentItem.getmRowImage());
+        holder.mGroupTitle.setText(currentItem.getmRowTitle());
+        holder.mGroupDesc.setText(currentItem.getmRowDesc());
     }
 
     @Override
@@ -59,17 +58,15 @@ public class AdapterDoubleItem extends RecyclerView.Adapter<AdapterDoubleItem.Si
 
     public class SingleItemViewHolder extends RecyclerView.ViewHolder{
 
-        public ImageView mUserImage;
-        public ImageView mStatusUser;
-        public TextView mUsername;
-        public ImageView mButtonMore;
+        public ImageView mGroupImage;
+        public TextView mGroupTitle;
+        public TextView mGroupDesc;
 
         public SingleItemViewHolder(@NonNull View itemView, final SingleItemRow listener) {
             super(itemView);
-            mUserImage = itemView.findViewById(R.id.imageRow);
-            mStatusUser = itemView.findViewById(R.id.statusUserRow);
-            mUsername = itemView.findViewById(R.id.titleRow);
-            mButtonMore = itemView.findViewById(R.id.buttonMore);
+            mGroupImage = itemView.findViewById(R.id.imageDoubleRow);
+            mGroupTitle = itemView.findViewById(R.id.titleDoubleRow);
+            mGroupDesc = itemView.findViewById(R.id.descDoubleRow);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -77,15 +74,6 @@ public class AdapterDoubleItem extends RecyclerView.Adapter<AdapterDoubleItem.Si
                     int position = getAdapterPosition();
                     if(position != RecyclerView.NO_POSITION){
                         listener.onItemClick(position);
-                    }
-                }
-            });
-            mButtonMore.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        listener.onMoreButtonClick(position);
                     }
                 }
             });

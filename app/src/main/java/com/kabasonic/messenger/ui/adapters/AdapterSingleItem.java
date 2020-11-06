@@ -43,9 +43,9 @@ public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.S
     public void onBindViewHolder(@NonNull SingleItemViewHolder holder, int position) {
         RowItem currentItem = mRowItems.get(position);
 
-        holder.mUserImage.setImageResource(currentItem.getmImageUser());
-        holder.mStatusUser.setImageResource(currentItem.getmStatusUser());
-        holder.mUsername.setText(currentItem.getmUsername());
+        holder.mUserImage.setImageResource(currentItem.getmRowImage());
+        holder.mStatusUser.setImageResource(currentItem.getmRowStatus());
+        holder.mUsername.setText(currentItem.getmRowTitle());
     }
 
     @Override

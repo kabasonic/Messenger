@@ -33,12 +33,16 @@
                     android:layout_height="wrap_content"
                     android:text="@string/lorem_ipsum_title"
                     android:textColor="@color/colorBlack"
-                    android:textSize="21sp" />
+                    android:textSize="21sp"
+                    android:singleLine="true"
+                    android:ellipsize="end"/>
                 <TextView
                     android:id="@+id/descRequest"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/lorem_ipsum_desc"
+                    android:ellipsize="end"
+                    android:maxLines="3"
                     android:textSize="13sp" />
             </LinearLayout>
 

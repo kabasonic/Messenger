@@ -45,7 +45,9 @@
             android:layout_marginStart="16dp"
             android:text="@string/lorem_ipsum_title"
             android:textColor="@color/colorBlack"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:singleLine="true"
+            android:ellipsize="end"/>
 
         <ImageView
             android:id="@+id/buttonMore"
