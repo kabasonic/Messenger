@@ -1,7 +1,10 @@
 package com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,9 +57,9 @@ public class OnlineContactsFragment extends Fragment {
 
     private void createExampleList() {
         mRowItems = new ArrayList<>();
-        mRowItems.add(new RowItem(R.drawable.image_profile_test,R.drawable.status_online, "Jacek Bura"));
-        mRowItems.add(new RowItem(R.drawable.image_profile_test,R.drawable.status_online, "Filip Duda"));
-        mRowItems.add(new RowItem(R.drawable.image_profile_test,R.drawable.status_online, "Yura Shnyt"));
+        mRowItems.add(new RowItem(R.drawable.image_profile_test,false, "Jacek Bura"));
+        mRowItems.add(new RowItem(R.drawable.image_profile_test,true, "Filip Duda"));
+        mRowItems.add(new RowItem(R.drawable.image_profile_test,false, "Yura Shnyt"));
 
     }
     private void buildRecyclerView() {
@@ -75,8 +78,36 @@ public class OnlineContactsFragment extends Fragment {
             @Override
             public void onMoreButtonClick(int position) {
                 Toast.makeText(getContext(),"Clicked button",Toast.LENGTH_SHORT).show();
+                alertWindow();
             }
         });
     }
 
+    private void alertWindow(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setItems(R.array.dialog_contact, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.i(TAG,"Opened dialog window ");
+                switch (which){
+                    case 0:
+                        Log.i(TAG,"Selected item " + which);
+                        break;
+                    case 1:
+                        Log.i(TAG,"Selected item " + which);
+                        break;
+                    case 2:
+                        Log.i(TAG,"Selected item " + which);
+                        break;
+                    case 3:
+                        Log.i(TAG,"Selected item " + which);
+                        break;
+                    default:
+                        Log.i(TAG,"Not selected item ");
+                        break;
+                }
+            }
+        });
+        builder.show();
+    }
 }

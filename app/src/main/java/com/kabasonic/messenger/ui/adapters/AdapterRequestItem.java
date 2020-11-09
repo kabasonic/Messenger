@@ -44,9 +44,9 @@ public class AdapterRequestItem extends RecyclerView.Adapter<AdapterRequestItem.
     public void onBindViewHolder(@NonNull SingleItemViewHolder holder, int position) {
         RowItem currentItem = mRowItems.get(position);
 
-        holder.mUserImage.setImageResource(currentItem.getmRowImage());
-        holder.mUsername.setText(currentItem.getmRowTitle());
-        holder.mUserBio.setText(currentItem.getmRowDesc());
+        holder.mUserImage.setImageResource(currentItem.getmIcon());
+        holder.mUsername.setText(currentItem.getmTitle());
+        holder.mUserBio.setText(currentItem.getmDesc());
     }
 
     @Override

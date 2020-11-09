@@ -24,6 +24,14 @@
         app:showAsAction="always"
         android:title="Settings"/>
 
+    <item
+        android:id="@+id/menu_create_group"
+        android:icon="@drawable/ic_round_group_add_24"
+        android:iconTint="@color/colorBlack"
+        app:showAsAction="always"
+        android:title="Create group">
+
+    </item>
 
 
 </menu>

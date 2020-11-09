@@ -2,6 +2,7 @@ package com.kabasonic.messenger.ui.bottomnavigation.groups.tabs;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,12 +67,16 @@ public class RequestGroupsFragment extends Fragment {
 
             @Override
             public void onItemAccept(int position) {
-                Toast.makeText(getContext(),"Clicked Accept Button", Toast.LENGTH_LONG).show();
+                Log.i(TAG,"Cliked button ACCEPT " + position);
+                mRowsItems.remove(position);
+                mAdapterRequestItem.notifyItemRemoved(position);
             }
 
             @Override
             public void onItemDecline(int position) {
-                Toast.makeText(getContext(),"Clicked Decline Button", Toast.LENGTH_LONG).show();
+                Log.i(TAG,"Cliked button DECLINE " + position);
+                mRowsItems.remove(position);
+                mAdapterRequestItem.notifyItemRemoved(position);
             }
         });
     }

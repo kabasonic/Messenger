@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Context;
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +13,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,33 +23,44 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.ui.adapters.AdapterMessageItem;
+import com.kabasonic.messenger.ui.adapters.AdapterSingleItem;
+import com.kabasonic.messenger.ui.adapters.items.RowItem;
+
+import java.util.ArrayList;
 
 public class MessagesFragment extends Fragment {
     public static final String TAG = "MessagesFragment";
-    private MessagesViewModel messagesViewModel;
+    private RecyclerView mRecyclerView;
+    public ArrayList<RowItem> mRowItem;
+    private AdapterMessageItem mAdapterMessageItem;
+    private RecyclerView.LayoutManager mLayoutManager;
+    MainActivity mActivity;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof MainActivity) {
+            mActivity = (MainActivity) context;
+        }
+    }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        messagesViewModel =
-                ViewModelProviders.of(this).get(MessagesViewModel.class);
-        View root = inflater.inflate(R.layout.messages_fragment, container, false);
-        final TextView textView = root.findViewById(R.id.text);
-        messagesViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
-
+        View root = inflater.inflate(R.layout.messages_fragment,container,false);
         return root;
     }
+
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -61,6 +76,33 @@ public class MessagesFragment extends Fragment {
             NavDirections action = MessagesFragmentDirections.actionMessagesFragmentToOTPNumberFragment();
             Navigation.findNavController(view).navigate(action);
         }
+
+        createExampleList();
+        buildRecyclerView();
+
+
+    }
+
+    private void createExampleList() {
+        mRowItem = new ArrayList<>();
+        mRowItem.add(new RowItem(R.drawable.image_profile_test,false,false,"Pavlo","asdas","send","20:20",2));
+        mRowItem.add(new RowItem(R.drawable.image_profile_test,true,false,"Pavlo","asdas","accepted","20:20",2));
+        mRowItem.add(new RowItem(R.drawable.image_profile_test,false,true,"Pavlo","asdas","sending","20:20",0));
+    }
+
+    private void buildRecyclerView() {
+        mRecyclerView = getView().findViewById(R.id.rvMessages);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(mActivity);
+        mAdapterMessageItem = new AdapterMessageItem(mRowItem);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapterMessageItem);
+        mAdapterMessageItem.setOnItemClickListener(new AdapterMessageItem.ItemRow() {
+            @Override
+            public void onItemClick(int position) {
+                Toast.makeText(getContext(), "Clicked row", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     //Create app top bar menu
@@ -75,6 +117,7 @@ public class MessagesFragment extends Fragment {
         inflater.inflate(R.menu.main_menu,menu);
         menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
         menu.findItem(R.id.menu_logout).setVisible(false);
+        menu.findItem(R.id.menu_create_group).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

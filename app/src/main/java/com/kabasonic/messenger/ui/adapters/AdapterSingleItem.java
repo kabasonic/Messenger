@@ -43,9 +43,15 @@ public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.S
     public void onBindViewHolder(@NonNull SingleItemViewHolder holder, int position) {
         RowItem currentItem = mRowItems.get(position);
 
-        holder.mUserImage.setImageResource(currentItem.getmRowImage());
-        holder.mStatusUser.setImageResource(currentItem.getmRowStatus());
-        holder.mUsername.setText(currentItem.getmRowTitle());
+        holder.mUserImage.setImageResource(currentItem.getmIcon());
+        if(currentItem.ismOnlineStatus())
+        {
+            holder.mStatusUser.setImageResource(R.drawable.status_online);
+            holder.mStatusUser.setVisibility(View.VISIBLE);
+        }else {
+            holder.mStatusUser.setVisibility(View.INVISIBLE);
+        }
+        holder.mUsername.setText(currentItem.getmTitle());
     }
 
     @Override

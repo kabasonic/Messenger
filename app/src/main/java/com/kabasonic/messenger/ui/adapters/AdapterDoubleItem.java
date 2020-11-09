@@ -42,9 +42,9 @@ public class AdapterDoubleItem extends RecyclerView.Adapter<AdapterDoubleItem.Si
     public void onBindViewHolder(@NonNull SingleItemViewHolder holder, int position) {
         RowItem currentItem = mRowItems.get(position);
 
-        holder.mGroupImage.setImageResource(currentItem.getmRowImage());
-        holder.mGroupTitle.setText(currentItem.getmRowTitle());
-        holder.mGroupDesc.setText(currentItem.getmRowDesc());
+        holder.mGroupImage.setImageResource(currentItem.getmIcon());
+        holder.mGroupTitle.setText(currentItem.getmTitle());
+        holder.mGroupDesc.setText(currentItem.getmDesc());
     }
 
     @Override

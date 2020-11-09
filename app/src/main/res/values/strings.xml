@@ -60,6 +60,7 @@
         <item>Help</item>
     </string-array>
 
+    <!--  Country codes -->
     <string-array name="country_code">
         <item></item>
         <item>
@@ -786,5 +787,12 @@
         </item>
     </string-array>
 
+    <!--  Dialog window for Contacts-->
+    <string-array name="dialog_contact">
+        <item>Chat</item>
+        <item>Write message</item>
+        <item>Share link to profile</item>
+        <item>Delete contacts</item>
+    </string-array>
 
 </resources>

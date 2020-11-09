@@ -19,6 +19,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.BadgeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences settings = null;
     FirebaseAuth mAuth;
     FirebaseUser user;
-
+    private BadgeDrawable mContactBudge, mGroupsBudge, mMessagesBudget;
+    private BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Set theme for Splash screen
@@ -49,7 +52,11 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         //Set bottom navigation with fragment
-        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        createBudgets();
+
+
         NavController navController = Navigation.findNavController(this, R.id.fragment);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.contactsFragment,
@@ -87,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void createBudgets() {
+        mContactBudge = bottomNavigationView.getOrCreateBadge(R.id.contactsFragment);
+        mGroupsBudge = bottomNavigationView.getOrCreateBadge(R.id.groupsFragment);
+        mMessagesBudget = bottomNavigationView.getOrCreateBadge(R.id.messagesFragment);
+
+        mContactBudge.setNumber(23);
+        mGroupsBudge.setNumber(1);
+        mMessagesBudget.setNumber(5437865);
     }
 
     @Override

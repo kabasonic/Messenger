@@ -6,13 +6,9 @@
     android:orientation="vertical"
     tools:context=".ui.bottomnavigation.messages.MessagesFragment">
 
-
-    <TextView
-        android:id="@+id/text"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMessages"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Messages"
-        android:gravity="center"/>
-
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

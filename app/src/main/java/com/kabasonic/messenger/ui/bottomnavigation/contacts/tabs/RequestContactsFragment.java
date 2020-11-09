@@ -2,6 +2,7 @@ package com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,12 +75,16 @@ public class RequestContactsFragment extends Fragment {
 
             @Override
             public void onItemAccept(int position) {
-                Toast.makeText(getContext(),"Clicked button ACCEPT",Toast.LENGTH_SHORT).show();
+                Log.i(TAG,"Cliked button ACCEPT " + position);
+                mRequestItems.remove(position);
+                mAdapterRequestItem.notifyItemRemoved(position);
             }
 
             @Override
             public void onItemDecline(int position) {
-                Toast.makeText(getContext(),"Clicked button DECLINE",Toast.LENGTH_SHORT).show();
+                Log.i(TAG,"Cliked button DECLINE " + position);
+                mRequestItems.remove(position);
+                mAdapterRequestItem.notifyItemRemoved(position);
             }
         });
     }

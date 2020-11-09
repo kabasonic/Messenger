@@ -2,54 +2,67 @@ package com.kabasonic.messenger.ui.adapters.items;
 
 public class RowItem {
 
-    private int mRowImage;
-    private int mRowStatus;
-    private String mRowTitle;
-    private String mRowDesc;
+    private int mIcon;
+    private boolean mOnlineStatus;
+    private boolean mMuteStatus;
+    private String mTitle;
+    private String mDesc;
+    private String mStatusMessage;
+    private String mTime;
+    private int mCountMessage;
 
-    public RowItem(int mRowImage, int mRowStatus, String mRowTitle) {
-        this.mRowImage = mRowImage;
-        this.mRowStatus = mRowStatus;
-        this.mRowTitle = mRowTitle;
+    public RowItem(int mIcon, boolean mOnlineStatus, String mTitle) {
+        this.mIcon = mIcon;
+        this.mOnlineStatus = mOnlineStatus;
+        this.mTitle = mTitle;
     }
 
-    public RowItem(int mRowImage, String mRowTitle, String mRowDesc) {
-        this.mRowImage = mRowImage;
-        this.mRowTitle = mRowTitle;
-        this.mRowDesc = mRowDesc;
+    public RowItem(int mIcon, String mTitle, String mDesc) {
+        this.mIcon = mIcon;
+        this.mTitle = mTitle;
+        this.mDesc = mDesc;
     }
 
-
-    public String getmRowDesc() {
-        return mRowDesc;
+    public RowItem(int mIcon, boolean mOnlineStatus, boolean mMuteStatus, String mTitle, String mDesc, String mStatusMessage, String mTime, int mCountMessage) {
+        this.mIcon = mIcon;
+        this.mOnlineStatus = mOnlineStatus;
+        this.mMuteStatus = mMuteStatus;
+        this.mTitle = mTitle;
+        this.mDesc = mDesc;
+        this.mStatusMessage = mStatusMessage;
+        this.mTime = mTime;
+        this.mCountMessage = mCountMessage;
     }
 
-    public void setmRowDesc(String mRowDesc) {
-        this.mRowDesc = mRowDesc;
+    public int getmIcon() {
+        return mIcon;
     }
 
-    public int getmRowImage() {
-        return mRowImage;
+    public boolean ismOnlineStatus() {
+        return mOnlineStatus;
     }
 
-    public void setmRowImage(int mRowImage) {
-        this.mRowImage = mRowImage;
+    public boolean ismMuteStatus() {
+        return mMuteStatus;
     }
 
-    public int getmRowStatus() {
-        return mRowStatus;
+    public String getmTitle() {
+        return mTitle;
     }
 
-    public void setmRowStatus(int mRowStatus) {
-        this.mRowStatus = mRowStatus;
+    public String getmDesc() {
+        return mDesc;
     }
 
-    public String getmRowTitle() {
-        return mRowTitle;
+    public String getmStatusMessage() {
+        return mStatusMessage;
     }
 
-    public void setmRowTitle(String mRowTitle) {
-        this.mRowTitle = mRowTitle;
+    public String getmTime() {
+        return mTime;
     }
 
+    public int getmCountMessage() {
+        return mCountMessage;
+    }
 }
