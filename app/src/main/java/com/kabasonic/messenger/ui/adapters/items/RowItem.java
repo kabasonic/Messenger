@@ -11,6 +11,11 @@ public class RowItem {
     private String mTime;
     private int mCountMessage;
 
+    public RowItem(int mIcon, String mTitle) {
+        this.mIcon = mIcon;
+        this.mTitle = mTitle;
+    }
+
     public RowItem(int mIcon, boolean mOnlineStatus, String mTitle) {
         this.mIcon = mIcon;
         this.mOnlineStatus = mOnlineStatus;

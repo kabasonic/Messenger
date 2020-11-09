@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     android:id="@+id/clProfileFragment"
     tools:context=".ui.bottomnavigation.profile.ProfileFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_profile"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -45,29 +45,49 @@
         android:id="@+id/nestedsv_profile_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true">
 
         <!--    Your code    -->
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="32dp"
             android:orientation="vertical">
 
-            <ListView
-                android:id="@+id/firstLV"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorWhite" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <ListView
+                    android:id="@+id/firstLV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
+                    android:background="@color/colorWhite" />
+            </LinearLayout>
 
-            <ListView
-                android:id="@+id/secondLV"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@color/colorWhite" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginBottom="16dp"
+                android:orientation="vertical">
+                <ListView
+                    android:id="@+id/secondLV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:scrollbars="vertical"
+                    android:nestedScrollingEnabled="true"
+                    android:background="@color/colorWhite" />
+            </LinearLayout>
 
         </LinearLayout>
+
+
 
     </androidx.core.widget.NestedScrollView>
 

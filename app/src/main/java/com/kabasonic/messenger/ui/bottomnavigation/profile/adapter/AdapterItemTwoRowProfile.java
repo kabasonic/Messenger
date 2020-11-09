@@ -12,14 +12,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.ui.adapters.items.RowItem;
 
 import java.util.ArrayList;
 
-public class AdapterItemTwoRowProfile extends ArrayAdapter<ModelItemProfile> {
+public class AdapterItemTwoRowProfile extends ArrayAdapter<RowItem> {
 
     Context context;
 
-    public AdapterItemTwoRowProfile(Context context, int resourceId, ArrayList<ModelItemProfile> item){
+    public AdapterItemTwoRowProfile(Context context, int resourceId, ArrayList<RowItem> item){
         super(context,resourceId,item);
         this.context = context;
     }
@@ -33,7 +34,7 @@ public class AdapterItemTwoRowProfile extends ArrayAdapter<ModelItemProfile> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         ViewHolder holder = null;
-        ModelItemProfile modelItemProfile = getItem(position);
+        RowItem currentItem = getItem(position);
 
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         if (convertView == null){
@@ -46,8 +47,8 @@ public class AdapterItemTwoRowProfile extends ArrayAdapter<ModelItemProfile> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.textTitle.setText(modelItemProfile.getTitle());
-        holder.imageView.setImageResource(modelItemProfile.getImage());
+        holder.textTitle.setText(currentItem.getmTitle());
+        holder.imageView.setImageResource(currentItem.getmIcon());
 
         return convertView;
     }

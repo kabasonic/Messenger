@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
+import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.ViewCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavDirections;
@@ -28,6 +30,7 @@ import android.widget.ListView;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.ui.adapters.items.RowItem;
 import com.kabasonic.messenger.ui.bottomnavigation.profile.adapter.AdapterItemThreeRowProfile;
 import com.kabasonic.messenger.ui.bottomnavigation.profile.adapter.AdapterItemTwoRowProfile;
 import com.kabasonic.messenger.ui.bottomnavigation.profile.adapter.ModelItemProfile;
@@ -45,30 +48,15 @@ public class ProfileFragment extends Fragment {
 
     NestedScrollView nestedScrollView;
 
-    private ArrayList<ModelItemProfile> rowListProfileFirst = new ArrayList<ModelItemProfile>() ;
-    private ArrayList<ModelItemProfile> rowListProfileSecond = new ArrayList<ModelItemProfile>() ;
+    public ArrayList<RowItem> rowListProfileFirst ;
+    public ArrayList<RowItem> rowListProfileSecond;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-//        profileViewModel =
-//                ViewModelProviders.of(this).get(ProfileViewModel.class);
-//        View root = inflater.inflate(R.layout.profile_fragment, container, false);
-
-
-//        final TextView textView = root.findViewById(R.id.text);
-//        profileViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
-
         View root = inflater.inflate(R.layout.profile_fragment, container, false);
         toolbar = (androidx.appcompat.widget.Toolbar) root.findViewById(R.id.toolbar_profile);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-
-
         return root;
     }
 
@@ -77,46 +65,11 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        firstLV = view.findViewById(R.id.firstLV);
-        secondLV = view.findViewById(R.id.secondLV);
-
-        String[] titleFirstLV = getResources().getStringArray(R.array.listOneTitleProfile);
-        String[] subtitleFirstLV = getResources().getStringArray(R.array.listOneSubtitleProfile);
-        String[] titleSecondLV = getResources().getStringArray(R.array.listTwoTitleProfile);
-
-        Integer[] imagesOne = { R.drawable.ic_round_alternate_email_24,
-                R.drawable.ic_round_call_24,
-                R.drawable.ic_round_info_24};
-
-        Integer[] imagesTwo = { R.drawable.ic_round_notifications_24,
-                R.drawable.ic_round_lock_24,
-                R.drawable.ic_round_info_24,
-                R.drawable.ic_round_language_24,
-                R.drawable.ic_round_live_help_24,
-                R.drawable.ic_round_help_24};
-
-        for (int i = 0; i < imagesOne.length; i++) {
-            ModelItemProfile itemRowOne = new ModelItemProfile(titleFirstLV[i],subtitleFirstLV[i],imagesOne[i]);
-            rowListProfileFirst.add(itemRowOne);
-        }
-
-        for (int i = 0; i < imagesTwo.length; i++) {
-            ModelItemProfile itemRowTwo = new ModelItemProfile(titleSecondLV[i], imagesTwo[i]);
-            rowListProfileSecond.add(itemRowTwo);
-        }
-
+        createList();
+        buildListView();
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        AdapterItemThreeRowProfile adapterThreeRow = new AdapterItemThreeRowProfile(getContext(), R.layout.three_row, rowListProfileFirst);
-        firstLV.setAdapter(adapterThreeRow);
-
-        AdapterItemTwoRowProfile adapterTwoRow = new AdapterItemTwoRowProfile(getContext(), R.layout.two_row, rowListProfileSecond);
-        secondLV.setAdapter(adapterTwoRow);
-    }
+  
 
     //Create app top bar menu
     @Override
@@ -149,23 +102,44 @@ public class ProfileFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+    private void buildListView(){
+        firstLV = getView().findViewById(R.id.firstLV);
+        secondLV = getView().findViewById(R.id.secondLV);
 
-//    public ArrayList getSecondList(String[] titleSecondLV,Integer[] imagesTwo){
-//        for (int i = 0; i < imagesTwo.length; i++) {
-//
-//            ModelItemProfile itemRow = new ModelItemProfile(titleSecondLV[i],imagesTwo[i]);
-//            rowListProfile.add(itemRow);
-//        }
-//        return rowListProfile;
-//    }
-//
-//    public ArrayList getFirstList(String[] titleFirstLV, String[] subtitleFirstLV,Integer[] imagesOne){
-//        for (int i = 0; i < imagesOne.length; i++) {
-//            ModelItemProfile itemRow = new ModelItemProfile(titleFirstLV[i],subtitleFirstLV[i],imagesOne[i]);
-//            rowListProfile.add(itemRow);
-//        }
-//        return rowListProfile;
-//    }
+        AdapterItemThreeRowProfile adapterThreeRow = new AdapterItemThreeRowProfile(getContext(), R.layout.three_row, rowListProfileFirst);
+        firstLV.setAdapter(adapterThreeRow);
+
+        AdapterItemTwoRowProfile adapterTwoRow = new AdapterItemTwoRowProfile(getContext(), R.layout.two_row, rowListProfileSecond);
+        secondLV.setAdapter(adapterTwoRow);
+
+    }
+    private void createList(){
+        String[] titleFirstLV = getResources().getStringArray(R.array.listOneTitleProfile);
+        String[] subtitleFirstLV = getResources().getStringArray(R.array.listOneSubtitleProfile);
+        String[] titleSecondLV = getResources().getStringArray(R.array.listTwoTitleProfile);
+
+        Integer[] imagesOne = { R.drawable.ic_round_alternate_email_24,
+                R.drawable.ic_round_call_24,
+                R.drawable.ic_round_info_24};
+
+        Integer[] imagesTwo = { R.drawable.ic_round_notifications_24,
+                R.drawable.ic_round_lock_24,
+                R.drawable.ic_round_color_lens_24,
+                R.drawable.ic_round_language_24,
+                R.drawable.ic_round_live_help_24,
+                R.drawable.ic_round_help_24};
+
+        rowListProfileFirst = new ArrayList<>();
+        rowListProfileSecond = new ArrayList<>();
+
+        for (int i = 0; i < imagesOne.length; i++) {
+            rowListProfileFirst.add(new RowItem(imagesOne[i],titleFirstLV[i],subtitleFirstLV[i]));
+        }
+
+        for (int i = 0; i < imagesTwo.length; i++) {
+            rowListProfileSecond.add(new RowItem(imagesTwo[i],titleSecondLV[i]));
+        }
+    }
 
 
 
