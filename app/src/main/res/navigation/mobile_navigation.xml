@@ -16,7 +16,8 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/contactsFragment"
@@ -38,6 +39,27 @@
             app:popUpTo="@+id/profileFragment"
             app:popUpToInclusive="true"
             app:destination="@id/OTPNumberFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_profileFragment_to_editUsernameFragment"
+            app:destination="@id/editUsernameFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_profileFragment_to_ediBioFragment"
+            app:destination="@id/ediBioFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_profileFragment_to_editNicknameFragment"
+            app:destination="@id/editNicknameFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -93,15 +115,19 @@
         tools:layout="@layout/registration_fragment" >
         <action
             android:id="@+id/action_registrationFragment_to_messagesFragment"
-            app:destination="@id/messagesFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:destination="@id/messagesFragment" />
     </fragment>
     <fragment
-        android:id="@+id/allContactsFragment"
-        android:name="com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.AllContactsFragment"
-        android:label="AllContactsFragment" />
+        android:id="@+id/editUsernameFragment"
+        android:name="com.kabasonic.messenger.ui.bottomnavigation.profile.editfragments.EditUsernameFragment"
+        android:label="Edit Name" />
+    <fragment
+        android:id="@+id/ediBioFragment"
+        android:name="com.kabasonic.messenger.ui.bottomnavigation.profile.editfragments.EdiBioFragment"
+        android:label="Bio" />
+    <fragment
+        android:id="@+id/editNicknameFragment"
+        android:name="com.kabasonic.messenger.ui.bottomnavigation.profile.editfragments.EditNicknameFragment"
+        android:label="Nickname" />
 
 </navigation>

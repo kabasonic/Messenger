@@ -52,6 +52,7 @@ public class ContactsFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         initTabsViewPager(view);
         setBudgestToRequest();
     }

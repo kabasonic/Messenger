@@ -795,4 +795,19 @@
         <item>Delete contacts</item>
     </string-array>
 
+    <!--  Dialog window for Profile NickName-->
+    <string-array name="dialog_nickname">
+        <item>Edit Username</item>
+        <item>Copy link</item>
+        <item>Share</item>
+    </string-array>
+
+    <!--  Dialog window for Profile PhoneNumber-->
+    <string-array name="dialog_phone_number">
+        <item>Copy</item>
+        <item>Share contact</item>
+    </string-array>
+
+
+
 </resources>

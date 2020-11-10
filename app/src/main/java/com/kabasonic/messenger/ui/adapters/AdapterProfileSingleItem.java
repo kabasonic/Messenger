@@ -1,4 +1,4 @@
-package com.kabasonic.messenger.ui.bottomnavigation.profile.adapter;
+package com.kabasonic.messenger.ui.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,19 +16,18 @@ import com.kabasonic.messenger.ui.adapters.items.RowItem;
 
 import java.util.ArrayList;
 
-public class AdapterItemThreeRowProfile extends ArrayAdapter<RowItem> {
+public class AdapterProfileSingleItem extends ArrayAdapter<RowItem> {
 
     Context context;
 
-    public AdapterItemThreeRowProfile(Context context, int resourceId, ArrayList<RowItem> item){
+    public AdapterProfileSingleItem(Context context, int resourceId, ArrayList<RowItem> item){
         super(context,resourceId,item);
         this.context = context;
     }
 
-    private static class ViewHolder {
+    private class ViewHolder {
         ImageView imageView;
         TextView textTitle;
-        TextView textSubtitle;
     }
 
     @NonNull
@@ -39,18 +38,16 @@ public class AdapterItemThreeRowProfile extends ArrayAdapter<RowItem> {
 
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         if (convertView == null){
-            convertView = layoutInflater.inflate(R.layout.three_row,null);
+            convertView = layoutInflater.inflate(R.layout.single_row_profile,null);
             holder = new ViewHolder();
-            holder.imageView = (ImageView) convertView.findViewById(R.id.imageThreeRow);
-            holder.textTitle = (TextView) convertView.findViewById(R.id.titleThreeRow);
-            holder.textSubtitle = (TextView) convertView.findViewById(R.id.subtitleThreeRow);
+            holder.imageView = (ImageView) convertView.findViewById(R.id.imageTwoRow);
+            holder.textTitle = (TextView) convertView.findViewById(R.id.titleTwoRow);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         holder.textTitle.setText(currentItem.getmTitle());
-        holder.textSubtitle.setText(currentItem.getmDesc());
         holder.imageView.setImageResource(currentItem.getmIcon());
 
         return convertView;

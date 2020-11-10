@@ -43,6 +43,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.ui.authorization.otpcode.OTPCodeFragmentDirections;
 
 import org.w3c.dom.Text;
 
@@ -96,6 +97,7 @@ public class OTPNumberFragment extends Fragment {
 
         arrayCodeCountry = getResources().getStringArray(R.array.country_code);
 
+        mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         NavController navController = Navigation.findNavController(mActivity, R.id.fragment);
 
         mAuth = FirebaseAuth.getInstance();
@@ -229,4 +231,6 @@ public class OTPNumberFragment extends Fragment {
                         .build();
         PhoneAuthProvider.verifyPhoneNumber(options);
     }
+
+
 }

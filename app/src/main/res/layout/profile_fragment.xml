@@ -19,7 +19,9 @@
             android:theme="@style/ProfileToolbar"
             app:contentScrim="@color/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:title="Title">
+            app:title="Title"
+            android:fitsSystemWindows="true"
+            app:scrimAnimationDuration="600">
 
             <ImageView
                 android:id="@+id/image_profile_app_bar"
@@ -28,14 +30,40 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/image_profile_test" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar_profile"
-                android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                android:theme="@style/ProfileToolbar"
-                app:layout_collapseMode="pin">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="16dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp">
+        <TextView
+            android:id="@+id/userNameProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pavlo Lysytsia"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite"
+            android:textSize="24sp"/>
 
-            </androidx.appcompat.widget.Toolbar>
+        <TextView
+            android:id="@+id/userStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Online"
+            android:textColor="@color/colorWhite"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+<!--            <androidx.appcompat.widget.Toolbar-->
+<!--                android:id="@+id/toolbar_profile"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="?actionBarSize"-->
+<!--                android:theme="@style/ProfileToolbar"-->
+<!--                app:layout_collapseMode="pin">-->
+
+<!--            </androidx.appcompat.widget.Toolbar>-->
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -53,7 +81,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="32dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -64,7 +91,7 @@
                 <ListView
                     android:id="@+id/firstLV"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:scrollbars="vertical"
                     android:background="@color/colorWhite" />
             </LinearLayout>
@@ -73,7 +100,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginBottom="16dp"
                 android:orientation="vertical">
                 <ListView
                     android:id="@+id/secondLV"

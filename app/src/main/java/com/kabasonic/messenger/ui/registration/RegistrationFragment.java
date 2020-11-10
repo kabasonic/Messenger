@@ -45,9 +45,7 @@ public class RegistrationFragment extends Fragment {
         firstName = (EditText) view.findViewById(R.id.firstName);
         lastName = (EditText) view.findViewById(R.id.lastName);
         submitRegistration = (FloatingActionButton) view.findViewById(R.id.submitRegistration);
-
         formValidation();
-
         submitRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,7 +53,6 @@ public class RegistrationFragment extends Fragment {
                     Navigation.findNavController(getView()).navigate(action);
             }
         });
-
     }
     private void formValidation(){
         firstName.addTextChangedListener(new TextWatcher() {

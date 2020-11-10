@@ -1,15 +1,15 @@
-package com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs;
+package com.kabasonic.messenger.ui.bottomnavigation.contacts.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class OnlineContactsViewModel extends ViewModel {
+public class RequestContactsViewModel extends ViewModel {
     private MutableLiveData<String> mText;
 
-    public OnlineContactsViewModel() {
+    public RequestContactsViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("Online contacts fragment");
+        mText.setValue("Request contacts fragment");
     }
 
     public LiveData<String> getText(){
