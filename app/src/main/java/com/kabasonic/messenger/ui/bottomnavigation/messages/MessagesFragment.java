@@ -72,6 +72,7 @@ public class MessagesFragment extends Fragment {
         if (user != null) {
             // User is signed in
             Toast.makeText(getActivity(),"User is signed in",Toast.LENGTH_SHORT).show();
+            Log.d(TAG,"User Uid sidn in" + user.getUid());
         } else {
             // No user is signed in
             Toast.makeText(getActivity(),"No user is signed in",Toast.LENGTH_SHORT).show();

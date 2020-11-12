@@ -2,13 +2,6 @@ package com.kabasonic.messenger.ui.authorization.otpcode;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
-
 import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,28 +9,39 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
+
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthSettings;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
-import com.kabasonic.messenger.ui.authorization.otpnumber.OTPNumberFragmentDirections;
+import com.kabasonic.messenger.database.CheckedUser;
+import com.kabasonic.messenger.ui.bottomnavigation.messages.MessagesFragmentDirections;
 
-import java.util.concurrent.Executor;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 
@@ -58,6 +62,10 @@ public class OTPCodeFragment extends Fragment {
     public PhoneAuthProvider.ForceResendingToken mResendToken;
     private String mVerificationId;
 
+    private DatabaseReference  mDatabase;
+    private View mView;
+
+    //private ArrayList<String> uidDatabase = new ArrayList<String>();
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -65,6 +73,7 @@ public class OTPCodeFragment extends Fragment {
             mActivity = (MainActivity) context;
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -75,7 +84,7 @@ public class OTPCodeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        this.mView = view;
         resendCode = (TextView) view.findViewById(R.id.resendCode);
         textTimer = (TextView) view.findViewById(R.id.textTimer);
         textError = (TextView) view.findViewById(R.id.textErrorCode);
@@ -86,23 +95,11 @@ public class OTPCodeFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
 
         getArgumentsFragment();
-        //[START TEST OTP]
-//        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-//        FirebaseAuthSettings firebaseAuthSettings = firebaseAuth.getFirebaseAuthSettings();
-//
-//        // Configure faking the auto-retrieval with the whitelisted numbers.
-//        firebaseAuthSettings.setAutoRetrievedSmsCodeForPhoneNumber(phoneNumber, code);
-        //[END TEST OTP]
-
-        submitCode.setOnClickListener(v -> {
-            code = otpCode.getText().toString().trim();
-            submitCodeVerification(code,verificationCode);
-        });
 
         resendCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!resendCodePressed) resendCodeAction();
+                if (!resendCodePressed) resendCodeAction();
             }
         });
 
@@ -110,10 +107,12 @@ public class OTPCodeFragment extends Fragment {
             @Override
             public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
             }
+
             @Override
             public void onVerificationFailed(@NonNull FirebaseException e) {
 
             }
+
             @Override
             public void onCodeSent(@NonNull String verificationId, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                 super.onCodeSent(verificationId, forceResendingToken);
@@ -129,26 +128,36 @@ public class OTPCodeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         formValidate();
+        submitCode.setOnClickListener(v -> {
+            code = otpCode.getText().toString().trim();
+            actionKeyboard(false);
+            submitCodeVerification(code, verificationCode);
+        });
     }
 
-    private void formValidate(){
+    private void formValidate() {
         otpCode.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
             @Override
             public void afterTextChanged(Editable s) {
-                if(otpCode.length() == 6){
+                if (otpCode.length() == 6) {
                     submitCode.show();
-                }else {
+                } else {
                     submitCode.hide();
                     textError.setVisibility(View.INVISIBLE);
                 }
             }
         });
     }
-    private void getArgumentsFragment(){
+
+    private void getArgumentsFragment() {
         if (getArguments() != null) {
             OTPCodeFragmentArgs args = OTPCodeFragmentArgs.fromBundle(getArguments());
             verificationCode = args.getArg();
@@ -156,22 +165,18 @@ public class OTPCodeFragment extends Fragment {
 //            Toast.makeText(getActivity(), verificationCode, Toast.LENGTH_SHORT).show();
         }
     }
-    private void submitCodeVerification(String code, String verificationCode){
+
+    private void submitCodeVerification(String code, String verificationCode) {
 
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationCode.trim(), code);
 
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(getActivity(), (OnCompleteListener<AuthResult>) task -> {
+                .addOnCompleteListener(mActivity, (OnCompleteListener<AuthResult>) task -> {
                     if (task.isSuccessful()) {
-
                         Log.d(TAG, "signInWithCredential:success");
-                        Toast.makeText(getActivity(), "DONE", Toast.LENGTH_SHORT).show();
-                        //FirebaseUser user = task.getResult().getUser();
-                        // ...
-                        // Sign in success, update UI with the signed-in user's information
-                        NavDirections action = OTPCodeFragmentDirections.actionOTPCodeFragmentToMessagesFragment();
-                        Navigation.findNavController(getView()).navigate(action);
-                        //TODO check user in databse
+
+                        checkedUserUID();
+
                         textError.setVisibility(View.INVISIBLE);
                     } else {
                         // Sign in failed, display a message and update the UI
@@ -179,10 +184,46 @@ public class OTPCodeFragment extends Fragment {
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
                         if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                             // The verification code entered was invalid
-
                         }
                     }
                 });
+    }
+
+    private void checkedUserUID(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = user.getUid();
+        Log.d(TAG,"Current UserId: "+userId);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean result = false;
+                for (DataSnapshot getUid : snapshot.getChildren()) {
+                    Log.d(TAG, "Database UID: " + getUid.getKey());
+                    if(getUid.getKey().equals(userId)){
+                        result = true;
+                        break;
+                    }
+                }
+                Log.d(TAG,"Result" + result);
+                navFragments(result);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    private void navFragments(boolean result){
+        if(result){
+            NavDirections action = OTPCodeFragmentDirections.actionOTPCodeFragmentToMessagesFragment();
+            Navigation.findNavController(this.mView).navigate(action);
+        } else{
+            NavDirections action = OTPCodeFragmentDirections.actionOTPCodeFragmentToRegistrationFragment();
+            Navigation.findNavController(this.mView).navigate(action);
+        }
+
     }
 
     private void resendVerificationCode(String phoneNumber,
@@ -201,16 +242,17 @@ public class OTPCodeFragment extends Fragment {
     // (onClick function) When you pressed RESEND CODE
     private void resendCodeAction() {
         this.resendCodePressed = true;
-        if(resendCodePressed){
-            resendVerificationCode(phoneNumber,mResendToken);
+        if (resendCodePressed) {
+            resendVerificationCode(phoneNumber, mResendToken);
             textForTimer.setVisibility(View.VISIBLE);
             textTimer.setVisibility(View.VISIBLE);
             resendCode.setTextColor(getResources().getColor(R.color.colorGray));
-            new CountDownTimer(60000,1000){
+            new CountDownTimer(60000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    textTimer.setText(String.valueOf(millisUntilFinished/1000));
+                    textTimer.setText(String.valueOf(millisUntilFinished / 1000));
                 }
+
                 @Override
                 public void onFinish() {
                     resendCodePressed = false;
@@ -223,4 +265,16 @@ public class OTPCodeFragment extends Fragment {
 
     }
 
+    private void actionKeyboard(boolean action) {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if(action){
+                inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            }else{
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+
+        }
+    }
 }

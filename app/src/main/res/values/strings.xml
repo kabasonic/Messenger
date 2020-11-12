@@ -808,6 +808,12 @@
         <item>Share contact</item>
     </string-array>
 
+    <!--  Dialog window for Profile QRcode-->
+    <string-array name="dialog_profile_qr_code">
+        <item>Scan QR code</item>
+        <item>Show My QR code</item>
+    </string-array>
+
 
 
 </resources>
