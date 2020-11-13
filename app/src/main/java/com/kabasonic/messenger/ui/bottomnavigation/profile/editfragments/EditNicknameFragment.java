@@ -16,11 +16,17 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DatabaseReference;
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.database.Database;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditNicknameFragment extends Fragment {
 
-    EditText mNickName;
+    private EditText mNickName;
+    private String nickName;
     private FloatingActionButton mSubmit;
 
     @Nullable
@@ -35,13 +41,12 @@ public class EditNicknameFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
         validForm();
-        mSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                Navigation.findNavController(getView()).navigate(R.id.profileFragment);
-            }
+        mSubmit.setOnClickListener(v -> {
+            InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            nickName = mNickName.getText().toString().trim();
+            updateNickname(nickName);
+            Navigation.findNavController(getView()).navigate(R.id.profileFragment);
         });
     }
     private void validForm(){
@@ -61,9 +66,17 @@ public class EditNicknameFragment extends Fragment {
             public void afterTextChanged(Editable s) {}
         });
     }
+
     private void initView(View view){
         mNickName = getView().findViewById(R.id.nickname);
         mSubmit = getView().findViewById(R.id.submitRegistration);
+    }
+
+    private void updateNickname(String nickname){
+        Map<String,Object> newValues = new HashMap<String,Object>();
+        newValues.put("nickname",nickname);
+        Database database = new Database();
+        database.updateUser(newValues);
     }
 
 }

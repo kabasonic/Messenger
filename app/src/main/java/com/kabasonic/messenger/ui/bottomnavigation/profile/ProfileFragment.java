@@ -23,7 +23,12 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.models.User;
 import com.kabasonic.messenger.ui.adapters.items.RowItem;
 import com.kabasonic.messenger.ui.adapters.AdapterProfileDoubleItem;
 import com.kabasonic.messenger.ui.adapters.AdapterProfileSingleItem;
@@ -41,6 +46,9 @@ public class ProfileFragment extends Fragment {
     private FloatingActionButton mEditUserName;
     private ArrayList<RowItem> mRowListFirst;
     private ArrayList<RowItem> mRowListSecond;
+
+    private DatabaseReference mDatabase;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -60,6 +68,12 @@ public class ProfileFragment extends Fragment {
         buildListView();
         listenerLists();
         listenerButtons();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateProfile();
     }
 
     //Create app top bar menu
@@ -241,6 +255,12 @@ public class ProfileFragment extends Fragment {
             default:
                 break;
         }
+    }
+
+
+
+    private void updateProfile(){
+
     }
 
 }

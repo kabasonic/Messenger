@@ -17,10 +17,15 @@ import androidx.navigation.Navigation;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.database.Database;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EdiBioFragment extends Fragment {
 
-    EditText mBio;
+    private EditText mBio;
+    private String bio;
     private FloatingActionButton mSubmit;
 
     @Nullable
@@ -40,10 +45,13 @@ public class EdiBioFragment extends Fragment {
             public void onClick(View v) {
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                bio = mBio.getText().toString().trim();
+                updateBio(bio);
                 Navigation.findNavController(getView()).navigate(R.id.profileFragment);
             }
         });
     }
+
     private void validForm(){
         mBio.addTextChangedListener(new TextWatcher() {
             @Override
@@ -61,9 +69,16 @@ public class EdiBioFragment extends Fragment {
             public void afterTextChanged(Editable s) {}
         });
     }
+
     private void initView(View view){
         mBio = getView().findViewById(R.id.bio);
         mSubmit = getView().findViewById(R.id.submitRegistration);
     }
 
+    private void updateBio(String bio){
+        Map<String,Object> newValues = new HashMap<String,Object>();
+        newValues.put("bio",bio);
+        Database database = new Database();
+        database.updateUser(newValues);
+    }
 }

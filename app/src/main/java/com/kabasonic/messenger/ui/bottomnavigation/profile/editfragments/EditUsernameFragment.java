@@ -18,11 +18,23 @@ import androidx.navigation.ActivityNavigator;
 import androidx.navigation.Navigation;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.database.Database;
+import com.kabasonic.messenger.models.User;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditUsernameFragment extends Fragment {
 
-    EditText mFirstName, mLastName;
+    private DatabaseReference mDatabase;
+
+    private String firstName, lastName;
+    private EditText mFirstName, mLastName;
     private FloatingActionButton mSubmit;
     @Nullable
     @Override
@@ -41,6 +53,9 @@ public class EditUsernameFragment extends Fragment {
             public void onClick(View v) {
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                firstName = mFirstName.getText().toString().trim();
+                lastName = mLastName.getText().toString().trim();
+                updateUser(firstName,lastName);
                 Navigation.findNavController(getView()).navigate(R.id.profileFragment);
             }
         });
@@ -66,6 +81,26 @@ public class EditUsernameFragment extends Fragment {
         mFirstName = getView().findViewById(R.id.firstName);
         mLastName = getView().findViewById(R.id.lastName);
         mSubmit = getView().findViewById(R.id.submitRegistration);
+    }
+
+    private void updateUser(String firstName, String lastName){
+        Map<String,Object> newValues = new HashMap<String,Object>();
+        newValues.put("firstName",firstName);
+        newValues.put("lastName",lastName);
+
+        Database database = new Database();
+        database.updateUser(newValues);
+//        FirebaseUser userId = FirebaseAuth.getInstance().getCurrentUser();
+//        mDatabase = FirebaseDatabase.getInstance().getReference();
+//        User user = new User(firstName,lastName);
+//        if (userId!=null){
+//            mDatabase.child("users").child(userId.getUid()).setValue(user);
+//        }
+//        User user = new User();
+//        user.setFirstName(firstName);
+//        user.setLastName(lastName);
+//        Database database = new Database();
+//        database.updateUser(user);
     }
 
 }
