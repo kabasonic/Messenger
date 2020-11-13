@@ -8,7 +8,9 @@
         android:icon="@drawable/ic_round_search_24"
         android:iconTint="@color/colorBlack"
         app:showAsAction="always"
-        android:title="Search"/>
+        app:actionViewClass="android.widget.SearchView"
+        android:title="Search"
+         />
 
     <item
         android:id="@+id/menu_qr_code_scan"

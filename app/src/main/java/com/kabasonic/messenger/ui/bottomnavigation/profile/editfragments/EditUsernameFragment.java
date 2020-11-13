@@ -1,7 +1,6 @@
 package com.kabasonic.messenger.ui.bottomnavigation.profile.editfragments;
 
 import android.content.Context;
-import android.inputmethodservice.InputMethodService;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,17 +13,12 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.ActivityNavigator;
 import androidx.navigation.Navigation;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.database.Database;
-import com.kabasonic.messenger.models.User;
 
 import java.util.HashMap;
 import java.util.Map;

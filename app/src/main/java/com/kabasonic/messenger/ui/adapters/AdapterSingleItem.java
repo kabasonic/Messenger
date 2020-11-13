@@ -1,5 +1,6 @@
 package com.kabasonic.messenger.ui.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,25 +11,26 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kabasonic.messenger.R;
-import com.kabasonic.messenger.ui.adapters.items.RowItem;
+import com.kabasonic.messenger.models.User;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.SingleItemViewHolder> {
+    //edit User -> RowItem
+    private ArrayList<User> mRowItems;
 
-    private ArrayList<RowItem> mRowItems;
+    private OnItemClickListener mListener;
 
-    private SingleItemRow mListener;
+    public interface OnItemClickListener {
 
-    public interface SingleItemRow {
+        void onItemClick(String uid);
 
-        void onItemClick(int position);
-
-        void onMoreButtonClick(int position);
+        void onMoreButtonClick(String uid);
     }
 
-    public void setOnItemClickListener(SingleItemRow listener) {
-        mListener = listener;
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.mListener = listener;
     }
 
     @NonNull
@@ -41,17 +43,30 @@ public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.S
 
     @Override
     public void onBindViewHolder(@NonNull SingleItemViewHolder holder, int position) {
-        RowItem currentItem = mRowItems.get(position);
 
-        holder.mUserImage.setImageResource(currentItem.getmIcon());
-        if(currentItem.ismOnlineStatus())
-        {
-            holder.mStatusUser.setImageResource(R.drawable.status_online);
-            holder.mStatusUser.setVisibility(View.VISIBLE);
-        }else {
-            holder.mStatusUser.setVisibility(View.INVISIBLE);
+        //Get data
+        String userImage = mRowItems.get(position).getImageUser();
+        String userName = mRowItems.get(position).getFirstName() + " " + mRowItems.get(position).getLastName();
+        String userStatus = mRowItems.get(position).getStatus();
+        //Set data
+        holder.mUsername.setText(userName);
+        try{
+            Picasso.get().load(userImage).placeholder(R.drawable.default_user_image).into(holder.mUserImage);
+
+        } catch (Exception e){
+
         }
-        holder.mUsername.setText(currentItem.getmTitle());
+        try{
+            if(userStatus.equals("online")){
+                Picasso.get().load(userStatus).placeholder(R.drawable.status_online).into(holder.mStatusUser);
+                holder.mStatusUser.setVisibility(View.VISIBLE);
+            } else{
+                Picasso.get().load(userStatus).placeholder(R.drawable.status_online).into(holder.mStatusUser);
+                holder.mStatusUser.setVisibility(View.INVISIBLE);
+            }
+        } catch (Exception e){
+
+        }
     }
 
     @Override
@@ -59,7 +74,7 @@ public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.S
         return mRowItems.size();
     }
 
-    public AdapterSingleItem(ArrayList<RowItem> mRowItems){
+    public AdapterSingleItem(ArrayList<User> mRowItems){
         this.mRowItems = mRowItems;
     }
 
@@ -70,7 +85,7 @@ public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.S
         public TextView mUsername;
         public ImageView mButtonMore;
 
-        public SingleItemViewHolder(@NonNull View itemView, final SingleItemRow listener) {
+        public SingleItemViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
             mUserImage = itemView.findViewById(R.id.imageRow);
             mStatusUser = itemView.findViewById(R.id.statusUserRow);
@@ -80,19 +95,22 @@ public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.S
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d("Adapter", String.valueOf(getAdapterPosition()));
                     int position = getAdapterPosition();
-                    if(position != RecyclerView.NO_POSITION){
-                        listener.onItemClick(position);
+                    if (position != RecyclerView.NO_POSITION && listener != null) {
+                        listener.onItemClick(mRowItems.get(position).getUid());
                     }
+                    Log.d("Adapter row", String.valueOf(getAdapterPosition()));
                 }
             });
             mButtonMore.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        listener.onMoreButtonClick(position);
+                    if (position != RecyclerView.NO_POSITION && listener != null) {
+                        listener.onMoreButtonClick(mRowItems.get(position).getUid());
                     }
+                    Log.d("Adapter button", String.valueOf(getAdapterPosition()));
                 }
             });
 

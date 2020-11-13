@@ -8,7 +8,8 @@ import java.util.Map;
 
 @IgnoreExtraProperties
 public class User {
-
+    public String uid;
+    public String imageUser;
     public String firstName;
     public String lastName;
     public String phoneNumber;
@@ -25,10 +26,31 @@ public class User {
 
     }
 
-    public User(String firstName, String lastName, String phoneNumber) {
+    public User(String uid, String imageUser, String firstName, String lastName, String phoneNumber, String nickName, String status, String bio) {
+        this.uid = uid;
+        this.imageUser = imageUser;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
+        this.nickName = nickName;
+        this.status = status;
+        this.bio = bio;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getImageUser() {
+        return imageUser;
+    }
+
+    public void setImageUser(String imageUser) {
+        this.imageUser = imageUser;
     }
 
     public String getFirstName() {

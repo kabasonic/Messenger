@@ -133,5 +133,33 @@
         android:id="@+id/editNicknameFragment"
         android:name="com.kabasonic.messenger.ui.bottomnavigation.profile.editfragments.EditNicknameFragment"
         android:label="Nickname" />
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.kabasonic.messenger.ui.userprofile.UserProfileFragment"
+        android:label="User profile"
+        tools:layout="@layout/profile_user" >
+        <argument
+            android:name="userUid"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null" />
+    </fragment>
+    <fragment
+        android:id="@+id/allContactsFragment"
+        android:name="com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.AllContactsFragment"
+        android:label="AllContactsFragment"
+        tools:layout="@layout/fragment_all_contacts">
+        <action
+            android:id="@+id/action_allContactsFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/onlineContactsFragment"
+        android:name="com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.OnlineContactsFragment"
+        android:label="OnlineContactsFragment" />
 
 </navigation>

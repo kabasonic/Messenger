@@ -84,7 +84,8 @@ public class RegistrationFragment extends Fragment {
         mDatabase.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = new User(firstName.getText().toString(),lastName.getText().toString(),phoneNumber);
+
+                User user = new User(userId,"",firstName.getText().toString(),lastName.getText().toString(),phoneNumber,"","","");
                 mDatabase.child("users").child(userId).setValue(user);
                 navFragments();
             }

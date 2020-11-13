@@ -13,13 +13,17 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.FirebaseDatabase;
 import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.models.User;
 import com.kabasonic.messenger.ui.adapters.AdapterTabsContacts;
 import com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.AllContactsFragment;
 
@@ -97,30 +101,34 @@ public class ContactsFragment extends Fragment {
         });
     }
 
-    // Create app top bar menu
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        super.onCreate(savedInstanceState);
-    }
+//    // Create app top bar menu
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState) {
+//        setHasOptionsMenu(true);
+//        super.onCreate(savedInstanceState);
+//    }
+//
+//    @Override
+//    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+//        inflater.inflate(R.menu.main_menu, menu);
+//        menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
+//        menu.findItem(R.id.menu_logout).setVisible(false);
+//        menu.findItem(R.id.menu_create_group).setVisible(false);
+//
+//        super.onCreateOptionsMenu(menu, inflater);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        int idMenuItem = item.getItemId();
+//        switch (idMenuItem) {
+//            case R.id.menu_search:
+//                Log.i(TAG, "Click search button");
+//
+//                break;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.main_menu, menu);
-        menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
-        menu.findItem(R.id.menu_logout).setVisible(false);
-        menu.findItem(R.id.menu_create_group).setVisible(false);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int idMenuItem = item.getItemId();
-        switch (idMenuItem) {
-            case R.id.menu_search:
-                Log.i(TAG, "Click search button");
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

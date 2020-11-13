@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/clProfileFragment"
-    tools:context=".ui.bottomnavigation.profile.ProfileFragment">
+    tools:context=".ui.userprofile.UserProfileFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_profile"
@@ -31,40 +31,40 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/image_profile_test" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginLeft="16dp"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp">
-        <TextView
-            android:id="@+id/userNameProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pavlo Lysytsia"
-            android:textStyle="bold"
-            android:textColor="@color/colorWhite"
-            android:textSize="24sp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="16dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp">
+                <TextView
+                    android:id="@+id/userNameAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pavlo Lysytsia"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="24sp"/>
 
-        <TextView
-            android:id="@+id/userStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Online"
-            android:textColor="@color/colorWhite"
-            android:textSize="16sp"/>
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/userStatusAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Online"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="16sp"/>
+            </LinearLayout>
 
-<!--            <androidx.appcompat.widget.Toolbar-->
-<!--                android:id="@+id/toolbar_profile"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="?actionBarSize"-->
-<!--                android:theme="@style/ProfileToolbar"-->
-<!--                app:layout_collapseMode="pin">-->
+            <!--            <androidx.appcompat.widget.Toolbar-->
+            <!--                android:id="@+id/toolbar_profile"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="?actionBarSize"-->
+            <!--                android:theme="@style/ProfileToolbar"-->
+            <!--                app:layout_collapseMode="pin">-->
 
-<!--            </androidx.appcompat.widget.Toolbar>-->
+            <!--            </androidx.appcompat.widget.Toolbar>-->
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -90,25 +90,10 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
                 <ListView
-                    android:id="@+id/firstLV"
+                    android:id="@+id/lvUserProfile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scrollbars="vertical"
-                    android:background="@color/colorWhite" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <ListView
-                    android:id="@+id/secondLV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:scrollbars="vertical"
-                    android:nestedScrollingEnabled="true"
                     android:background="@color/colorWhite" />
             </LinearLayout>
 
@@ -119,12 +104,12 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/edit_profile_fab"
+        android:id="@+id/send_message_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:src="@drawable/ic_round_edit_24"
+        android:src="@drawable/ic_baseline_mode_comment_24"
         app:layout_anchor="@id/app_bar_profile"
         app:layout_anchorGravity="bottom|right|end" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

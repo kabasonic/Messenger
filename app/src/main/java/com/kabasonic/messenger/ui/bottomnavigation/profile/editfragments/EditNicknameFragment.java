@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DatabaseReference;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.database.Database;
 
@@ -74,7 +73,7 @@ public class EditNicknameFragment extends Fragment {
 
     private void updateNickname(String nickname){
         Map<String,Object> newValues = new HashMap<String,Object>();
-        newValues.put("nickname",nickname);
+        newValues.put("nickName",nickname);
         Database database = new Database();
         database.updateUser(newValues);
     }

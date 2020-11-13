@@ -4,20 +4,35 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDirections;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.models.User;
 import com.kabasonic.messenger.ui.adapters.AdapterSingleItem;
 import com.kabasonic.messenger.ui.adapters.items.RowItem;
 
@@ -27,7 +42,7 @@ public class OnlineContactsFragment extends Fragment {
 
     public static final String TAG = "OnlineContactsFragment";
 
-    private ArrayList<RowItem> mRowItems = new ArrayList<>();
+    private ArrayList<User> mUsersList;
     private RecyclerView mRecyclerView;
     private AdapterSingleItem mAdapterSingleItem;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -51,33 +66,34 @@ public class OnlineContactsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        createExampleList();
-        buildRecyclerView();
-    }
-
-    private void createExampleList() {
-        mRowItems = new ArrayList<>();
-        mRowItems.add(new RowItem(R.drawable.image_profile_test,false, "Jacek Bura"));
-        mRowItems.add(new RowItem(R.drawable.image_profile_test,true, "Filip Duda"));
-        mRowItems.add(new RowItem(R.drawable.image_profile_test,false, "Yura Shnyt"));
-
-    }
-    private void buildRecyclerView() {
         mRecyclerView = getView().findViewById(R.id.rvOnlineContacts);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getOnlineUsers();
+    }
+
+    public void buildRecyclerView(ArrayList<User> mRowItems) {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mActivity);
         mAdapterSingleItem = new AdapterSingleItem(mRowItems);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapterSingleItem.notifyDataSetChanged();
         mRecyclerView.setAdapter(mAdapterSingleItem);
-        mAdapterSingleItem.setOnItemClickListener(new AdapterSingleItem.SingleItemRow() {
-            @Override
-            public void onItemClick(int position) {
-                Toast.makeText(getContext(),"Clicked row",Toast.LENGTH_SHORT).show();
-            }
 
+        mAdapterSingleItem.setOnItemClickListener(new AdapterSingleItem.OnItemClickListener() {
             @Override
-            public void onMoreButtonClick(int position) {
-                Toast.makeText(getContext(),"Clicked button",Toast.LENGTH_SHORT).show();
+            public void onItemClick(String uid) {
+                Toast.makeText(getContext(), "Clicked button: " + uid, Toast.LENGTH_SHORT).show();
+
+            }
+            @Override
+            public void onMoreButtonClick(String uid) {
+               /*
+               TODO: Navigation chat fragment with User, Write message, Copy link to user, delete with contact
+                */
                 alertWindow();
             }
         });
@@ -109,5 +125,92 @@ public class OnlineContactsFragment extends Fragment {
             }
         });
         builder.show();
+    }
+
+    // Create app top bar menu
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.main_menu, menu);
+        menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
+        menu.findItem(R.id.menu_logout).setVisible(false);
+        menu.findItem(R.id.menu_create_group).setVisible(false);
+
+        MenuItem item = menu.findItem(R.id.menu_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+            if(!hasFocus) {
+                getOnlineUsers();
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(!TextUtils.isEmpty(query.trim())){
+                    searchUsers(query);
+                }else{
+                    getOnlineUsers();
+                }
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void getOnlineUsers() {
+        mUsersList = new ArrayList<>();
+        FirebaseUser userId = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mUsersList.clear();
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    User modelUser = dataSnapshot.getValue(User.class);
+                    if(!modelUser.getUid().equals(userId.getUid())){
+                        if(modelUser.getStatus().equals("online")){
+                            mUsersList.add(modelUser);
+                        }
+                    }
+                    buildRecyclerView(mUsersList);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void searchUsers(String query) {
+        mUsersList = new ArrayList<>();
+        FirebaseUser userId = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mUsersList.clear();
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    User user = dataSnapshot.getValue(User.class);
+                    if(!user.getUid().equals(userId.getUid())){
+                        if(user.getFirstName().toLowerCase().contains(query.toLowerCase())
+                                ||user.getLastName().toLowerCase().contains(query.toLowerCase())||
+                                user.getNickName().toLowerCase().contains(query.toLowerCase())){
+                            mUsersList.add(user);
+                        }
+                    }
+                    buildRecyclerView(mUsersList);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {}
+        });
     }
 }
