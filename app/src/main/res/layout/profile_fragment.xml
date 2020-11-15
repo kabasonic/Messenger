@@ -21,6 +21,7 @@
             app:contentScrim="@color/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:title="Title"
+            android:descendantFocusability="blocksDescendants"
             android:fitsSystemWindows="true"
             app:scrimAnimationDuration="600">
 

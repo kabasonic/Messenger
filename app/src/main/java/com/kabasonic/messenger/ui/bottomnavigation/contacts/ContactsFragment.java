@@ -20,7 +20,13 @@ import androidx.viewpager.widget.ViewPager;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.User;
@@ -58,14 +64,20 @@ public class ContactsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         initTabsViewPager(view);
-        setBudgestToRequest();
+        //setBudgestToRequest();
+        countRequest();
     }
 
-    private void setBudgestToRequest() {
+    private void setBudgestToRequest(int countRequest) {
         mTabRequest = tabLayout.getTabAt(2);
         assert mTabRequest != null;
         mRequsetBadget = mTabRequest.getOrCreateBadge();
-        mRequsetBadget.setNumber(12);
+        if(countRequest != 0){
+            mRequsetBadget.setVisible(true);
+            mRequsetBadget.setNumber(countRequest);
+        }else{
+            mRequsetBadget.setVisible(false);
+        }
     }
 
     private void initTabsViewPager(View view) {
@@ -97,6 +109,26 @@ public class ContactsFragment extends Fragment {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+    }
+
+    private void countRequest(){
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("request").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int countRequest = 0;
+
+                countRequest = (int) snapshot.getChildrenCount();
+                Log.d(TAG,"Count request: " + countRequest);
+                setBudgestToRequest(countRequest);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }

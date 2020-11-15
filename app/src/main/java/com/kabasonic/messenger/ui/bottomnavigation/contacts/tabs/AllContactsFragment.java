@@ -68,9 +68,14 @@ public class AllContactsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = getView().findViewById(R.id.rvAllContacts);
-        getMyContacts();
+        //getMyContacts();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getMyContacts();
+    }
 
     public void buildRecyclerView(ArrayList<User> mRowItems) {
         mRecyclerView.setHasFixedSize(true);
@@ -91,7 +96,7 @@ public class AllContactsFragment extends Fragment {
                /*
                TODO: Navigation chat fragment with User, Write message, Copy link to user, delete with contact
                 */
-               alertWindow();
+               alertWindow(uid);
            }
         });
     }
@@ -102,7 +107,7 @@ public class AllContactsFragment extends Fragment {
         Navigation.findNavController(getView()).navigate(R.id.userProfileFragment, bundle);
     }
 
-    private void alertWindow() {
+    private void alertWindow(String uid) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setItems(R.array.dialog_contact, new DialogInterface.OnClickListener() {
             @Override
@@ -120,6 +125,7 @@ public class AllContactsFragment extends Fragment {
                         break;
                     case 3:
                         Log.i(TAG, "Selected item " + which);
+                        deleteContacts(uid);
                         break;
                     default:
                         Log.i(TAG, "Not selected item ");
@@ -258,6 +264,23 @@ public class AllContactsFragment extends Fragment {
                     }
                     buildRecyclerView(mUsersList);
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void deleteContacts(String uid){
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("contact").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mDatabase.child("contact").child(currentUser.getUid()).child(uid).removeValue();
+            getMyContacts();
             }
 
             @Override

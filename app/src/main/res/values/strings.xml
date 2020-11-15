@@ -814,6 +814,9 @@
         <item>Show My QR code</item>
     </string-array>
 
-
+    <!--  Dialog window for Profile QRcode-->
+    <string-array name="dialog_profile_user_image">
+        <item>Add new image</item>
+    </string-array>
 
 </resources>

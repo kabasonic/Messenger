@@ -69,9 +69,14 @@ public class OnlineContactsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = getView().findViewById(R.id.rvOnlineContacts);
-        getMyContacts();
+        //getMyContacts();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getMyContacts();
+    }
 
     public void buildRecyclerView(ArrayList<User> mRowItems) {
         mRecyclerView.setHasFixedSize(true);
@@ -92,12 +97,12 @@ public class OnlineContactsFragment extends Fragment {
                /*
                TODO: Navigation chat fragment with User, Write message, Copy link to user, delete with contact
                 */
-                alertWindow();
+                alertWindow(uid);
             }
         });
     }
 
-    private void alertWindow(){
+    private void alertWindow(String uid){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setItems(R.array.dialog_contact, new DialogInterface.OnClickListener() {
             @Override
@@ -114,6 +119,7 @@ public class OnlineContactsFragment extends Fragment {
                         Log.i(TAG,"Selected item " + which);
                         break;
                     case 3:
+                        deleteContacts(uid);
                         Log.i(TAG,"Selected item " + which);
                         break;
                     default:
@@ -165,6 +171,23 @@ public class OnlineContactsFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    private void deleteContacts(String uid){
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("contact").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mDatabase.child("contact").child(currentUser.getUid()).child(uid).removeValue();
+                getMyContacts();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void getMyContacts(){
         uidContacts = new ArrayList<>();
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -172,6 +195,7 @@ public class OnlineContactsFragment extends Fragment {
         mDatabase.child("contact").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                uidContacts.clear();
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()){
                     Log.d("Requests UIDS: " ,String.valueOf(dataSnapshot.getKey()));
                     uidContacts.add(String.valueOf(dataSnapshot.getKey()));
@@ -200,15 +224,21 @@ public class OnlineContactsFragment extends Fragment {
                 int i = 0;
                 mUsersList.clear();
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    //Log.d(TAG,"My contacts: index:" + i + " " + uidContacts.get(i));
+                    Log.d(TAG,"My contacts size: " + uidContacts.size());
                     if(uidContacts.size() > i && String.valueOf(dataSnapshot.getKey()).equals(uidContacts.get(i))){
                         User user = dataSnapshot.getValue(User.class);
                         if(user.getStatus().equals("online")){
+                            Log.d(TAG,"Users online: " + dataSnapshot.getKey());
                             mUsersList.add(user);
-                            i++;
+                            Log.d(TAG,"Users add to list: " + dataSnapshot.getKey());
+                            //i++;
                         }
+                        i++;
                     }
-                    buildRecyclerView(mUsersList);
+                    //buildRecyclerView(mUsersList);
                 }
+                buildRecyclerView(mUsersList);
             }
 
             @Override
