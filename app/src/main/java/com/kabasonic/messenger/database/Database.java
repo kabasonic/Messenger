@@ -18,25 +18,25 @@ public class Database {
 
     private DatabaseReference mDatabase;
 
-    public Database(){
+    public Database() {
 
     }
 
-    public void updateUser(Map<String,Object> newValues){
+    public void updateUser(Map<String, Object> newValues) {
         FirebaseUser userId = FirebaseAuth.getInstance().getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child("users").child(userId.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Map<String, Object> userValues = new HashMap<String,Object>();
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    userValues.put(dataSnapshot.getKey(),dataSnapshot.getValue());
+                Map<String, Object> userValues = new HashMap<String, Object>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    userValues.put(dataSnapshot.getKey(), dataSnapshot.getValue());
                 }
 
-                for(Map.Entry<String, Object> entry :newValues.entrySet()){
+                for (Map.Entry<String, Object> entry : newValues.entrySet()) {
                     String key = entry.getKey();
                     Object value = entry.getValue();
-                    userValues.put(key,value);
+                    userValues.put(key, value);
                 }
 
                 mDatabase.child("users").child(userId.getUid()).updateChildren(userValues);
@@ -48,7 +48,6 @@ public class Database {
             }
         });
     }
-
 
 
 }

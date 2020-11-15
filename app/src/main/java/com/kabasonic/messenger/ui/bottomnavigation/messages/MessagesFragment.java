@@ -118,6 +118,7 @@ public class MessagesFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu,menu);
+        menu.findItem(R.id.menu_add_to_contacts).setVisible(false);
         menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
         menu.findItem(R.id.menu_logout).setVisible(false);
         menu.findItem(R.id.menu_create_group).setVisible(false);

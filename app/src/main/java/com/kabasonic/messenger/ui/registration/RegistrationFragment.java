@@ -97,8 +97,9 @@ public class RegistrationFragment extends Fragment {
 
     }
     private void navFragments() {
-        NavDirections action = RegistrationFragmentDirections.actionRegistrationFragmentToMessagesFragment();
-        Navigation.findNavController(this.mView).navigate(action);
+//        NavDirections action = RegistrationFragmentDirections.actionRegistrationFragmentToMessagesFragment();
+//        Navigation.findNavController(this.mView).navigate(action);
+        Navigation.findNavController(getView()).navigate(R.id.messagesFragment);
     }
 
 

@@ -19,8 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,6 +47,8 @@ public class AllContactsFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     MainActivity mActivity;
 
+    private ArrayList<String> uidContacts;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -68,14 +68,9 @@ public class AllContactsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = getView().findViewById(R.id.rvAllContacts);
-
+        getMyContacts();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        getAllUsers();
-    }
 
     public void buildRecyclerView(ArrayList<User> mRowItems) {
         mRecyclerView.setHasFixedSize(true);
@@ -102,14 +97,6 @@ public class AllContactsFragment extends Fragment {
     }
 
     private void navigation(String currentUid){
-//        NavDirections action = AllContactsFragmentDirections.actionAllContactsFragmentToUserProfileFragment();
-//        Navigation.findNavController(getView()).navigate(action);
-//        AllContactsFragmentDirections.ActionAllContactsFragmentToUserProfileFragment action = AllContactsFragmentDirections.actionAllContactsFragmentToUserProfileFragment();
-//        action.setUserUid(currentUid);
-//        NavController navController = Navigation.findNavController(mActivity, R.id.fragment);
-//        navController.navigate(action);
-        //Worked version
-//        Navigation.findNavController(getView()).navigate(R.id.userProfileFragment);
         Bundle bundle = new Bundle();
         bundle.putString("uid",currentUid);
         Navigation.findNavController(getView()).navigate(R.id.userProfileFragment, bundle);
@@ -153,6 +140,7 @@ public class AllContactsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu, menu);
+        menu.findItem(R.id.menu_add_to_contacts).setVisible(false);
         menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
         menu.findItem(R.id.menu_logout).setVisible(false);
         menu.findItem(R.id.menu_create_group).setVisible(false);
@@ -161,7 +149,7 @@ public class AllContactsFragment extends Fragment {
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
             if(!hasFocus) {
-                getAllUsers();
+                getMyContacts();
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -170,7 +158,7 @@ public class AllContactsFragment extends Fragment {
                 if(!TextUtils.isEmpty(query.trim())){
                     searchUsers(query);
                 }else{
-                    getAllUsers();
+                    getMyContacts();
                 }
                 return false;
             }
@@ -225,6 +213,57 @@ public class AllContactsFragment extends Fragment {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
+        });
+    }
+
+    private void getMyContacts(){
+        uidContacts = new ArrayList<>();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("contact").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    Log.d("Requests UIDS: " ,String.valueOf(dataSnapshot.getKey()));
+                    uidContacts.add(String.valueOf(dataSnapshot.getKey()));
+                }
+                if(!uidContacts.isEmpty()){
+                    Log.d(TAG,"LIST EMPTY");
+                    showMyContact(uidContacts);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void showMyContact(ArrayList<String> uidContacts){
+        mUsersList = new ArrayList<>();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int i = 0;
+                mUsersList.clear();
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    if(uidContacts.size() > i && String.valueOf(dataSnapshot.getKey()).equals(uidContacts.get(i))){
+                        User user = dataSnapshot.getValue(User.class);
+                        mUsersList.add(user);
+                        i++;
+                    }
+                    buildRecyclerView(mUsersList);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
     }
 

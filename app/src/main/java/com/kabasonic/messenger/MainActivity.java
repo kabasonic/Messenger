@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.profileFragment:
                     break;
+                case R.id.userProfileFragment:
+                    break;
                 default:
                     //Sets animation, when bottom navigation need hide
                     Animation hideBottomNav = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out_bottom);

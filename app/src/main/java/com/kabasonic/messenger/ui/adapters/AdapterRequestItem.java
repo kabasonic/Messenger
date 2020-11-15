@@ -11,20 +11,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.models.User;
 import com.kabasonic.messenger.ui.adapters.items.RowItem;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class AdapterRequestItem extends RecyclerView.Adapter<AdapterRequestItem.SingleItemViewHolder> {
 
-    private ArrayList<RowItem> mRowItems;
+    private ArrayList<User> mRowItems;
     private RequestItemRow mListener;
 
     public interface RequestItemRow {
 
-        void onItemClick(int position);
-        void onItemAccept(int position);
-        void onItemDecline(int position);
+        void onItemClick(String uid);
+        void onItemAccept(String uid, int position);
+        void onItemDecline(String uid, int position);
 
     }
 
@@ -42,11 +44,19 @@ public class AdapterRequestItem extends RecyclerView.Adapter<AdapterRequestItem.
 
     @Override
     public void onBindViewHolder(@NonNull SingleItemViewHolder holder, int position) {
-        RowItem currentItem = mRowItems.get(position);
+        //Get data
+        String userImage = mRowItems.get(position).getImageUser();
+        String userName = mRowItems.get(position).getFirstName() + " " + mRowItems.get(position).getLastName();
+        String userBio = mRowItems.get(position).getBio();
 
-        holder.mUserImage.setImageResource(currentItem.getmIcon());
-        holder.mUsername.setText(currentItem.getmTitle());
-        holder.mUserBio.setText(currentItem.getmDesc());
+        //Set data
+        holder.mUsername.setText(userName);
+        holder.mUserBio.setText(userBio);
+        try{
+            Picasso.get().load(userImage).placeholder(R.drawable.default_user_image).into(holder.mUserImage);
+        } catch (Exception e){
+
+        }
     }
 
     @Override
@@ -54,7 +64,7 @@ public class AdapterRequestItem extends RecyclerView.Adapter<AdapterRequestItem.
         return mRowItems.size();
     }
 
-    public AdapterRequestItem(ArrayList<RowItem> mRowItems){
+    public AdapterRequestItem(ArrayList<User> mRowItems){
         this.mRowItems = mRowItems;
     }
 
@@ -77,8 +87,8 @@ public class AdapterRequestItem extends RecyclerView.Adapter<AdapterRequestItem.
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    if(position != RecyclerView.NO_POSITION){
-                        listener.onItemClick(position);
+                    if(position != RecyclerView.NO_POSITION && listener != null){
+                        listener.onItemClick(mRowItems.get(position).getUid());
                     }
                 }
             });
@@ -87,7 +97,7 @@ public class AdapterRequestItem extends RecyclerView.Adapter<AdapterRequestItem.
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        listener.onItemAccept(position);
+                        listener.onItemAccept(mRowItems.get(position).getUid(), position);
                     }
                 }
             });
@@ -96,7 +106,7 @@ public class AdapterRequestItem extends RecyclerView.Adapter<AdapterRequestItem.
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        listener.onItemDecline(position);
+                        listener.onItemDecline(mRowItems.get(position).getUid(), position);
                     }
                 }
             });

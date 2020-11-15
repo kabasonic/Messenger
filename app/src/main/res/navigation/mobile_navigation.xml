@@ -161,5 +161,18 @@
         android:id="@+id/onlineContactsFragment"
         android:name="com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.OnlineContactsFragment"
         android:label="OnlineContactsFragment" />
+    <fragment
+        android:id="@+id/requestContactsFragment"
+        android:name="com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.RequestContactsFragment"
+        android:label="RequestContactsFragment"
+        tools:layout="@layout/fragment_request_contacts">
+        <action
+            android:id="@+id/action_requestContactsFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
 
 </navigation>
