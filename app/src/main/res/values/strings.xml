@@ -819,4 +819,10 @@
         <item>Add new image</item>
     </string-array>
 
+    <!--  Dialog window for Message-->
+    <string-array name="dialog_row_message">
+        <item>Edit message</item>
+        <item>Delete message</item>
+    </string-array>
+
 </resources>

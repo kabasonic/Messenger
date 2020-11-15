@@ -1,5 +1,6 @@
 package com.kabasonic.messenger.ui.userprofile;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ import com.kabasonic.messenger.models.Contacts;
 import com.kabasonic.messenger.models.ContactsRequest;
 import com.kabasonic.messenger.ui.adapters.AdapterProfileDoubleItem;
 import com.kabasonic.messenger.ui.adapters.items.RowItem;
+import com.kabasonic.messenger.ui.userchat.UserChat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,6 +60,16 @@ public class UserProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getArgumentsFragment();
         initView(view);
+
+        mSendMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), UserChat.class);
+                intent.putExtra("uid",userCurrentProfile);
+                getContext().startActivity(intent);
+            }
+        });
+
     }
 
     private void initView(View view) {

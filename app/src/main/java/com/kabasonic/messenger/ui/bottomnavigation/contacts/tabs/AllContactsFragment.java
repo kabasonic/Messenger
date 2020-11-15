@@ -3,6 +3,7 @@ package com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -34,6 +35,7 @@ import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.User;
 import com.kabasonic.messenger.ui.adapters.AdapterSingleItem;
+import com.kabasonic.messenger.ui.userchat.UserChat;
 
 import java.util.ArrayList;
 
@@ -116,6 +118,9 @@ public class AllContactsFragment extends Fragment {
                 switch (which) {
                     case 0:
                         Log.i(TAG, "Selected item " + which);
+                        Intent intent = new Intent(getContext(), UserChat.class);
+                        intent.putExtra("uid",uid);
+                        getContext().startActivity(intent);
                         break;
                     case 1:
                         Log.i(TAG, "Selected item " + which);

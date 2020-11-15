@@ -26,6 +26,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.onboarding.ScreenSlidePagerActivity" />
+        <activity android:name=".ui.userchat.UserChat" />
+
+
 
     </application>
 
