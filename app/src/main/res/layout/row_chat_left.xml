@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layout_marginRight="64dp"
     android:id="@+id/messageRow"
     android:padding="10dp">
 

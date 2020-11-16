@@ -3,33 +3,36 @@ package com.kabasonic.messenger.ui.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.Chat;
 import com.kabasonic.messenger.ui.userchat.UserChat;
-import com.squareup.picasso.Picasso;
 
-import java.sql.Date;
-import java.text.DateFormat;
-import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
+
+    public static final String TAG = "AdapterChat";
 
     public static final int MSG_TYPE_LEFT = 0;
     public static final int MSG_TYPE_RIGHT = 1;
@@ -38,7 +41,7 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
     List<Chat> chatList;
 
     FirebaseUser firebaseUser;
-
+    ArrayList<String> mSelectedItems;
     public AdapterChat(Context context, List<Chat> chatList) {
         this.context = context;
         this.chatList = chatList;
@@ -48,11 +51,11 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
 
-        if(i == MSG_TYPE_LEFT){
-            View view = LayoutInflater.from(context).inflate(R.layout.row_chat_left, parent,false);
+        if (i == MSG_TYPE_LEFT) {
+            View view = LayoutInflater.from(context).inflate(R.layout.row_chat_left, parent, false);
             return new ViewHolder(view);
-        }else{
-            View view = LayoutInflater.from(context).inflate(R.layout.row_chat_right, parent,false);
+        } else {
+            View view = LayoutInflater.from(context).inflate(R.layout.row_chat_right, parent, false);
             return new ViewHolder(view);
         }
 
@@ -69,21 +72,92 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
         holder.message.setText(message);
         holder.time.setText(dataTime);
 
-        
 
-        if(position==chatList.size()-1){
-            if(chatList.get(position).isSeen()){
+        if (position == chatList.size() - 1) {
+            if (chatList.get(position).isSeen()) {
                 holder.isSeen.setText("Seen");
-            }else{
+            } else {
                 holder.isSeen.setText("Delivered");
             }
-        } else{
+        } else {
             holder.isSeen.setVisibility(View.GONE);
         }
 
 
+        holder.messageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "Clicked message row");
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setItems(R.array.dialog_row_message, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                editMessage(position);
+                                break;
+                            case 1:
+                                 mSelectedItems = new ArrayList();
+                                builder.setTitle("Delete message");
+                                builder.setMessage("Are you sure to delete this message?");
+
+                                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        deleteMessage(position);
+                                    }
+                                });
+                                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                builder.create().show();
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                });
+                builder.create().show();
+            }
+        });
 
 
+    }
+
+    private void editMessage(int position) {
+
+    }
+
+    private void deleteMessage(int position) {
+        FirebaseUser myUid = FirebaseAuth.getInstance().getCurrentUser();
+
+        String msgTimeStamp = chatList.get(position).getTimestamp();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("chat");
+        Query query = mDatabase.orderByChild("timestamp").equalTo(msgTimeStamp);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    if(dataSnapshot.child("sender").getValue().equals(myUid.getUid())){
+                        dataSnapshot.getRef().removeValue();
+
+//                        HashMap<String, Object> hashMap = new HashMap<>();
+//                        hashMap.put("message","This message was deleted ... ");
+//                        dataSnapshot.getRef().updateChildren(hashMap);
+                    }else{
+                        Toast.makeText(context,"You can delete only your messages ..." , Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -94,15 +168,15 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(chatList.get(position).getSender().equals(firebaseUser.getUid())){
+        if (chatList.get(position).getSender().equals(firebaseUser.getUid())) {
             return MSG_TYPE_RIGHT;
-        }else{
+        } else {
             return MSG_TYPE_LEFT;
         }
 
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView message, time, isSeen;
         LinearLayout messageLayout;

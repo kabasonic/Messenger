@@ -174,6 +174,7 @@ public class UserChat extends AppCompatActivity {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Chat chat = dataSnapshot.getValue(Chat.class);
                     Log.d(TAG,"User profile UID: " + userCurrentProfile);
+                    Log.d(TAG,"User profile UID: " + userCurrentProfile);
                     Log.d(TAG,"My profile UID: " + currentUser);
                     Log.d(TAG,"Receiver UID: " + chat.getReceiver());
                     Log.d(TAG,"Receiver UID: " + chat.getSender());
@@ -183,7 +184,7 @@ public class UserChat extends AppCompatActivity {
                         chatList.add(chat);
                     }
                     //adapter
-                    adapterChat = new AdapterChat(getApplicationContext(), chatList);
+                    adapterChat = new AdapterChat(UserChat.this, chatList);
                     adapterChat.notifyDataSetChanged();
                     recyclerView.setAdapter(adapterChat);
                 }
