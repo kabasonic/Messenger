@@ -26,6 +26,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.kabasonic.messenger.notifications.Token;
 import com.kabasonic.messenger.ui.onboarding.ScreenSlidePagerActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -89,10 +91,28 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         });
+        checkedUserStatus();
+        updateToken(FirebaseInstanceId.getInstance().getToken());
     }
 
+    @Override
+    protected void onResume() {
+        checkedUserStatus();
+        super.onResume();
+    }
 
-//    @Override
+    private void checkedUserStatus() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null){
+            SharedPreferences sharedPreferences = getSharedPreferences("SP_USER",MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("Current_USERID",user.getUid());
+            editor.apply();
+        }else{
+
+        }
+    }
+    //    @Override
 //    public void onBackPressed() {
 ////        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
 ////        if (currentFragment instanceof OTPNumberFragment) {
@@ -163,6 +183,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.i(TAG, "Not first run application");
         }
+    }
+
+    private void updateToken(String token){
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Token mToken = new Token(token);
+
+        mDatabase.child("tokens").child(user.getUid()).setValue(mToken);
     }
 
 }

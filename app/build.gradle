@@ -11,6 +11,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+
+
     /*
     * uses-sdk:minSdkVersion 14 cannot be smaller than version 16 declared in library [com.google.firebase:firebase-auth:20.0.0]
     */
@@ -90,6 +92,7 @@ dependencies {
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
+    implementation 'com.google.firebase:firebase-messaging'
 
     implementation 'com.google.firebase:firebase-database'
     implementation "androidx.recyclerview:recyclerview:"
@@ -114,4 +117,8 @@ dependencies {
     
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 }
