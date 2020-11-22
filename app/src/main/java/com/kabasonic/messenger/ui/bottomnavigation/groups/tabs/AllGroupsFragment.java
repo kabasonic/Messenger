@@ -2,7 +2,11 @@ package com.kabasonic.messenger.ui.bottomnavigation.groups.tabs;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -50,6 +54,31 @@ public class AllGroupsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         createExampleList();
         buildRecyclerView();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+
+        inflater.inflate(R.menu.main_menu,menu);
+        menu.findItem(R.id.menu_add_to_contacts).setVisible(false);
+        menu.findItem(R.id.menu_create_group).setVisible(false);
+        menu.findItem(R.id.menu_logout).setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int idMenuItem = item.getItemId();
+        if (idMenuItem == R.id.menu_search) {
+            Log.i(TAG, "Click search button");
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void buildRecyclerView() {

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -53,11 +55,29 @@ public class RequestGroupsFragment extends Fragment {
         //buildRecyclerView();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+
+        inflater.inflate(R.menu.main_menu,menu);
+        menu.findItem(R.id.menu_add_to_contacts).setVisible(false);
+        menu.findItem(R.id.menu_create_group).setVisible(false);
+        menu.findItem(R.id.menu_search).setVisible(false);
+        menu.findItem(R.id.menu_logout).setVisible(false);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
     private void buildRecyclerView() {
         mRecyclerView = getView().findViewById(R.id.rvRequestGroups);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager( mActivity);
-        mAdapterRequestItem = new AdapterRequestItem(mRowsItems);
+        mAdapterRequestItem = new AdapterRequestItem(mRowsItems,getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mAdapterRequestItem);
         mAdapterRequestItem.setOnItemClickListener(new AdapterRequestItem.RequestItemRow() {
@@ -82,20 +102,6 @@ public class RequestGroupsFragment extends Fragment {
         });
     }
 
-
-
-
-
-
-//
-//    private void createExampleList() {
-//        mRowsItems = new ArrayList<>();
-//        mRowsItems.add(new RowItem(R.drawable.image_profile_test,"Elita Politecnika Lubelska","Студенты Политеха. Все здесь, Юра здесь, Дядя Паша кладе бруківку, беху купив, жінка є, ЧОБІТКИ"));
-//        mRowsItems.add(new RowItem(R.drawable.image_profile_test,"Elita Politecnika Lubelska","Студенты Политеха. Все здесь, Юра здесь, Дядя Паша кладе бруківку, беху купив, жінка є, ЧОБІТКИ"));
-//        mRowsItems.add(new RowItem(R.drawable.image_profile_test,"Elita Politecnika Lubelska","Студенты Политеха. Все здесь, Юра здесь, Дядя Паша кладе бруківку, беху купив, жінка є, ЧОБІТКИ"));
-//        mRowsItems.add(new RowItem(R.drawable.image_profile_test,"Elita Politecnika Lubelska","Студенты Политеха. Все здесь, Юра здесь, Дядя Паша кладе бруківку, беху купив, жінка є, ЧОБІТКИ"));
-//        mRowsItems.add(new RowItem(R.drawable.image_profile_test,"Elita Politecnika Lubelska","Студенты Политеха. Все здесь, Юра здесь, Дядя Паша кладе бруківку, беху купив, жінка є, ЧОБІТКИ"));
-//    }
 
 
 }

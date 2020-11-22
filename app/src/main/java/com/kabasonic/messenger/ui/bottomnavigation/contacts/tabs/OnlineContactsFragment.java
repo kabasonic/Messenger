@@ -3,6 +3,7 @@ package com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,7 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,7 +35,7 @@ import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.User;
 import com.kabasonic.messenger.ui.adapters.AdapterSingleItem;
-import com.kabasonic.messenger.ui.adapters.items.RowItem;
+import com.kabasonic.messenger.ui.userchat.UserChat;
 
 import java.util.ArrayList;
 
@@ -81,7 +82,7 @@ public class OnlineContactsFragment extends Fragment {
     public void buildRecyclerView(ArrayList<User> mRowItems) {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mActivity);
-        mAdapterSingleItem = new AdapterSingleItem(mRowItems);
+        mAdapterSingleItem = new AdapterSingleItem(mRowItems,getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapterSingleItem.notifyDataSetChanged();
         mRecyclerView.setAdapter(mAdapterSingleItem);
@@ -90,7 +91,9 @@ public class OnlineContactsFragment extends Fragment {
             @Override
             public void onItemClick(String uid) {
                 Toast.makeText(getContext(), "Clicked button: " + uid, Toast.LENGTH_SHORT).show();
-
+                Bundle bundle = new Bundle();
+                bundle.putString("uid",uid);
+                Navigation.findNavController(getView()).navigate(R.id.userProfileFragment, bundle);
             }
             @Override
             public void onMoreButtonClick(String uid) {
@@ -111,14 +114,14 @@ public class OnlineContactsFragment extends Fragment {
                 switch (which){
                     case 0:
                         Log.i(TAG,"Selected item " + which);
+                        Intent intent = new Intent(getContext(), UserChat.class);
+                        intent.putExtra("uid",uid);
+                        getContext().startActivity(intent);
                         break;
                     case 1:
                         Log.i(TAG,"Selected item " + which);
                         break;
                     case 2:
-                        Log.i(TAG,"Selected item " + which);
-                        break;
-                    case 3:
                         deleteContacts(uid);
                         Log.i(TAG,"Selected item " + which);
                         break;
@@ -142,7 +145,6 @@ public class OnlineContactsFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu, menu);
         menu.findItem(R.id.menu_add_to_contacts).setVisible(false);
-        menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
         menu.findItem(R.id.menu_logout).setVisible(false);
         menu.findItem(R.id.menu_create_group).setVisible(false);
 

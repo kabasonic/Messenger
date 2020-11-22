@@ -9,7 +9,7 @@ public class Data {
 
     private Integer image;
 
-    public Data(){
+    public Data(long l){
 
     }
 

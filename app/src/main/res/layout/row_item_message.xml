@@ -22,7 +22,7 @@
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_gravity="center"
-                android:src="@drawable/image_profile_test"/>
+                android:src="@drawable/default_user_image"/>
             <ImageView
                 android:id="@+id/statusUser"
                 android:layout_width="12dp"
@@ -60,7 +60,8 @@
                     android:layout_height="16dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_round_volume_off_24"
-                    android:layout_marginLeft="8dp"/>
+                    android:layout_marginLeft="8dp"
+                    android:visibility="invisible"/>
 
             </LinearLayout>
 
@@ -119,6 +120,7 @@
                     android:layout_gravity="right"
                     android:textColor="@color/colorWhite"
                     android:gravity="center"
+                    android:visibility="invisible"
                     android:background="@drawable/count_messages"/>
 
         </LinearLayout>

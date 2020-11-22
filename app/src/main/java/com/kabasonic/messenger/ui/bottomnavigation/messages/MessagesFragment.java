@@ -1,18 +1,11 @@
 package com.kabasonic.messenger.ui.bottomnavigation.messages;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
-
 import android.content.Context;
-import android.inputmethodservice.Keyboard;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,25 +16,33 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.models.Chat;
+import com.kabasonic.messenger.models.ChatList;
+import com.kabasonic.messenger.models.User;
+import com.kabasonic.messenger.notifications.Data;
 import com.kabasonic.messenger.ui.adapters.AdapterMessageItem;
-import com.kabasonic.messenger.ui.adapters.AdapterSingleItem;
-import com.kabasonic.messenger.ui.adapters.items.RowItem;
 
 import java.util.ArrayList;
 
 public class MessagesFragment extends Fragment {
     public static final String TAG = "MessagesFragment";
+
     private RecyclerView mRecyclerView;
-    public ArrayList<RowItem> mRowItem;
+    public ArrayList<User> userArrayList;
+    private ArrayList<ChatList> chatListArrayList;
+    private DatabaseReference mDatabase;
+    private FirebaseUser firebaseUser;
+    private FirebaseAuth firebaseAuth;
     private AdapterMessageItem mAdapterMessageItem;
     private RecyclerView.LayoutManager mLayoutManager;
     MainActivity mActivity;
@@ -68,45 +69,132 @@ public class MessagesFragment extends Fragment {
 
         //((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // User is signed in
-            Toast.makeText(getActivity(),"User is signed in",Toast.LENGTH_SHORT).show();
-            Log.d(TAG,"User Uid sidn in" + user.getUid());
-        } else {
-            // No user is signed in
-            Toast.makeText(getActivity(),"No user is signed in",Toast.LENGTH_SHORT).show();
-            NavDirections action = MessagesFragmentDirections.actionMessagesFragmentToOTPNumberFragment();
-            Navigation.findNavController(view).navigate(action);
-        }
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        if (user != null) {
+//            // User is signed in
+//            Toast.makeText(getActivity(),"User is signed in",Toast.LENGTH_SHORT).show();
+//            Log.d(TAG,"User Uid sidn in" + user.getUid());
+//        } else {
+//            // No user is signed in
+//            Toast.makeText(getActivity(),"No user is signed in",Toast.LENGTH_SHORT).show();
+//            NavDirections action = MessagesFragmentDirections.actionMessagesFragmentToOTPNumberFragment();
+//            Navigation.findNavController(view).navigate(action);
+//        }
 
-        createExampleList();
-        buildRecyclerView();
-
-
-    }
-
-    private void createExampleList() {
-        mRowItem = new ArrayList<>();
-        mRowItem.add(new RowItem(R.drawable.image_profile_test,false,false,"Pavlo","asdas","send","20:20",2));
-        mRowItem.add(new RowItem(R.drawable.image_profile_test,true,false,"Pavlo","asdas","accepted","20:20",2));
-        mRowItem.add(new RowItem(R.drawable.image_profile_test,false,true,"Pavlo","asdas","sending","20:20",0));
-    }
-
-    private void buildRecyclerView() {
-        mRecyclerView = getView().findViewById(R.id.rvMessages);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(mActivity);
-        mAdapterMessageItem = new AdapterMessageItem(mRowItem);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapterMessageItem);
-        mAdapterMessageItem.setOnItemClickListener(new AdapterMessageItem.ItemRow() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        mRecyclerView = view.findViewById(R.id.rvMessages);
+        chatListArrayList = new ArrayList<>();
+        mDatabase = FirebaseDatabase.getInstance().getReference("chatlist").child(firebaseUser.getUid());
+        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onItemClick(int position) {
-                Toast.makeText(getContext(), "Clicked row", Toast.LENGTH_SHORT).show();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                chatListArrayList.clear();
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    ChatList chatList = dataSnapshot.getValue(ChatList.class);
+                    chatListArrayList.add(chatList);
+                }
+                loadChats();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
+
+    private void loadChats() {
+        userArrayList = new ArrayList<>();
+        mDatabase = FirebaseDatabase.getInstance().getReference("users");
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                userArrayList.clear();
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    User user = dataSnapshot.getValue(User.class);
+                    for(ChatList chatList:  chatListArrayList){
+                        if(user.getUid() != null && user.getUid().equals(chatList.getUid())){
+                            userArrayList.add(user);
+                            break;
+                        }
+                    }
+                    mRecyclerView.setHasFixedSize(true);
+                    mLayoutManager = new LinearLayoutManager(mActivity);
+                    mAdapterMessageItem = new AdapterMessageItem(userArrayList,getContext());
+                    mRecyclerView.setLayoutManager(mLayoutManager);
+                    mRecyclerView.setAdapter(mAdapterMessageItem);
+                    mAdapterMessageItem.notifyDataSetChanged();
+                    for(int i=0;i<userArrayList.size();i++){
+                        lastMessage(userArrayList.get(i).getUid());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void lastMessage(String uid) {
+        Log.d(TAG,"lastMessage UID: " + uid);
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("chat");
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String theLastMessage = "default";
+                String theTime = "default";
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    Chat chat = dataSnapshot.getValue(Chat.class);
+
+                    if(chat==null){
+                        Log.d(TAG,"lastMessage chat null");
+                        continue;
+                    }
+                    String sender = chat.getSender();
+                    String receiver = chat.getReceiver();
+                    if(sender == null || receiver == null){
+                        Log.d(TAG,"lastMessage sender, receiver null");
+                        continue;
+                    }
+                    if (chat.getReceiver().equals(firebaseUser.getUid()) &&
+                        chat.getSender().equals(uid) ||
+                        chat.getReceiver().equals(uid) &&
+                        chat.getSender().equals(firebaseUser.getUid())){
+                        theLastMessage = chat.getMessage();
+                        theTime = chat.getTimestamp();
+                    }
+
+                }
+                mAdapterMessageItem.setTimeStampMap(uid,theTime);
+                mAdapterMessageItem.setLastMessageMap(uid,theLastMessage);
+                mAdapterMessageItem.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+//    private void buildRecyclerView() {
+//        mRecyclerView = getView().findViewById(R.id.rvMessages);
+//        mRecyclerView.setHasFixedSize(true);
+//        mLayoutManager = new LinearLayoutManager(mActivity);
+//        mAdapterMessageItem = new AdapterMessageItem(mRowItem);
+//        mRecyclerView.setLayoutManager(mLayoutManager);
+//        mRecyclerView.setAdapter(mAdapterMessageItem);
+//        mAdapterMessageItem.setOnItemClickListener(new AdapterMessageItem.ItemRow() {
+//            @Override
+//            public void onItemClick(int position) {
+//                Toast.makeText(getContext(), "Clicked row", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 
     //Create app top bar menu
     @Override
@@ -119,7 +207,7 @@ public class MessagesFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu,menu);
         menu.findItem(R.id.menu_add_to_contacts).setVisible(false);
-        menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
+
         menu.findItem(R.id.menu_logout).setVisible(false);
         menu.findItem(R.id.menu_create_group).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);

@@ -1,6 +1,7 @@
 package com.kabasonic.messenger.notifications;
 
 import android.annotation.TargetApi;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,17 +10,16 @@ import android.content.ContextWrapper;
 import android.net.Uri;
 import android.os.Build;
 
-import androidx.core.app.NotificationBuilderWithBuilderAccessor;
 import androidx.core.app.NotificationCompat;
 
-public class Notification extends ContextWrapper {
+public class OreoAndAboveNotification extends ContextWrapper {
 
     public static final String ID = "id";
     public static final String NAME = "FirebaseApp";
 
     private NotificationManager notificationManager;
 
-    public Notification(Context base){
+    public OreoAndAboveNotification(Context base){
         super(base);
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
             createChannel();
@@ -31,7 +31,7 @@ public class Notification extends ContextWrapper {
         NotificationChannel notificationChannel = new NotificationChannel(ID,NAME,NotificationManager.IMPORTANCE_DEFAULT);
         notificationChannel.enableLights(true);
         notificationChannel.enableVibration(true);
-        notificationChannel.setLockscreenVisibility(Notification.MODE_PRIVATE);
+        notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
         getNotificationManager().createNotificationChannel(notificationChannel);
     }
 

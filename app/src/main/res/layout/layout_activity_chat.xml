@@ -13,14 +13,23 @@
         android:background="@color/colorPrimary"
         android:theme="@style/Theme.MaterialComponents.Light.DarkActionBar">
 
+        <ImageView
+            android:id="@+id/chat_arrowBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_round_arrow_back_24"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp" />
+
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/userImage"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:scaleType="centerCrop"
+
+            android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:src="@drawable/default_user_image"
-            android:layout_marginEnd="16dp" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_user_image" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -32,16 +41,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="User"
-                android:textStyle="bold"
+                android:textColor="@color/colorBlack"
                 android:textSize="18sp"
-                android:textColor="@color/colorBlack"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/userStatusChat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:text="Online"/>
+                android:text="Online"
+                android:textSize="14sp" />
 
         </LinearLayout>
 

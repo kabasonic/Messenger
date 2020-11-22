@@ -790,7 +790,6 @@
     <!--  Dialog window for Contacts-->
     <string-array name="dialog_contact">
         <item>Chat</item>
-        <item>Write message</item>
         <item>Share link to profile</item>
         <item>Delete contacts</item>
     </string-array>
@@ -808,6 +807,29 @@
         <item>Share contact</item>
     </string-array>
 
+    <!--  Dialog window for Profile Bio-->
+    <string-array name="dialog_bio">
+        <item>Edit Bio</item>
+        <item>Show Bio</item>
+    </string-array>
+
+    <!--  Dialog window for Profile NickName-->
+    <string-array name="dialog_nickname_contact">
+        <item>Copy link</item>
+        <item>Share</item>
+    </string-array>
+
+    <!--  Dialog window for Profile PhoneNumber-->
+    <string-array name="dialog_phone_number_contact">
+        <item>Copy</item>
+        <item>Share contact</item>
+    </string-array>
+
+    <!--  Dialog window for Profile Bio-->
+    <string-array name="dialog_bio_contact">
+        <item>Show Bio</item>
+    </string-array>
+
     <!--  Dialog window for Profile QRcode-->
     <string-array name="dialog_profile_qr_code">
         <item>Scan QR code</item>
@@ -817,6 +839,7 @@
     <!--  Dialog window for Profile QRcode-->
     <string-array name="dialog_profile_user_image">
         <item>Add new image</item>
+        <item>Delete image</item>
     </string-array>
 
     <!--  Dialog window for Message-->

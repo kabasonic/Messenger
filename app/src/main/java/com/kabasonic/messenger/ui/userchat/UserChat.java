@@ -3,6 +3,7 @@ package com.kabasonic.messenger.ui.userchat;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -20,9 +21,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +36,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.database.Database;
 import com.kabasonic.messenger.models.Chat;
@@ -42,6 +49,7 @@ import com.kabasonic.messenger.notifications.Response;
 import com.kabasonic.messenger.notifications.Sender;
 import com.kabasonic.messenger.notifications.Token;
 import com.kabasonic.messenger.ui.adapters.AdapterChat;
+import com.kabasonic.messenger.ui.bottomnavigation.profile.ProfileFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,8 +71,10 @@ public class UserChat extends AppCompatActivity {
     private TextView nameTv, statusTv;
     private EditText messageEt;
     private Button sendBt;
-
+    private ImageView arrowBack;
     private String userCurrentProfile = null;
+    private View view;
+
 
     APIService apiService;
     boolean notify = false;
@@ -80,6 +90,7 @@ public class UserChat extends AppCompatActivity {
         setContentView(R.layout.layout_activity_chat);
         toolbar = findViewById(R.id.chat_toolbar);
         setSupportActionBar(toolbar);
+
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         recyclerView = findViewById(R.id.rvChat);
         imageView = findViewById(R.id.userImage);
@@ -87,7 +98,7 @@ public class UserChat extends AppCompatActivity {
         statusTv = findViewById(R.id.userStatusChat);
         messageEt = findViewById(R.id.messageEdit);
         sendBt = (Button) findViewById(R.id.sendButton);
-
+        arrowBack = (ImageView) findViewById(R.id.chat_arrowBack);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
@@ -109,6 +120,13 @@ public class UserChat extends AppCompatActivity {
         currentUser = userLogin.getUid();
 
 
+        arrowBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         sendBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,7 +136,43 @@ public class UserChat extends AppCompatActivity {
                 if (TextUtils.isEmpty(messageCheck)) {
                     Toast.makeText(context, "Cannot sent the empty message", Toast.LENGTH_SHORT).show();
                 } else {
+
+                    //Chat list
+                    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                    Log.d(TAG,"ChatList");
+                    DatabaseReference chatlist1 = FirebaseDatabase.getInstance().getReference();
+                    chatlist1.child("chatlist").child(currentUser.getUid()).child(userCurrentProfile).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(!snapshot.exists()){
+                                Log.d(TAG,"chatlist1");
+                                chatlist1.child("chatlist").child(currentUser.getUid()).child(userCurrentProfile).child("uid").setValue(userCurrentProfile);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                    DatabaseReference chatlist2 = FirebaseDatabase.getInstance().getReference();
+                    chatlist2.child("chatlist").child(userCurrentProfile).child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(!snapshot.exists()){
+                                Log.d(TAG,"chatlist2");
+                                chatlist2.child("chatlist").child(userCurrentProfile).child(currentUser.getUid()).child("uid").setValue(currentUser.getUid());
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
                     sendMessage(message);
+
                 }
                 messageEt.setText("");
 
@@ -133,6 +187,8 @@ public class UserChat extends AppCompatActivity {
         //checkTypingStatus("noOne");
 
     }
+
+
 
     @Override
     protected void onResume() {
@@ -152,16 +208,9 @@ public class UserChat extends AppCompatActivity {
         HashMap<String,Object> hashMap = new HashMap<>();
 
         hashMap.put("status", status);
-        mDatabase.child("users").child(currentUser).updateChildren(hashMap);
+        mDatabase.child("users").child(userCurrentProfile).updateChildren(hashMap);
     }
 
-//    private void checkTypingStatus(String typing){
-//        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-//        HashMap<String,Object> hashMap = new HashMap<>();
-//
-//        hashMap.put("typingTo", typing);
-//        mDatabase.child("users").child(currentUser).updateChildren(hashMap);
-//    }
 
     private void seenMessage() {
          userRefToSeen = FirebaseDatabase.getInstance().getReference();
@@ -184,6 +233,7 @@ public class UserChat extends AppCompatActivity {
 
             }
         });
+
     }
 
     private void readMessage() {
@@ -196,11 +246,11 @@ public class UserChat extends AppCompatActivity {
                 chatList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Chat chat = dataSnapshot.getValue(Chat.class);
-                    Log.d(TAG,"User profile UID: " + userCurrentProfile);
-                    Log.d(TAG,"User profile UID: " + userCurrentProfile);
-                    Log.d(TAG,"My profile UID: " + currentUser);
-                    Log.d(TAG,"Receiver UID: " + chat.getReceiver());
-                    Log.d(TAG,"Receiver UID: " + chat.getSender());
+//                    Log.d(TAG,"User profile UID: " + userCurrentProfile);
+//                    Log.d(TAG,"User profile UID: " + userCurrentProfile);
+//                    Log.d(TAG,"My profile UID: " + currentUser);
+//                    Log.d(TAG,"Receiver UID: " + chat.getReceiver());
+//                    Log.d(TAG,"Receiver UID: " + chat.getSender());
 
                     if (chat.getReceiver().equals(userCurrentProfile) && chat.getSender().equals(currentUser) ||
                             chat.getReceiver().equals(currentUser) && chat.getSender().equals(userCurrentProfile)) {
@@ -236,11 +286,12 @@ public class UserChat extends AppCompatActivity {
 
 
         String msg = message;
-
+        Log.d(TAG,"sendMessage: currentUser" + String.valueOf(currentUser.getUid()));
         mDatabase.child("users").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
+                Log.d(TAG,"sendMessage: notify" + String.valueOf(notify));
                 if(notify){
                     sendNotification(userCurrentProfile,user.getFirstName(),message);
                 }
@@ -252,10 +303,42 @@ public class UserChat extends AppCompatActivity {
 
             }
         });
+
+//        //Chat list
+//        Log.d(TAG,"ChatList");
+//        DatabaseReference chatlist1 = FirebaseDatabase.getInstance().getReference();
+//        chatlist1.child("chatlist").child(currentUser.getUid()).child(userCurrentProfile).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(!snapshot.exists()){
+//                    chatlist1.child("chatlist").child("uid").child(userCurrentProfile);
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//        DatabaseReference chatlist2 = FirebaseDatabase.getInstance().getReference();
+//        chatlist2.child("chatlist").child(userCurrentProfile).child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(!snapshot.exists()){
+//                    chatlist2.child("chatlist").child("uid").child(currentUser.getUid());
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
     }
 
     private void sendNotification(String userCurrentProfile, String firstName, String message) {
-        DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference allTokens = FirebaseDatabase.getInstance().getReference("tokens");
+        Log.d(TAG,"sendNotification: userCurrentProfile "  + userCurrentProfile);
         Query query = allTokens.orderByKey().equalTo(userCurrentProfile);
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -264,8 +347,9 @@ public class UserChat extends AppCompatActivity {
                     Token token = dataSnapshot.getValue(Token.class);
                     Data data = new Data(currentUser,firstName+":"+message,"New message",userCurrentProfile,R.drawable.default_user_image);
 
+                    Log.d(TAG,"sendNotification: token "  + token.getToken());
                     Sender sender = new Sender(data, token.getToken());
-                    apiService.sendNotification(sender).equals(new Callback<Response>() {
+                    apiService.sendNotification(sender).enqueue(new Callback<Response>() {
                         @Override
                         public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
                             Toast.makeText(UserChat.this,""+response.message(),Toast.LENGTH_SHORT).show();
@@ -323,6 +407,24 @@ public class UserChat extends AppCompatActivity {
                     break;
                 case "imageUser":
                     Log.d(TAG, "imageUser: " + String.valueOf(item.getValue()));
+                    String Uri = String.valueOf(item.getValue());
+                    //Glide.with(ProfileFragment.this).load(Uri).fitCenter().into(imageUser);
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReference();
+                    if(!Uri.isEmpty()){
+                        storageRef.child("uploadsUserIcon/").child(String.valueOf(item.getValue())).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<android.net.Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                // Got the download URL for 'users/me/profile.png'
+                                Glide.with(UserChat.this).load(uri).centerInside().into(imageView);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Handle any errors
+                            }
+                        });
+                    }
                     break;
                 case "status":
                     Log.d(TAG, "status: " + String.valueOf(item.getValue()));

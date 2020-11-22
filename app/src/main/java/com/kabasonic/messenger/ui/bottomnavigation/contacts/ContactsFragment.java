@@ -133,34 +133,4 @@ public class ContactsFragment extends Fragment {
         });
     }
 
-//    // Create app top bar menu
-//    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        setHasOptionsMenu(true);
-//        super.onCreate(savedInstanceState);
-//    }
-//
-//    @Override
-//    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-//        inflater.inflate(R.menu.main_menu, menu);
-//        menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
-//        menu.findItem(R.id.menu_logout).setVisible(false);
-//        menu.findItem(R.id.menu_create_group).setVisible(false);
-//
-//        super.onCreateOptionsMenu(menu, inflater);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        int idMenuItem = item.getItemId();
-//        switch (idMenuItem) {
-//            case R.id.menu_search:
-//                Log.i(TAG, "Click search button");
-//
-//                break;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
 }

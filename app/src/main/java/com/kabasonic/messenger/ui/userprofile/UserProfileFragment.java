@@ -1,6 +1,8 @@
 package com.kabasonic.messenger.ui.userprofile;
 
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,7 +20,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,11 +34,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.Contacts;
 import com.kabasonic.messenger.models.ContactsRequest;
 import com.kabasonic.messenger.ui.adapters.AdapterProfileDoubleItem;
 import com.kabasonic.messenger.ui.adapters.items.RowItem;
+import com.kabasonic.messenger.ui.bottomnavigation.profile.ProfileFragment;
+import com.kabasonic.messenger.ui.bottomnavigation.profile.ProfileFragmentDirections;
 import com.kabasonic.messenger.ui.userchat.UserChat;
 
 import java.util.ArrayList;
@@ -60,7 +72,7 @@ public class UserProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getArgumentsFragment();
         initView(view);
-
+        listenerLists();
         mSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,6 +139,24 @@ public class UserProfileFragment extends Fragment {
                     break;
                 case "imageUser":
                     Log.d(TAG, "imageUser: " + String.valueOf(item.getValue()));
+                    String Uri = String.valueOf(item.getValue());
+                    //Glide.with(ProfileFragment.this).load(Uri).fitCenter().into(imageUser);
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReference();
+                    if(!Uri.isEmpty()){
+                        storageRef.child("uploadsUserIcon/").child(String.valueOf(item.getValue())).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<android.net.Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                // Got the download URL for 'users/me/profile.png'
+                                Glide.with(UserProfileFragment.this).load(uri).centerInside().into(mUserImage);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Handle any errors
+                            }
+                        });
+                    }
                     break;
                 case "nickName":
                     Log.d(TAG, "nickName: " + String.valueOf(item.getValue()));
@@ -176,9 +206,32 @@ public class UserProfileFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.main_menu, menu);
         menu.findItem(R.id.menu_search).setVisible(false);
-        menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
+
         menu.findItem(R.id.menu_logout).setVisible(false);
         menu.findItem(R.id.menu_create_group).setVisible(false);
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
+
+        mDatabase.child("contact").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    if(userCurrentProfile.equals(dataSnapshot.getKey())){
+                        Log.d(TAG,"YOU HAVE THIS CONTACT");
+                        menu.findItem(R.id.menu_add_to_contacts).setVisible(false);
+                    }else{
+                        menu.findItem(R.id.menu_add_to_contacts).setVisible(true);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -195,29 +248,11 @@ public class UserProfileFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-//    private void getCurrentUser(){
-//        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-//        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-//        mDatabase.child("users").child(userCurrentProfile).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                Map<String, Object> userValues = new HashMap<String, Object>();
-//                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-//                    userValues.put(dataSnapshot.getKey(),dataSnapshot.getValue());
-//                }
-//                addUser(userValues);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//    }
 
     private void addUser() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+
         mDatabase.child("request").child(userCurrentProfile).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -231,5 +266,94 @@ public class UserProfileFragment extends Fragment {
                 Log.e(TAG, String.valueOf(error));
             }
         });
+    }
+
+    private void listenerLists() {
+        mLvUser.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                actionsFirstList(position);
+            }
+        });
+    }
+
+    private void actionsFirstList(int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        switch (position) {
+            case 0:
+                builder.setItems(R.array.dialog_nickname_contact, (dialog, which) -> {
+                    Log.i(TAG, "Opened dialog window ");
+                    switch (which) {
+                        case 0:
+                            Log.i(TAG, "Selected item " + which);
+                            break;
+                        case 1:
+                            Log.i(TAG, "Selected item " + which);
+                            break;
+                        default:
+                            Log.i(TAG, "Not selected item ");
+                            break;
+                    }
+                });
+                builder.show();
+                break;
+            case 1:
+                builder.setItems(R.array.dialog_phone_number_contact, (dialog, which) -> {
+                    Log.i(TAG, "Opened dialog window ");
+                    switch (which) {
+                        case 0:
+                            Log.i(TAG, "Selected item " + which);
+                            break;
+                        case 1:
+                            Log.i(TAG, "Selected item " + which);
+                            break;
+                        default:
+                            Log.i(TAG, "Not selected item ");
+                            break;
+                    }
+                });
+                builder.show();
+                break;
+            case 2://BIO Fragment
+                builder.setItems(R.array.dialog_bio_contact, (dialog, which) -> {
+                    Log.i(TAG, "Opened dialog window ");
+                    if (which == 0) {
+                        final String[] messageBio = new String[1];
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+                        mDatabase.child("users").child(userCurrentProfile).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String messageBio = null;
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    if (dataSnapshot.getKey().equals("bio")) {
+                                        if (String.valueOf(dataSnapshot.getValue()).isEmpty()) {
+                                            messageBio = "You don't have a bio.";
+                                        } else {
+                                            messageBio = String.valueOf(dataSnapshot.getValue());
+                                            break;
+                                        }
+                                    }
+                                }
+                                AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+                                builder1.setMessage(messageBio).create();
+                                builder1.show();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                        Log.i(TAG, "Selected item " + which);
+                    } else {
+                        Log.i(TAG, "Not selected item ");
+                    }
+                });
+                builder.show();
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -156,7 +156,7 @@ public class RequestContactsFragment extends Fragment {
     public void buildRecyclerView(ArrayList<User> mRequestList) {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mActivity);
-        mAdapterRequestItem = new AdapterRequestItem(mRequestList);
+        mAdapterRequestItem = new AdapterRequestItem(mRequestList,getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapterRequestItem.notifyDataSetChanged();
         mRecyclerView.setAdapter(mAdapterRequestItem);

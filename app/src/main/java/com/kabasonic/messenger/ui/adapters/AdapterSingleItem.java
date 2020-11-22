@@ -1,5 +1,7 @@
 package com.kabasonic.messenger.ui.adapters;
 
+import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,17 +12,27 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.User;
+import com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.AllContactsFragment;
+import com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.OnlineContactsFragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.SingleItemViewHolder> {
     //edit User -> RowItem
+    public static final String TAG = "AdapterSingleItem";
     private ArrayList<User> mRowItems;
 
     private OnItemClickListener mListener;
+
+    private Context context;
 
     public interface OnItemClickListener {
 
@@ -50,12 +62,25 @@ public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.S
         String userStatus = mRowItems.get(position).getStatus();
         //Set data
         holder.mUsername.setText(userName);
-        try{
-            Picasso.get().load(userImage).placeholder(R.drawable.default_user_image).into(holder.mUserImage);
+        Log.d(TAG,"onBindViewHolder");
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+            if(!userImage.isEmpty()){
+                storageRef.child("uploadsUserIcon/").child(userImage).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        // Got the download URL for 'users/me/profile.png'
+                        Log.d("Adapter URI image: ","" + String.valueOf(uri));
+                        Glide.with(context).load(uri).into(holder.mUserImage);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle any errors
+                    }
+                });
+            }
 
-        } catch (Exception e){
-
-        }
         try{
             if(userStatus.equals("online")){
                 Picasso.get().load(userStatus).placeholder(R.drawable.status_online).into(holder.mStatusUser);
@@ -74,9 +99,12 @@ public class AdapterSingleItem  extends RecyclerView.Adapter<AdapterSingleItem.S
         return mRowItems.size();
     }
 
-    public AdapterSingleItem(ArrayList<User> mRowItems){
+    public AdapterSingleItem(ArrayList<User> mRowItems,Context context){
         this.mRowItems = mRowItems;
+        this.context = context;
     }
+
+
 
     public class SingleItemViewHolder extends RecyclerView.ViewHolder{
 

@@ -1,15 +1,13 @@
 package com.kabasonic.messenger.ui.bottomnavigation.profile;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
-
+import android.os.Handler;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,29 +15,53 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
+
+import com.bumptech.glide.Glide;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.User;
-import com.kabasonic.messenger.ui.adapters.items.RowItem;
 import com.kabasonic.messenger.ui.adapters.AdapterProfileDoubleItem;
 import com.kabasonic.messenger.ui.adapters.AdapterProfileSingleItem;
+import com.kabasonic.messenger.ui.adapters.items.RowItem;
+import com.kabasonic.messenger.ui.bottomnavigation.LoadingDialog;
+import com.squareup.picasso.Picasso;
+
+import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.module.AppGlideModule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
 
@@ -55,20 +77,25 @@ public class ProfileFragment extends Fragment {
     private ImageView imageUser;
     private DatabaseReference mDatabase;
 
+    private Uri mImageUri;
+    private static final int PICK_IMAGE_REQUEST = 1;
+
+    private StorageReference mStorageRef;
+    private DatabaseReference mDatabaseRef;
+    private StorageTask mUploadTask;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.profile_fragment, container, false);
-        //((AppCompatActivity)getActivity()).getSupportActionBar().hide();
-        //mToolbar = root.findViewById(R.id.toolbar_profile);
-        //((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         return root;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mStorageRef = FirebaseStorage.getInstance().getReference("uploadsUserIcon/");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("users");
         initViewElements();
         createLists();
         buildListView();
@@ -97,6 +124,11 @@ public class ProfileFragment extends Fragment {
                 Log.i(TAG, "Opened dialog window ");
                 switch (which) {
                     case 0:
+                        fileChoose();
+                        Log.i(TAG, "Selected item " + which);
+                        break;
+                    case 1:
+                        deleteImage();
                         Log.i(TAG, "Selected item " + which);
                         break;
                     default:
@@ -106,6 +138,57 @@ public class ProfileFragment extends Fragment {
             }
         });
         builder.show();
+    }
+
+    private void deleteImage() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("users").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                HashMap<String, Object> newValues = new HashMap<>();
+                newValues.put("imageUser","");
+                mDatabase.child("users").child(user.getUid()).updateChildren(newValues);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void fileChoose() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent,PICK_IMAGE_REQUEST);
+    }
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null) {
+            mImageUri = data.getData();
+            //Picasso.with(this).load(mImageUri).into(imageUser);
+            Picasso.get().load(mImageUri).into(imageUser);
+
+            if (mUploadTask != null && mUploadTask.isInProgress()) {
+                Toast.makeText(getContext(), "Upload in progress", Toast.LENGTH_SHORT).show();
+            } else {
+                uploadFile();
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getUserFirebase();
     }
 
     //Create app top bar menu
@@ -121,29 +204,23 @@ public class ProfileFragment extends Fragment {
         menu.findItem(R.id.menu_add_to_contacts).setVisible(false);
         menu.findItem(R.id.menu_search).setVisible(false);
         menu.findItem(R.id.menu_create_group).setVisible(false);
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int idMenuItem = item.getItemId();
-        switch (idMenuItem) {
-            case R.id.menu_logout:
-                Log.i(TAG, "Click logout button");
-                logoutUser();
-                break;
-            case R.id.menu_qr_code_scan:
-                Log.i(TAG, "Click QR code scan button");
-                showActionsQRcode();
-                break;
+        if (idMenuItem == R.id.menu_logout) {
+            Log.i(TAG, "Click logout button");
+            logoutUser();
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void listenerButtons() {
         mEditUserName.setOnClickListener(v -> {
-            NavDirections action = ProfileFragmentDirections.actionProfileFragmentToEditUsernameFragment();
-            Navigation.findNavController(getView()).navigate(action);
+            Navigation.findNavController(getView()).navigate(R.id.editUsernameFragment);
         });
     }
 
@@ -160,27 +237,6 @@ public class ProfileFragment extends Fragment {
         FirebaseAuth.getInstance().signOut();
         NavDirections action = ProfileFragmentDirections.actionProfileFragmentToOTPNumberFragment();
         Navigation.findNavController(getView()).navigate(action);
-    }
-
-    private void showActionsQRcode() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setItems(R.array.dialog_profile_qr_code, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        Log.i(TAG, "Selected item " + which);
-                        break;
-                    case 1:
-                        Log.i(TAG, "Selected item " + which);
-                        break;
-                    default:
-                        Log.i(TAG, "Not selected item ");
-                        break;
-                }
-            }
-        });
-        builder.show();
     }
 
     private void buildListView() {
@@ -282,9 +338,50 @@ public class ProfileFragment extends Fragment {
                 builder.show();
                 break;
             case 2://BIO Fragment
-                NavDirections action = ProfileFragmentDirections.actionProfileFragmentToEdiBioFragment();
-                Navigation.findNavController(getView()).navigate(action);
+                builder.setItems(R.array.dialog_bio, (dialog, which) -> {
+                    Log.i(TAG, "Opened dialog window ");
+                    switch (which) {
+                        case 0:
+                            NavDirections action = ProfileFragmentDirections.actionProfileFragmentToEdiBioFragment();
+                            Navigation.findNavController(getView()).navigate(action);
+                            Log.i(TAG, "Selected item " + which);
+                            break;
+                        case 1:
+                            final String[] messageBio = new String[1];
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+                            mDatabase.child("users").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    String messageBio = null;
+                                    for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+                                        if(dataSnapshot.getKey().equals("bio")){
+                                            if(String.valueOf(dataSnapshot.getValue()).isEmpty()){
+                                                messageBio = "You don't have a bio.";
+                                            } else{
+                                                messageBio = String.valueOf(dataSnapshot.getValue());
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+                                    builder1.setMessage(messageBio).create();
+                                    builder1.show();
+                                }
 
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                            Log.i(TAG, "Selected item " + which);
+                            break;
+                        default:
+                            Log.i(TAG, "Not selected item ");
+                            break;
+                    }
+                });
+                builder.show();
                 break;
             default:
                 break;
@@ -296,7 +393,7 @@ public class ProfileFragment extends Fragment {
     private void getUserFirebase() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("users").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("users").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Map<String, Object> userValues = new HashMap<String, Object>();
@@ -330,6 +427,24 @@ public class ProfileFragment extends Fragment {
                     break;
                 case "imageUser":
                     Log.d(TAG, "imageUser: " + String.valueOf(item.getValue()));
+                    String Uri = String.valueOf(item.getValue());
+                    //Glide.with(ProfileFragment.this).load(Uri).fitCenter().into(imageUser);
+                    FirebaseStorage storage = FirebaseStorage.getInstance();
+                    StorageReference storageRef = storage.getReference();
+                    if(!Uri.isEmpty()){
+                        storageRef.child("uploadsUserIcon/").child(String.valueOf(item.getValue())).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                // Got the download URL for 'users/me/profile.png'
+                                Glide.with(ProfileFragment.this).load(uri).centerInside().into(imageUser);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Handle any errors
+                            }
+                        });
+                    }
                     break;
                 case "nickName":
                     Log.d(TAG, "nickName: " + String.valueOf(item.getValue()));
@@ -353,7 +468,7 @@ public class ProfileFragment extends Fragment {
             }
         }
 
-        String[] subtitleLV = getResources().getStringArray(R.array.listOneSubtitleProfile);
+        String[] subtitleLV = getContext().getResources().getStringArray(R.array.listOneSubtitleProfile);
 
         Integer[] imagesOne = {R.drawable.ic_round_alternate_email_24,
                 R.drawable.ic_round_call_24,
@@ -370,5 +485,81 @@ public class ProfileFragment extends Fragment {
     }
 
 
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = ((AppCompatActivity)getActivity()).getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    private void uploadFile() {
+        final LoadingDialog loadingDialog = new LoadingDialog(getActivity());
+        loadingDialog.startLoadingDialog();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (mImageUri != null) {
+            StorageReference fileReference = mStorageRef.child(user.getUid()
+                    + "." + getFileExtension(mImageUri));
+            mUploadTask = fileReference.putFile(mImageUri)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //mProgressBar.setProgress(0);
+                                }
+
+                            }, 500);
+                            Toast.makeText(getContext(), "Upload successful", Toast.LENGTH_LONG).show();
+                            loadingDialog.dismisDialog();
+                            HashMap<String, Object> newValues = new HashMap<>();
+                            newValues.put("imageUser",String.valueOf(user.getUid()+"."+getFileExtension(mImageUri)));
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                            mDatabaseRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    Map<String, Object> userValues = new HashMap<String, Object>();
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        userValues.put(dataSnapshot.getKey(), dataSnapshot.getValue());
+                                    }
+
+                                    for (Map.Entry<String, Object> entry : newValues.entrySet()) {
+                                        String key = entry.getKey();
+                                        Object value = entry.getValue();
+                                        userValues.put(key, value);
+                                    }
+
+                                    mDatabaseRef.child(user.getUid()).updateChildren(userValues);
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+
+
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+//                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
+//                            mProgressBar.setProgress((int) progress);
+                        }
+                    });
+        } else {
+            Toast.makeText(getContext(), "No file selected", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 }

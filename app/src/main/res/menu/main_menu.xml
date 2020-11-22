@@ -13,13 +13,6 @@
          />
 
     <item
-        android:id="@+id/menu_qr_code_scan"
-        android:icon="@drawable/ic_round_qr_code_24"
-        android:iconTint="@color/colorBlack"
-        app:showAsAction="always"
-        android:title="QRcode"/>
-
-    <item
         android:id="@+id/menu_logout"
         android:icon="@drawable/ic_round_meeting_room_24"
         android:iconTint="@color/colorBlack"

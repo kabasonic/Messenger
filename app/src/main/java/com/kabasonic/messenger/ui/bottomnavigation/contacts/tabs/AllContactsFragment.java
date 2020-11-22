@@ -82,7 +82,7 @@ public class AllContactsFragment extends Fragment {
     public void buildRecyclerView(ArrayList<User> mRowItems) {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mActivity);
-        mAdapterSingleItem = new AdapterSingleItem(mRowItems);
+        mAdapterSingleItem = new AdapterSingleItem(mRowItems,getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapterSingleItem.notifyDataSetChanged();
         mRecyclerView.setAdapter(mAdapterSingleItem);
@@ -127,9 +127,6 @@ public class AllContactsFragment extends Fragment {
                         break;
                     case 2:
                         Log.i(TAG, "Selected item " + which);
-                        break;
-                    case 3:
-                        Log.i(TAG, "Selected item " + which);
                         deleteContacts(uid);
                         break;
                     default:
@@ -152,7 +149,6 @@ public class AllContactsFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.main_menu, menu);
         menu.findItem(R.id.menu_add_to_contacts).setVisible(false);
-        menu.findItem(R.id.menu_qr_code_scan).setVisible(false);
         menu.findItem(R.id.menu_logout).setVisible(false);
         menu.findItem(R.id.menu_create_group).setVisible(false);
 

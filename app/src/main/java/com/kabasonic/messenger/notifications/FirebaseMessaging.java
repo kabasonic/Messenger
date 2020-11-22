@@ -19,10 +19,6 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.kabasonic.messenger.ui.userchat.UserChat;
 
-import java.nio.BufferUnderflowException;
-
-import static android.app.Notification.*;
-
 public class FirebaseMessaging extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
@@ -35,11 +31,15 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         String user = remoteMessage.getData().get("user");
         FirebaseUser user1 = FirebaseAuth.getInstance().getCurrentUser();
         if (user1 != null && sent.equals(user1.getUid())) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                sendNotification(remoteMessage);
-            } else {
-                sendNormalNotification(remoteMessage);
+            if(!savedCurrentUser.equals(user))
+            {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    sendOAndAboveNotification(remoteMessage);
+                } else {
+                    sendNormalNotification(remoteMessage);
+                }
             }
+
         }
 
     }
@@ -76,7 +76,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
         notificationManager.notify(j, builder.build());
     }
 
-    private void sendNotification(RemoteMessage remoteMessage) {
+    private void sendOAndAboveNotification(RemoteMessage remoteMessage) {
         String user = remoteMessage.getData().get("user");
         String icon = remoteMessage.getData().get("icon");
         String title = remoteMessage.getData().get("title");
@@ -93,14 +93,14 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
         Uri defSoundUid = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        Notification notification1 = new Notification(this);
-        NotificationCompat.Builder builder = notification1.getONotifications(title,body,pendingIntent,defSoundUid,icon);
+        OreoAndAboveNotification oreoAndAboveNotification1 = new OreoAndAboveNotification(this);
+        NotificationCompat.Builder builder = oreoAndAboveNotification1.getONotifications(title,body,pendingIntent,defSoundUid,icon);
 
 
         int j = 0;
         if (j > 0) {
             j = i;
         }
-        notification1.getNotificationManager().notify(j, builder.build());
+        oreoAndAboveNotification1.getNotificationManager().notify(j, builder.build());
     }
 }

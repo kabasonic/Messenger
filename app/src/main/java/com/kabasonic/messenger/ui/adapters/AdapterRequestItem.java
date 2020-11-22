@@ -1,5 +1,8 @@
 package com.kabasonic.messenger.ui.adapters;
 
+import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +13,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.User;
 import com.kabasonic.messenger.ui.adapters.items.RowItem;
@@ -21,7 +29,7 @@ public class AdapterRequestItem extends RecyclerView.Adapter<AdapterRequestItem.
 
     private ArrayList<User> mRowItems;
     private RequestItemRow mListener;
-
+    private Context context;
     public interface RequestItemRow {
 
         void onItemClick(String uid);
@@ -52,11 +60,30 @@ public class AdapterRequestItem extends RecyclerView.Adapter<AdapterRequestItem.
         //Set data
         holder.mUsername.setText(userName);
         holder.mUserBio.setText(userBio);
-        try{
-            Picasso.get().load(userImage).placeholder(R.drawable.default_user_image).into(holder.mUserImage);
-        } catch (Exception e){
 
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReference();
+        if(!userImage.isEmpty()){
+            storageRef.child("uploadsUserIcon/").child(userImage).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    // Got the download URL for 'users/me/profile.png'
+                    Log.d("Adapter URI image: ","" + String.valueOf(uri));
+                    Glide.with(context).load(uri).into(holder.mUserImage);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
         }
+//
+//        try{
+//            Picasso.get().load(userImage).placeholder(R.drawable.default_user_image).into(holder.mUserImage);
+//        } catch (Exception e){
+//
+//        }
     }
 
     @Override
@@ -64,8 +91,9 @@ public class AdapterRequestItem extends RecyclerView.Adapter<AdapterRequestItem.
         return mRowItems.size();
     }
 
-    public AdapterRequestItem(ArrayList<User> mRowItems){
+    public AdapterRequestItem(ArrayList<User> mRowItems, Context context){
         this.mRowItems = mRowItems;
+        this.context = context;
     }
 
     public class SingleItemViewHolder extends RecyclerView.ViewHolder{

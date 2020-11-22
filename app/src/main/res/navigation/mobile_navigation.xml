@@ -160,7 +160,11 @@
     <fragment
         android:id="@+id/onlineContactsFragment"
         android:name="com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.OnlineContactsFragment"
-        android:label="OnlineContactsFragment" />
+        android:label="OnlineContactsFragment" >
+        <action
+            android:id="@+id/action_onlineContactsFragment_to_userProfileFragment"
+            app:destination="@id/userProfileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/requestContactsFragment"
         android:name="com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.RequestContactsFragment"

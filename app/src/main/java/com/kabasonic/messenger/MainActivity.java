@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomNavigationView bottomNavigationView;
     private BadgeDrawable mContactBudge;
 
+    private String mUID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Set theme for Splash screen
@@ -51,7 +52,15 @@ public class MainActivity extends AppCompatActivity {
         initNavigation();
 
         mContactBudge = bottomNavigationView.getOrCreateBadge(R.id.contactsFragment);
-        countRequestContact();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null){
+            countRequestContact();
+        }
+
+        checkedUserStatus();
+
+        updateToken(FirebaseInstanceId.getInstance().getToken());
+
     }
 
     private void initNavigation() {
@@ -91,26 +100,41 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         });
-        checkedUserStatus();
-        updateToken(FirebaseInstanceId.getInstance().getToken());
+
+
     }
 
     @Override
     protected void onResume() {
         checkedUserStatus();
+        //updateToken(FirebaseInstanceId.getInstance().getToken());
         super.onResume();
     }
 
     private void checkedUserStatus() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user!=null){
+            this.mUID = user.getUid();
             SharedPreferences sharedPreferences = getSharedPreferences("SP_USER",MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("Current_USERID",user.getUid());
+            editor.putString("Current_USERID",mUID);
             editor.apply();
         }else{
-
+            Log.d(TAG,"checkedUserStatus: user null" );
         }
+    }
+    private void updateToken(String token){
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Token mToken = new Token(token);
+
+        if(user!=null){
+            mDatabase.child("tokens").child(mUID).setValue(mToken);
+            Log.d(TAG,"Token update" );
+        }else{
+            Log.d(TAG,"updateToken: user null" );
+        }
+
     }
     //    @Override
 //    public void onBackPressed() {
@@ -185,12 +209,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateToken(String token){
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Token mToken = new Token(token);
 
-        mDatabase.child("tokens").child(user.getUid()).setValue(mToken);
-    }
 
 }

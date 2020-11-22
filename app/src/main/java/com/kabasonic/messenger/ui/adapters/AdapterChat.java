@@ -24,10 +24,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.Chat;
-import com.kabasonic.messenger.ui.userchat.UserChat;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
@@ -66,12 +68,14 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
         String message = chatList.get(position).getMessage();
         String timeStamp = chatList.get(position).getTimestamp();
 
-        android.text.format.DateFormat df = new android.text.format.DateFormat();
-        String dataTime = (String) df.format("yyyy-MM-dd hh:mm:ss a", new java.util.Date());
+//        android.text.format.DateFormat df = new android.text.format.DateFormat();
+//        String dataTime = (String) df.format("yyyy-MM-dd hh:mm:ssZZZZ a", new java.util.Date());
 
+        Date currentTime = Calendar.getInstance().getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+        String output = dateFormat.format(currentTime);
+        holder.time.setText(output);
         holder.message.setText(message);
-        holder.time.setText(dataTime);
-
 
         if (position == chatList.size() - 1) {
             if (chatList.get(position).isSeen()) {
