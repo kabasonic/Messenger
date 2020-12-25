@@ -2,36 +2,24 @@ package com.kabasonic.messenger.ui.bottomnavigation.contacts;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
-import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
-import com.kabasonic.messenger.models.User;
 import com.kabasonic.messenger.ui.adapters.AdapterTabsContacts;
-import com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.AllContactsFragment;
+import com.kabasonic.messenger.ui.bottomnavigation.contacts.viewmodels.RequestContactsViewModel;
 
 public class ContactsFragment extends Fragment {
     public static final String TAG = "ContactsFragment";
@@ -41,7 +29,8 @@ public class ContactsFragment extends Fragment {
     private TabLayout tabLayout;
     private BadgeDrawable mRequsetBadget;
     private TabLayout.Tab mTabRequest;
-    MainActivity mActivity;
+    private MainActivity mActivity;
+    private RequestContactsViewModel mViewModel;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -64,8 +53,15 @@ public class ContactsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         initTabsViewPager(view);
-        //setBudgestToRequest();
-        countRequest();
+        mViewModel = ViewModelProviders.of(this).get(RequestContactsViewModel.class);
+        mViewModel.init();
+        mViewModel.getCountRequests().observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                setBudgestToRequest(integer);
+            }
+        });
+
     }
 
     private void setBudgestToRequest(int countRequest) {
@@ -86,51 +82,6 @@ public class ContactsFragment extends Fragment {
         viewPager = view.findViewById(R.id.vp_contacts);
         viewPager.setAdapter(adapterTabsContacts);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-                Log.i(TAG, "TAB POSITION: " + tab.getPosition());
-                switch (tab.getPosition()) {
-                    case 0://Tab All
-                        break;
-                    case 1://Tab Online
-                        break;
-                    case 2://Tab Request
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
-    }
-
-    private void countRequest(){
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("request").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int countRequest = 0;
-
-                countRequest = (int) snapshot.getChildrenCount();
-                Log.d(TAG,"Count request: " + countRequest);
-                setBudgestToRequest(countRequest);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
 }

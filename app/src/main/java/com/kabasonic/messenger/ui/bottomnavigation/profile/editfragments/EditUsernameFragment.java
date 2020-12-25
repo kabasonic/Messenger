@@ -84,17 +84,6 @@ public class EditUsernameFragment extends Fragment {
 
         Database database = new Database();
         database.updateUser(newValues);
-//        FirebaseUser userId = FirebaseAuth.getInstance().getCurrentUser();
-//        mDatabase = FirebaseDatabase.getInstance().getReference();
-//        User user = new User(firstName,lastName);
-//        if (userId!=null){
-//            mDatabase.child("users").child(userId.getUid()).setValue(user);
-//        }
-//        User user = new User();
-//        user.setFirstName(firstName);
-//        user.setLastName(lastName);
-//        Database database = new Database();
-//        database.updateUser(user);
     }
 
 }

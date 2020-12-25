@@ -2,6 +2,7 @@ package com.kabasonic.messenger.ui.bottomnavigation.profile;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -46,6 +47,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.User;
 import com.kabasonic.messenger.ui.adapters.AdapterProfileDoubleItem;
@@ -83,6 +85,15 @@ public class ProfileFragment extends Fragment {
     private StorageReference mStorageRef;
     private DatabaseReference mDatabaseRef;
     private StorageTask mUploadTask;
+    private MainActivity mActivity;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof MainActivity) {
+            mActivity = (MainActivity) context;
+        }
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -436,7 +447,7 @@ public class ProfileFragment extends Fragment {
                             @Override
                             public void onSuccess(Uri uri) {
                                 // Got the download URL for 'users/me/profile.png'
-                                Glide.with(ProfileFragment.this).load(uri).centerInside().into(imageUser);
+                                Glide.with(mActivity).load(uri).centerInside().into(imageUser);
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -468,7 +479,8 @@ public class ProfileFragment extends Fragment {
             }
         }
 
-        String[] subtitleLV = getContext().getResources().getStringArray(R.array.listOneSubtitleProfile);
+        //String[] subtitleLV = getResources().getStringArray(R.array.listOneSubtitleProfile);
+        String[] subtitleLV = {"Username", "Phone number", "Bio"};
 
         Integer[] imagesOne = {R.drawable.ic_round_alternate_email_24,
                 R.drawable.ic_round_call_24,

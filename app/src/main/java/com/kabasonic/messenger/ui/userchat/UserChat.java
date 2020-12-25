@@ -220,7 +220,7 @@ public class UserChat extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Chat chat = dataSnapshot.getValue(Chat.class);
-                    if(chat.getReceiver().equals(currentUser.getUid()) && chat.getSender().equals(userCurrentProfile)){
+                    if(chat.getReceiver().equals(currentUser.getUid())){
                         HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("isSeen",true);
                         dataSnapshot.getRef().updateChildren(hashMap);

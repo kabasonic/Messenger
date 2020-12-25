@@ -42,7 +42,7 @@ public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.
 
     private ArrayList<User> userArrayList;
     private Context context;
-    private HashMap<String,String > lastMessageMap;
+    private HashMap<String, String> lastMessageMap;
     private HashMap<String, String> timeStampMap;
     private HashMap<String, String> statusMessageMap;
 
@@ -51,11 +51,12 @@ public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.
         this.context = context;
         lastMessageMap = new HashMap<>();
         timeStampMap = new HashMap<>();
+        statusMessageMap = new HashMap<>();
     }
 
     private ItemRow mListener;
 
-    public interface ItemRow{
+    public interface ItemRow {
         void onItemClick(int position);
     }
 
@@ -66,8 +67,8 @@ public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.
     @NonNull
     @Override
     public MessageItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_item_message,parent,false);
-        return new MessageItemViewHolder(view,mListener);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_item_message, parent, false);
+        return new MessageItemViewHolder(view, mListener);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -82,40 +83,46 @@ public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.
 
         String lastMessage = lastMessageMap.get(hisUid);
         String timeStamp = timeStampMap.get(hisUid);
-        //String statusMessage = statusMessageMap.get(hisUid);
+        String statusMessage = statusMessageMap.get(hisUid);
 
         //set data
         String userName = firstName + " " + lastName;
         holder.mUsername.setText(userName);
 
-        if(lastMessage==null || lastMessage.equals("default")){
+        if (lastMessage == null || lastMessage.equals("default")) {
             holder.mMesage.setVisibility(View.GONE);
-        }else{
+        } else {
             holder.mMesage.setVisibility(View.VISIBLE);
             holder.mMesage.setText(lastMessage);
         }
 
-        if(timeStamp==null || timeStamp.equals("default")){
+        if (timeStamp == null || timeStamp.equals("default")) {
             holder.mTime.setVisibility(View.GONE);
-        }else{
+        } else {
             holder.mTime.setVisibility(View.VISIBLE);
             long dateLong = Long.parseLong(timeStamp);
             Date date = new Date(dateLong * 1000);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss a");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm a");
             String output = dateFormat.format(date);
             holder.mTime.setText(output);
         }
 
-//        if(statusMessage==null || statusMessage.equals("default")){
-//            holder.mTime.setVisibility(View.GONE);
-//        }else{
-//            holder.mTime.setVisibility(View.VISIBLE);
-//            holder.mTime.setText(lastMessage);
-//        }
+        if(statusMessage == null || statusMessage.equals("default")){
+            holder.mStatusMessage.setVisibility(View.GONE);
+        }else if(statusMessage.equals("true")){
+            Log.d("TAG","Okay true");
+            holder.mStatusMessage.setImageResource(R.drawable.ic_round_done_all_24);
+            holder.mStatusMessage.setVisibility(View.VISIBLE);
+        }else if(statusMessage.equals("false")){
+            holder.mStatusMessage.setImageResource(R.drawable.ic_round_done_24);
+            holder.mStatusMessage.setVisibility(View.VISIBLE);
+            Log.d("TAG","Not okay false");
+        }
+
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
-        if(!userImage.isEmpty()){
+        if (!userImage.isEmpty()) {
             storageRef.child("uploadsUserIcon/").child(userImage).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
@@ -130,33 +137,38 @@ public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.
             });
         }
 
-        try{
-            if(userStatus.equals("online")){
+        try {
+            if (userStatus.equals("online")) {
                 Picasso.get().load(userStatus).placeholder(R.drawable.status_online).into(holder.mStatusUser);
                 holder.mStatusUser.setVisibility(View.VISIBLE);
-            } else{
+            } else {
                 //Picasso.get().load(userStatus).placeholder(R.drawable.status_online).into(holder.mStatusUser);
                 holder.mStatusUser.setVisibility(View.INVISIBLE);
             }
-        } catch (Exception e){}
+        } catch (Exception e) {
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, UserChat.class);
-                intent.putExtra("uid",hisUid);
+                intent.putExtra("uid", hisUid);
                 context.startActivity(intent);
             }
         });
 
     }
 
-    public void setTimeStampMap(String userUid, String timeStamp){
-        timeStampMap.put(userUid,timeStamp);
+    public void setStatusMessageMap(String userUid, String statusMessage) {
+        statusMessageMap.put(userUid, statusMessage);
     }
 
-    public void setLastMessageMap(String userUid, String lastMessage){
-        lastMessageMap.put(userUid,lastMessage);
+    public void setTimeStampMap(String userUid, String timeStamp) {
+        timeStampMap.put(userUid, timeStamp);
+    }
+
+    public void setLastMessageMap(String userUid, String lastMessage) {
+        lastMessageMap.put(userUid, lastMessage);
     }
 
     @Override
@@ -169,12 +181,12 @@ public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.
         public ImageView mStatusUser;
         public TextView mUsername;
         public TextView mMesage;
-//        public ImageView mMute;
+        //        public ImageView mMute;
         public ImageView mStatusMessage;
         public TextView mTime;
 //        public TextView mCountMessage;
 
-        public MessageItemViewHolder(@NonNull View itemView,final ItemRow listener) {
+        public MessageItemViewHolder(@NonNull View itemView, final ItemRow listener) {
             super(itemView);
             mUserImage = itemView.findViewById(R.id.imageUser);
             mStatusUser = itemView.findViewById(R.id.statusUser);
@@ -189,7 +201,7 @@ public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
-                    if(position != RecyclerView.NO_POSITION){
+                    if (position != RecyclerView.NO_POSITION) {
                         listener.onItemClick(position);
                     }
                 }

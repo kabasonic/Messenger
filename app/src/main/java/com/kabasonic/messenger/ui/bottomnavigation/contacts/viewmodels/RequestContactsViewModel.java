@@ -4,16 +4,35 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.kabasonic.messenger.models.User;
+import com.kabasonic.messenger.repositories.ContactsRequestRepository;
+
+import java.util.List;
+
 public class RequestContactsViewModel extends ViewModel {
-    private MutableLiveData<String> mText;
+    private MutableLiveData<List<User>> mRequests;
+    private MutableLiveData<Integer> mCountRequest;
 
-    public RequestContactsViewModel() {
-        mText = new MutableLiveData<>();
-        mText.setValue("Request contacts fragment");
+    private ContactsRequestRepository mRepo;
+
+    public void init() {
+        if (mRequests != null) {
+            return;
+        }
+        mRepo = ContactsRequestRepository.getInstance();
+        mRequests = mRepo.getRequests();
+        mCountRequest = mRepo.getCountRequest();
     }
 
-    public LiveData<String> getText(){
-        return mText;
+    public LiveData<List<User>> getRequests() {
+        return mRequests;
     }
 
+    public void actionRequest(String uid, boolean action) {
+        mRepo.actionRequest(uid, action);
+    }
+
+    public LiveData<Integer> getCountRequests() {
+        return mCountRequest;
+    }
 }

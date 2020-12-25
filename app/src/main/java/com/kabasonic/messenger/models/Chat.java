@@ -7,8 +7,7 @@ public class Chat {
     private String timestamp;
     private boolean isSeen;
 
-    public Chat(){
-
+    public Chat() {
     }
 
     public Chat(String message, String receiver, String sender, String timestamp, boolean isSeen) {

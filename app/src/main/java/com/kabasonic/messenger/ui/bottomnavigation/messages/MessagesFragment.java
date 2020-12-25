@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -69,39 +72,42 @@ public class MessagesFragment extends Fragment {
 
         //((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        if (user != null) {
-//            // User is signed in
-//            Toast.makeText(getActivity(),"User is signed in",Toast.LENGTH_SHORT).show();
-//            Log.d(TAG,"User Uid sidn in" + user.getUid());
-//        } else {
-//            // No user is signed in
-//            Toast.makeText(getActivity(),"No user is signed in",Toast.LENGTH_SHORT).show();
-//            NavDirections action = MessagesFragmentDirections.actionMessagesFragmentToOTPNumberFragment();
-//            Navigation.findNavController(view).navigate(action);
-//        }
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // User is signed in
+            Toast.makeText(getActivity(),"User is signed in",Toast.LENGTH_SHORT).show();
+            Log.d(TAG,"User Uid sidn in" + user.getUid());
+        } else {
+            // No user is signed in
+            Toast.makeText(getActivity(),"No user is signed in",Toast.LENGTH_SHORT).show();
+            NavDirections action = MessagesFragmentDirections.actionMessagesFragmentToOTPNumberFragment();
+            Navigation.findNavController(view).navigate(action);
+        }
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         mRecyclerView = view.findViewById(R.id.rvMessages);
         chatListArrayList = new ArrayList<>();
-        mDatabase = FirebaseDatabase.getInstance().getReference("chatlist").child(firebaseUser.getUid());
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                chatListArrayList.clear();
-                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    ChatList chatList = dataSnapshot.getValue(ChatList.class);
-                    chatListArrayList.add(chatList);
+        if(firebaseUser!=null){
+            mDatabase = FirebaseDatabase.getInstance().getReference("chatlist").child(firebaseUser.getUid());
+            mDatabase.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    chatListArrayList.clear();
+                    for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                        ChatList chatList = dataSnapshot.getValue(ChatList.class);
+                        chatListArrayList.add(chatList);
+                    }
+                    loadChats();
                 }
-                loadChats();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
+                }
+            });
+        }
+
     }
 
     private void loadChats() {
@@ -146,6 +152,7 @@ public class MessagesFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String theLastMessage = "default";
                 String theTime = "default";
+                String theStatusMessage = "default";
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()){
                     Chat chat = dataSnapshot.getValue(Chat.class);
 
@@ -165,9 +172,17 @@ public class MessagesFragment extends Fragment {
                         chat.getSender().equals(firebaseUser.getUid())){
                         theLastMessage = chat.getMessage();
                         theTime = chat.getTimestamp();
+                        Log.d(TAG,"theStatusMessage: " + chat.isSeen());
+                        if(chat.isSeen()){
+                            theStatusMessage = "true";
+                        } else {
+                            theStatusMessage = "false";
+                        }
+                        Log.d(TAG,"theStatusMessage: " + theStatusMessage);
                     }
 
                 }
+                mAdapterMessageItem.setStatusMessageMap(uid,theStatusMessage);
                 mAdapterMessageItem.setTimeStampMap(uid,theTime);
                 mAdapterMessageItem.setLastMessageMap(uid,theLastMessage);
                 mAdapterMessageItem.notifyDataSetChanged();

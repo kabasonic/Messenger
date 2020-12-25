@@ -6,11 +6,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,20 +32,25 @@ import com.kabasonic.messenger.models.Contacts;
 import com.kabasonic.messenger.models.ContactsRequest;
 import com.kabasonic.messenger.models.User;
 import com.kabasonic.messenger.ui.adapters.AdapterRequestItem;
+import com.kabasonic.messenger.ui.bottomnavigation.LoadingDialog;
+import com.kabasonic.messenger.ui.bottomnavigation.contacts.viewmodels.OnlineContactsViewModel;
+import com.kabasonic.messenger.ui.bottomnavigation.contacts.viewmodels.RequestContactsViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RequestContactsFragment extends Fragment {
 
     public static final String TAG = "RequestContactsFragment";
 
-    public ArrayList<User> mRequestList;
+    public List<User> mRequestList;
     private RecyclerView mRecyclerView;
     private AdapterRequestItem mAdapterRequestItem;
     private RecyclerView.LayoutManager mLayoutManager;
-    MainActivity mActivity;
-
-    private ArrayList<String> uidRequest;
+    private MainActivity mActivity;
+    private RequestContactsViewModel mRequestContactsViewModel;
+    private ImageView imageRequest;
+    private TextView textRequest;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -61,102 +70,50 @@ public class RequestContactsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //createExampleList();
-        //buildRecyclerView();
+        Log.d(TAG,"onViewCreated");
         mRecyclerView = view.findViewById(R.id.rvRequestContacts);
-        getRequestContact();
+        imageRequest = view.findViewById(R.id.image_request);
+        textRequest = view.findViewById(R.id.text_request);
+
+        mRequestContactsViewModel = ViewModelProviders.of(this).get(RequestContactsViewModel.class);
+        mRequestContactsViewModel.init();
+
+        buildRecyclerView();
     }
 
-    private void getRequestContact(){
-        uidRequest = new ArrayList<>();
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("request").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG,"onResume");
+
+        mRequestContactsViewModel.getRequests().observe(getViewLifecycleOwner(), new Observer<List<User>>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    Log.d("Requests UIDS: " ,String.valueOf(dataSnapshot.getKey()));
-                    uidRequest.add(String.valueOf(dataSnapshot.getKey()));
+            public void onChanged(List<User> users) {
+                if(users.isEmpty()){
+                    textRequest.setVisibility(View.VISIBLE);
+                    imageRequest.setVisibility(View.VISIBLE);
+                }else{
+                    textRequest.setVisibility(View.INVISIBLE);
+                    imageRequest.setVisibility(View.INVISIBLE);
                 }
-                if(!uidRequest.isEmpty()){
-                    showRequesetContact(uidRequest);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+                mAdapterRequestItem.setRequest(users);
+                mAdapterRequestItem.notifyDataSetChanged();
             }
         });
+
+
     }
 
-    private void showRequesetContact(ArrayList<String> uidRequest){
-        mRequestList = new ArrayList<>();
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("users").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int i = 0;
-                mRequestList.clear();
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                        if(uidRequest.size() > i && String.valueOf(dataSnapshot.getKey()).equals(uidRequest.get(i))){
-                            User user = dataSnapshot.getValue(User.class);
-                            mRequestList.add(user);
-                            i++;
-                        }
-                }
-                buildRecyclerView(mRequestList);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG,"onPause");
     }
 
-    private void removeRequest(String uid){
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("request").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mDatabase.child("request").child(currentUser.getUid()).child(uid).removeValue();
-                //getRequestContact();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void addToContact(String uidUser, int position){
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("contact").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Contacts contacts = new Contacts(uidUser);
-                mDatabase.child("contact").child(currentUser.getUid()).child(uidUser).setValue(contacts);
-                contacts = new Contacts(currentUser.getUid());
-                mDatabase.child("contact").child(uidUser).child(currentUser.getUid()).setValue(contacts);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, String.valueOf(error));
-            }
-        });
-    }
-
-    public void buildRecyclerView(ArrayList<User> mRequestList) {
+    public void buildRecyclerView() {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(mActivity);
-        mAdapterRequestItem = new AdapterRequestItem(mRequestList,getContext());
+        mAdapterRequestItem = new AdapterRequestItem(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapterRequestItem.notifyDataSetChanged();
         mRecyclerView.setAdapter(mAdapterRequestItem);
@@ -170,21 +127,17 @@ public class RequestContactsFragment extends Fragment {
             @Override
             public void onItemAccept(String uid, int position) {
                 Log.i(TAG,"Cliked button ACCEPT " + uid);
-                mRequestList.remove(position);
+                mAdapterRequestItem.removeItem(position);
                 mAdapterRequestItem.notifyItemRemoved(position);
-                addToContact(uid,position);
-                removeRequest(uid);
-                getRequestContact();
-
+                mRequestContactsViewModel.actionRequest(uid,true);
             }
 
             @Override
             public void onItemDecline(String uid, int position) {
                 Log.i(TAG,"Cliked button DECLINE " + position);
-                removeRequest(uid);
-                mRequestList.remove(position);
+                mAdapterRequestItem.removeItem(position);
                 mAdapterRequestItem.notifyItemRemoved(position);
-                getRequestContact();
+                mRequestContactsViewModel.actionRequest(uid,false);
             }
         });
     }

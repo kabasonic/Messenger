@@ -1,20 +1,25 @@
 package com.kabasonic.messenger.models;
 
-import com.google.firebase.database.Exclude;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.util.HashMap;
-import java.util.Map;
-
+@Entity (tableName = "user_table")
 @IgnoreExtraProperties
 public class User {
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     public String uid;
     public String imageUser;
     public String firstName;
     public String lastName;
     public String phoneNumber;
     public String nickName;
+
     public String status;
+
     public String bio;
 
 //    public User() {
@@ -22,8 +27,21 @@ public class User {
 //    }
 
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public User() {
 
+    }
+
+    public User(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public User(String uid, String imageUser, String firstName, String lastName, String phoneNumber, String nickName, String status, String bio) {
@@ -100,17 +118,5 @@ public class User {
     public void setBio(String bio) {
         this.bio = bio;
     }
-
-    //    @Exclude
-//    public Map<String, Object> toMap(){
-//        HashMap<String, Object> result = new HashMap<>();
-//        result.put("firstName",firstName);
-//        result.put("lastName",firstName);
-//        result.put("phoneNumber",phoneNumber);
-//        result.put("nickName",nickName);
-//        result.put("status",status);
-//        result.put("bio",bio);
-//        return result;
-//    }
 
 }

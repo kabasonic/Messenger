@@ -1,6 +1,7 @@
 package com.kabasonic.messenger.models;
 
 public class ContactsRequest {
+
     private String statusRequest;
 
     public ContactsRequest(String statusRequest) {

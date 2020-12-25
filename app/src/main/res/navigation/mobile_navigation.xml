@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
+    android:label="@string/mobile_nav_messages"
     app:startDestination="@id/messagesFragment">
     <fragment
         android:id="@+id/messagesFragment"
         android:name="com.kabasonic.messenger.ui.bottomnavigation.messages.MessagesFragment"
         android:label="@string/mobile_nav_messages"
-        tools:layout="@layout/messages_fragment" >
+        tools:layout="@layout/messages_fragment">
         <action
             android:id="@+id/action_messagesFragment_to_OTPNumberFragment"
             app:destination="@id/OTPNumberFragment"
@@ -25,101 +25,96 @@
         android:label="@string/mobile_nav_contacts"
         tools:layout="@layout/contacts_fragment" />
     <fragment
-        android:id="@+id/groupsFragment"
-        android:name="com.kabasonic.messenger.ui.bottomnavigation.groups.GroupsFragment"
-        android:label="@string/mobile_nav_groups"
-        tools:layout="@layout/groups_fragment" />
-    <fragment
         android:id="@+id/profileFragment"
         android:name="com.kabasonic.messenger.ui.bottomnavigation.profile.ProfileFragment"
         android:label="@string/mobile_nav_profile"
         tools:layout="@layout/profile_fragment">
         <action
             android:id="@+id/action_profileFragment_to_OTPNumberFragment"
-            app:popUpTo="@+id/profileFragment"
-            app:popUpToInclusive="true"
             app:destination="@id/OTPNumberFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@+id/profileFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_profileFragment_to_editUsernameFragment"
             app:destination="@id/editUsernameFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_profileFragment_to_ediBioFragment"
             app:destination="@id/ediBioFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_profileFragment_to_editNicknameFragment"
             app:destination="@id/editNicknameFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/OTPNumberFragment"
-        android:name="com.kabasonic.messenger.ui.authorization.otpnumber.OTPNumberFragment"
+        android:name="com.kabasonic.messenger.ui.authorization.OTPNumberFragment"
         android:label="Messenger"
-        tools:layout="@layout/fragment_o_t_p_number" >
+        tools:layout="@layout/fragment_o_t_p_number">
         <action
             android:id="@+id/action_OTPNumberFragment_to_OTPCodeFragment"
             app:destination="@id/OTPCodeFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/OTPCodeFragment"
-        android:name="com.kabasonic.messenger.ui.authorization.otpcode.OTPCodeFragment"
+        android:name="com.kabasonic.messenger.ui.authorization.OTPCodeFragment"
         android:label="Messenger"
-        tools:layout="@layout/fragment_o_t_p_code" >
+        tools:layout="@layout/fragment_o_t_p_code">
         <argument
             android:name="arg"
+            android:defaultValue="Null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="Null" />
+            app:nullable="true" />
         <action
             android:id="@+id/action_OTPCodeFragment_to_messagesFragment"
             app:destination="@id/messagesFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_OTPCodeFragment_to_registrationFragment"
             app:destination="@id/registrationFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <argument
             android:name="arg1"
+            android:defaultValue="null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="null" />
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="com.kabasonic.messenger.ui.registration.RegistrationFragment"
+        android:name="com.kabasonic.messenger.ui.authorization.RegistrationFragment"
         android:label="Registration"
-        tools:layout="@layout/registration_fragment" >
+        tools:layout="@layout/registration_fragment">
         <action
             android:id="@+id/action_registrationFragment_to_messagesFragment"
             app:destination="@id/messagesFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/editUsernameFragment"
@@ -137,12 +132,15 @@
         android:id="@+id/userProfileFragment"
         android:name="com.kabasonic.messenger.ui.userprofile.UserProfileFragment"
         android:label="User profile"
-        tools:layout="@layout/profile_user" >
+        tools:layout="@layout/profile_user">
         <argument
             android:name="userUid"
             app:argType="string"
             app:nullable="true"
             android:defaultValue="null" />
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="messenger.me/{userUid}" />
     </fragment>
     <fragment
         android:id="@+id/allContactsFragment"
@@ -155,12 +153,12 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/onlineContactsFragment"
         android:name="com.kabasonic.messenger.ui.bottomnavigation.contacts.tabs.OnlineContactsFragment"
-        android:label="OnlineContactsFragment" >
+        android:label="OnlineContactsFragment">
         <action
             android:id="@+id/action_onlineContactsFragment_to_userProfileFragment"
             app:destination="@id/userProfileFragment" />
@@ -176,7 +174,7 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
 </navigation>

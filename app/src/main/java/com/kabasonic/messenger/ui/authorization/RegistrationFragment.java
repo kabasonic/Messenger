@@ -1,6 +1,4 @@
-package com.kabasonic.messenger.ui.registration;
-
-import androidx.lifecycle.ViewModelProviders;
+package com.kabasonic.messenger.ui.authorization;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,8 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import android.text.Editable;
@@ -19,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,9 +27,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.User;
-import com.kabasonic.messenger.ui.authorization.otpcode.OTPCodeFragment;
-
-import java.util.Objects;
 
 public class RegistrationFragment extends Fragment {
 

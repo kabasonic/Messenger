@@ -24,10 +24,11 @@ import com.kabasonic.messenger.ui.adapters.items.RowItem;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AdapterRequestItem extends RecyclerView.Adapter<AdapterRequestItem.SingleItemViewHolder> {
 
-    private ArrayList<User> mRowItems;
+    private List<User> mRowItems;
     private RequestItemRow mListener;
     private Context context;
     public interface RequestItemRow {
@@ -78,20 +79,29 @@ public class AdapterRequestItem extends RecyclerView.Adapter<AdapterRequestItem.
                 }
             });
         }
-//
-//        try{
-//            Picasso.get().load(userImage).placeholder(R.drawable.default_user_image).into(holder.mUserImage);
-//        } catch (Exception e){
-//
-//        }
     }
 
     @Override
     public int getItemCount() {
+        if(mRowItems == null)
+            return 0;
         return mRowItems.size();
     }
 
-    public AdapterRequestItem(ArrayList<User> mRowItems, Context context){
+    public void setRequest (List<User> request){
+        this.mRowItems = request;
+        notifyDataSetChanged();
+    }
+
+    public void removeItem (int position){
+        mRowItems.remove(position);
+    }
+
+    public AdapterRequestItem(Context context){
+        this.context = context;
+    }
+
+    public AdapterRequestItem(List<User> mRowItems, Context context){
         this.mRowItems = mRowItems;
         this.context = context;
     }

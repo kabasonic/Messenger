@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".ui.authorization.otpnumber.OTPNumberFragment">
+    tools:context=".ui.authorization.OTPNumberFragment">
 
         <ImageView
             android:layout_width="80dp"
@@ -39,7 +39,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:orientation="horizontal">
 
@@ -128,6 +128,7 @@
             android:layout_margin="16dp"
             android:src="@drawable/ic_round_done_24"
             android:visibility="invisible"
+            android:background="@color/colorPrimary"
             app:tint="@color/colorWhite" />
 
 

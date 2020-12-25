@@ -12,7 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-
         <!-- Add android:theme="@style/AppTheme.Launcher" for Splash screen -->
         <activity
             android:name=".MainActivity"
@@ -23,6 +22,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <nav-graph android:value="@navigation/mobile_navigation"/>
+
+
         </activity>
         <activity android:name=".ui.onboarding.ScreenSlidePagerActivity" />
         <activity android:name=".ui.userchat.UserChat" />

@@ -848,4 +848,10 @@
         <item>Delete message</item>
     </string-array>
 
+    <!--  Dialog window for Create Group-->
+    <string-array name="dialog_create_group">
+        <item>Add image with gallery</item>
+        <item>Add image with camera</item>
+    </string-array>
+
 </resources>

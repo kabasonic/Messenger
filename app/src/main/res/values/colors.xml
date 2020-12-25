@@ -8,9 +8,9 @@
 <!--    <color name="colorPrimaryDark">#ffaf49</color>-->
 <!--    <color name="colorAccent">#f47100</color>-->
 
-    <color name="colorPrimary">#FFAB40</color>
-    <color name="colorPrimaryDark">#c77c02</color>
-    <color name="colorLight">#ffdd71</color>
+    <color name="colorPrimary">#ab47bc</color>
+    <color name="colorPrimaryDark">#790e8b</color>
+    <color name="colorLight">#df78ef</color>
 
     <color name="colorWindowBackground">#ECEFF1</color>
 

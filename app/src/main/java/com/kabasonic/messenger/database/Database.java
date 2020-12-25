@@ -1,5 +1,7 @@
 package com.kabasonic.messenger.database;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -9,18 +11,27 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.annotations.NotNull;
 import com.kabasonic.messenger.models.User;
 
 import java.util.HashMap;
 import java.util.Map;
 
+
+
 public class Database {
 
+    public static final String TAG = "Database";
+    public static final String USERS = "users";
+
     private DatabaseReference mDatabase;
+    private FirebaseUser mCurrentUser;
 
     public Database() {
-
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
     }
+
 
     public void updateUser(Map<String, Object> newValues) {
         FirebaseUser userId = FirebaseAuth.getInstance().getCurrentUser();
@@ -48,6 +59,5 @@ public class Database {
             }
         });
     }
-
 
 }

@@ -8,11 +8,11 @@
         android:enabled="true"
         />
 
-    <item
-        android:id="@+id/groupsFragment"
-        android:icon="@drawable/ic_round_people_24"
-        android:title="@string/mobile_nav_groups"
-        android:enabled="true"/>
+<!--    <item-->
+<!--        android:id="@+id/groupsFragment"-->
+<!--        android:icon="@drawable/ic_round_people_24"-->
+<!--        android:title="@string/mobile_nav_groups"-->
+<!--        android:enabled="true"/>-->
 
     <item
         android:id="@+id/messagesFragment"

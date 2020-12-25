@@ -3,7 +3,7 @@ package com.kabasonic.messenger.models;
 public class ChatList {
     private String uid;
 
-    public ChatList(){
+    public ChatList() {
 
     }
 

@@ -14,9 +14,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_nav_menu"
-        app:itemIconTint="@color/colorBlack"
-        app:itemTextColor="@color/colorBlack"
-        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/colorWhite"
+        app:itemTextColor="@color/colorWhite"
+        app:labelVisibilityMode="unlabeled"
         style="@style/Widget.MaterialComponents.BottomNavigationView.Colored">
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>

@@ -9,9 +9,10 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -19,24 +20,21 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.kabasonic.messenger.notifications.Token;
+import com.kabasonic.messenger.ui.bottomnavigation.contacts.viewmodels.RequestContactsViewModel;
 import com.kabasonic.messenger.ui.onboarding.ScreenSlidePagerActivity;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
+
     public static final String TAG = "com.kabasonic.messenger";
 
     private BottomNavigationView bottomNavigationView;
-    private BadgeDrawable mContactBudge;
+    private NavController navController;
+    private RequestContactsViewModel requestContactsViewModel;
+    private BadgeDrawable mContactBadge;
+    private RequestContactsViewModel mViewModel;
 
-    private String mUID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //Set theme for Splash screen
@@ -45,23 +43,27 @@ public class MainActivity extends AppCompatActivity {
         checkStartOnBoarding();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         initNavigation();
-
-        createBudgets();
-        initNavigation();
-
-        mContactBudge = bottomNavigationView.getOrCreateBadge(R.id.contactsFragment);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null){
-            countRequestContact();
-        }
-
-        checkedUserStatus();
-
-        updateToken(FirebaseInstanceId.getInstance().getToken());
-
+        setBadges();
     }
+
+    private void setBadges() {
+        mViewModel = ViewModelProviders.of(this).get(RequestContactsViewModel.class);
+        mViewModel.init();
+        mViewModel.getCountRequests().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                mContactBadge = bottomNavigationView.getOrCreateBadge(R.id.contactsFragment);
+                if(integer != 0){
+                    mContactBadge.setVisible(true);
+                    mContactBadge.setNumber(integer);
+                }else{
+                    mContactBadge.setVisible(false);
+                }
+            }
+        });
+    }
+
 
     private void initNavigation() {
         //Set toolbar
@@ -70,132 +72,47 @@ public class MainActivity extends AppCompatActivity {
         //Set bottom navigation with fragment
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         //Configuration AppBar
-        NavController navController = Navigation.findNavController(this,R.id.fragment);
+        navController = Navigation.findNavController(this, R.id.fragment);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.contactsFragment,
-                R.id.groupsFragment,
                 R.id.messagesFragment,
                 R.id.profileFragment).build();
+
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         //Listener destination between fragments
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             bottomNavigationView.setVisibility(View.VISIBLE);
-            switch (destination.getId()) {
-                case R.id.contactsFragment:
-                    break;
-                case R.id.groupsFragment:
-                    break;
-                case R.id.messagesFragment:
-                    break;
-                case R.id.profileFragment:
-                    break;
-                case R.id.userProfileFragment:
-                    break;
-                default:
-                    //Sets animation, when bottom navigation need hide
-                    Animation hideBottomNav = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out_bottom);
-                    bottomNavigationView.startAnimation(hideBottomNav);
-                    bottomNavigationView.setVisibility(View.INVISIBLE);
-                    break;
+            Animation hideBottomNav = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out_bottom);
+            Animation showBottomNav = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_bottom);
+            if (destination.getId() == R.id.OTPNumberFragment ||
+                    destination.getId() == R.id.OTPCodeFragment ||
+                    destination.getId() == R.id.ediBioFragment ||
+                    destination.getId() == R.id.editNicknameFragment ||
+                    destination.getId() == R.id.editUsernameFragment ||
+                    destination.getId() == R.id.registrationFragment){
+                bottomNavigationView.startAnimation(hideBottomNav);
+                bottomNavigationView.setVisibility(View.INVISIBLE);
+            } else if( destination.getId() == R.id.messagesFragment ||
+                        destination.getId() == R.id.profileFragment ||
+                        destination.getId() == R.id.contactsFragment){
+                bottomNavigationView.setVisibility(View.VISIBLE);
             }
         });
 
-
     }
-
-    @Override
-    protected void onResume() {
-        checkedUserStatus();
-        //updateToken(FirebaseInstanceId.getInstance().getToken());
-        super.onResume();
-    }
-
-    private void checkedUserStatus() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user!=null){
-            this.mUID = user.getUid();
-            SharedPreferences sharedPreferences = getSharedPreferences("SP_USER",MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("Current_USERID",mUID);
-            editor.apply();
-        }else{
-            Log.d(TAG,"checkedUserStatus: user null" );
-        }
-    }
-    private void updateToken(String token){
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Token mToken = new Token(token);
-
-        if(user!=null){
-            mDatabase.child("tokens").child(mUID).setValue(mToken);
-            Log.d(TAG,"Token update" );
-        }else{
-            Log.d(TAG,"updateToken: user null" );
-        }
-
-    }
-    //    @Override
-//    public void onBackPressed() {
-////        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
-////        if (currentFragment instanceof OTPNumberFragment) {
-////            getSupportFragmentManager().popBackStack();
-////        } else if (currentFragment instanceof OTPCodeFragment) {
-////            Toast.makeText(this, "back", Toast.LENGTH_SHORT).show();
-////        } else {
-////            finish();
-////        }
-//    }
 
     /*
-    This method is called whenever the user chooses to navigate Up
-    within your application's activity hierarchy from the action bar.
-     */
+        This method is called whenever the user chooses to navigate Up
+        within your application's activity hierarchy from the action bar.
+         */
     @Override
     public boolean onSupportNavigateUp() {
         return Navigation.findNavController(this, R.id.fragment).navigateUp()
                 || super.onSupportNavigateUp();
     }
 
-    private void countRequestContact() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("request").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int countRequest = 0;
-
-                countRequest = (int) snapshot.getChildrenCount();
-                Log.d(TAG, "Count request: " + countRequest);
-                contactRequest(countRequest);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void contactRequest(int countRequest){
-        if(countRequest !=0){
-            mContactBudge.setVisible(true);
-            mContactBudge.setNumber(countRequest);
-        }else{
-            mContactBudge.setVisible(false);
-        }
-    }
-
-    private void createBudgets() {
-        BadgeDrawable mGroupsBudge = bottomNavigationView.getOrCreateBadge(R.id.groupsFragment);
-        BadgeDrawable mMessagesBudget = bottomNavigationView.getOrCreateBadge(R.id.messagesFragment);
-
-        mGroupsBudge.setNumber(1);
-        mMessagesBudget.setNumber(5437865);
-    }
-
-    public void checkStartOnBoarding() {
+    private void checkStartOnBoarding() {
         SharedPreferences settings = getSharedPreferences(getString(R.string.settings), Context.MODE_PRIVATE);
         //Create variable settings for preferences
         if (!settings.getBoolean("StartOnBoarding", false)) {
@@ -209,6 +126,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
 
+        int id = Objects.requireNonNull(navController.getCurrentDestination()).getId();
+        Log.d(TAG, "Back button pressed id: " + id);
+        switch (id) {
+            case R.id.OTPNumberFragment:
+                Log.d(TAG, "Finish application");
+                finish();
+                break;
+            case R.id.OTPCodeFragment:
+                Log.d(TAG, "Back to OTPNumber fragment");
+                navController.navigateUp();
+                break;
+            case R.id.registrationFragment:
+                Log.d(TAG, "Back to OTPCodeFragment");
+                navController.navigateUp();
+                break;
 
+            default:
+                Log.d(TAG, "onBackPressed return NULL");
+                break;
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package com.kabasonic.messenger.models;
 
 public class Contacts {
+
     private String userUid;
 
     public Contacts(String userUid) {

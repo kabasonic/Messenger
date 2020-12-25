@@ -37,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.database.Database;
 import com.kabasonic.messenger.models.Contacts;
 import com.kabasonic.messenger.models.ContactsRequest;
 import com.kabasonic.messenger.ui.adapters.AdapterProfileDoubleItem;
@@ -73,6 +74,8 @@ public class UserProfileFragment extends Fragment {
         getArgumentsFragment();
         initView(view);
         listenerLists();
+
+
         mSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,11 +97,18 @@ public class UserProfileFragment extends Fragment {
 
     private void getArgumentsFragment() {
         if (getArguments() != null) {
-
             UserProfileFragmentArgs args = UserProfileFragmentArgs.fromBundle(getArguments());
-            this.userCurrentProfile = getArguments().getString("uid");
-            Toast.makeText(getActivity(), this.userCurrentProfile, Toast.LENGTH_SHORT).show();
-            getUserFirebase(this.userCurrentProfile);
+            String uid = args.getUserUid();
+            Log.d(TAG,"Recive uid" + uid);
+
+            if(!uid.isEmpty()){
+               this.userCurrentProfile = uid;
+               getUserFirebase(this.userCurrentProfile);
+            }else {
+                this.userCurrentProfile = getArguments().getString("uid");
+                Toast.makeText(getActivity(), this.userCurrentProfile, Toast.LENGTH_SHORT).show();
+                getUserFirebase(this.userCurrentProfile);
+            }
         }
     }
 
@@ -124,7 +134,7 @@ public class UserProfileFragment extends Fragment {
 
     private void setValues(Map<String, Object> userValues) {
         String userName = null;
-        String[] userinfo = new String[3];
+        String[] userinfo = {"","",""};
         for (Map.Entry<String, Object> item : userValues.entrySet()) {
             switch (item.getKey()) {
                 case "firstName":

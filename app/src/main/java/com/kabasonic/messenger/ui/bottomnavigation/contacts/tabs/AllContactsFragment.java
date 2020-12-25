@@ -13,43 +13,44 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.kabasonic.messenger.BuildConfig;
 import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.User;
-import com.kabasonic.messenger.ui.adapters.AdapterSingleItem;
+import com.kabasonic.messenger.ui.adapters.AdapterContactItem;
+import com.kabasonic.messenger.ui.bottomnavigation.contacts.viewmodels.AllContactsViewModel;
 import com.kabasonic.messenger.ui.userchat.UserChat;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class AllContactsFragment extends Fragment {
 
     public static final String TAG = "AllContactsFragment";
 
-    private ArrayList<User> mUsersList;
     private RecyclerView mRecyclerView;
-    private AdapterSingleItem mAdapterSingleItem;
+    public AdapterContactItem mAdapterContactItem;
     private RecyclerView.LayoutManager mLayoutManager;
-    MainActivity mActivity;
-
-    private ArrayList<String> uidContacts;
+    private MainActivity mActivity;
+    private AllContactsViewModel mViewModel;
+    private ImageView imageContact;
+    private TextView textContact;
+    private int mSizeContacts;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -66,50 +67,77 @@ public class AllContactsFragment extends Fragment {
         return root;
     }
 
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG,"onCreateView");
+
         mRecyclerView = getView().findViewById(R.id.rvAllContacts);
-        //getMyContacts();
+        imageContact = view.findViewById(R.id.image_contacts);
+        textContact = view.findViewById(R.id.text_contacts);
+
+        mViewModel = ViewModelProviders.of(this).get(AllContactsViewModel.class);
+        mViewModel.init();
+
+        buildRecyclerView();
+    }
+
+    private void buildRecyclerView() {
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(mActivity);
+        mAdapterContactItem = new AdapterContactItem( getContext());
+        mRecyclerView.setAdapter(mAdapterContactItem);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapterContactItem.setOnItemClickListener(new AdapterContactItem.OnItemClickListener() {
+            @Override
+            public void onItemClick(String uid, int posotion) {
+                Toast.makeText(getContext(), "Clicked button: " + uid, Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putString("uid", uid);
+                Navigation.findNavController(getView()).navigate(R.id.userProfileFragment, bundle);
+            }
+
+            @Override
+            public void onMoreButtonClick(String uid, int position) {
+                alertWindow(uid, position);
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getMyContacts();
-    }
+        Log.d(TAG,"onResume");
 
-    public void buildRecyclerView(ArrayList<User> mRowItems) {
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(mActivity);
-        mAdapterSingleItem = new AdapterSingleItem(mRowItems,getContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapterSingleItem.notifyDataSetChanged();
-        mRecyclerView.setAdapter(mAdapterSingleItem);
+        mViewModel.getAllContacts().observe(getViewLifecycleOwner(), new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                Log.d(TAG,"Users size All: " + users.size());
+                mSizeContacts = users.size();
+                if(users.isEmpty()){
+                    textContact.setVisibility(View.VISIBLE);
+                    imageContact.setVisibility(View.VISIBLE);
+                }else{
+                    textContact.setVisibility(View.INVISIBLE);
+                    imageContact.setVisibility(View.INVISIBLE);
+                }
+                mAdapterContactItem.setUsers(users);
+                mAdapterContactItem.notifyDataSetChanged();
 
-        mAdapterSingleItem.setOnItemClickListener(new AdapterSingleItem.OnItemClickListener() {
-           @Override
-           public void onItemClick(String uid) {
-               Toast.makeText(getContext(), "Clicked button: " + uid, Toast.LENGTH_SHORT).show();
-               navigation(uid);
-           }
-           @Override
-           public void onMoreButtonClick(String uid) {
-               /*
-               TODO: Navigation chat fragment with User, Write message, Copy link to user, delete with contact
-                */
-               alertWindow(uid);
-           }
+            }
         });
+
     }
 
-    private void navigation(String currentUid){
-        Bundle bundle = new Bundle();
-        bundle.putString("uid",currentUid);
-        Navigation.findNavController(getView()).navigate(R.id.userProfileFragment, bundle);
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG,"onPause");
     }
 
-    private void alertWindow(String uid) {
+    private void alertWindow(String uid, int position) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setItems(R.array.dialog_contact, new DialogInterface.OnClickListener() {
             @Override
@@ -119,15 +147,19 @@ public class AllContactsFragment extends Fragment {
                     case 0:
                         Log.i(TAG, "Selected item " + which);
                         Intent intent = new Intent(getContext(), UserChat.class);
-                        intent.putExtra("uid",uid);
+                        intent.putExtra("uid", uid);
                         getContext().startActivity(intent);
                         break;
                     case 1:
                         Log.i(TAG, "Selected item " + which);
+                        shareLinkToProfile(uid);
                         break;
                     case 2:
-                        Log.i(TAG, "Selected item " + which);
-                        deleteContacts(uid);
+                        Log.i(TAG, "Selected item Delete contact" + which);
+                        mViewModel.deleteContact(uid);
+                        mAdapterContactItem.deleteItem(position);
+                        mAdapterContactItem.notifyItemRemoved(position);
+                        //mAdapterContactItem.notifyDataSetChanged();
                         break;
                     default:
                         Log.i(TAG, "Not selected item ");
@@ -138,11 +170,22 @@ public class AllContactsFragment extends Fragment {
         builder.show();
     }
 
+    private void shareLinkToProfile(String uid){
+        Intent myIntent = new Intent(Intent.ACTION_SEND);
+        myIntent.setType("text/plain");
+        String shareBody = "Application Messenger\nLink to profile user:" +"\nmessenger.me/" + uid;
+        myIntent.putExtra(Intent.EXTRA_SUBJECT, shareBody);
+        myIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+        startActivity(Intent.createChooser(myIntent, "Share"));
+    }
+
+
     // Create app top bar menu
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -155,20 +198,30 @@ public class AllContactsFragment extends Fragment {
         MenuItem item = menu.findItem(R.id.menu_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
         searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
-            if(!hasFocus) {
-                getMyContacts();
+            if (!hasFocus) {
+                Log.d(TAG,"Not Focused");
+            }else{
+                Log.d(TAG,"Focused");
             }
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if(!TextUtils.isEmpty(query.trim())){
-                    searchUsers(query);
-                }else{
-                    getMyContacts();
+                if (!TextUtils.isEmpty(query.trim())) {
+                    Log.d(TAG,"Empty text");
+                    mViewModel.searchUsers(query);
+                    mViewModel.getSearchedUsers().observe(getViewLifecycleOwner(), new Observer<List<User>>() {
+                        @Override
+                        public void onChanged(List<User> users) {
+                            mAdapterContactItem.setUsers(users);
+                            mAdapterContactItem.notifyDataSetChanged();
+
+                        }
+                    });
                 }
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 return false;
@@ -176,119 +229,4 @@ public class AllContactsFragment extends Fragment {
         });
         super.onCreateOptionsMenu(menu, inflater);
     }
-
-    private void getAllUsers() {
-        mUsersList = new ArrayList<>();
-        FirebaseUser userId = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("users").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUsersList.clear();
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    User modelUser = dataSnapshot.getValue(User.class);
-                    if(!modelUser.getUid().equals(userId.getUid())){
-                        mUsersList.add(modelUser);
-                    }
-                    buildRecyclerView(mUsersList);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-    }
-
-    private void searchUsers(String query) {
-        mUsersList = new ArrayList<>();
-        FirebaseUser userId = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("users").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUsersList.clear();
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    User user = dataSnapshot.getValue(User.class);
-                    if(!user.getUid().equals(userId.getUid())){
-                        if(user.getFirstName().toLowerCase().contains(query.toLowerCase())
-                                ||user.getLastName().toLowerCase().contains(query.toLowerCase())||
-                                user.getNickName().toLowerCase().contains(query.toLowerCase())){
-                            mUsersList.add(user);
-                        }
-                    }
-                    buildRecyclerView(mUsersList);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
-        });
-    }
-
-    private void getMyContacts(){
-        uidContacts = new ArrayList<>();
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("contact").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    Log.d("Requests UIDS: " ,String.valueOf(dataSnapshot.getKey()));
-                    uidContacts.add(String.valueOf(dataSnapshot.getKey()));
-                }
-                if(!uidContacts.isEmpty()){
-                    Log.d(TAG,"LIST EMPTY");
-                    showMyContact(uidContacts);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void showMyContact(ArrayList<String> uidContacts){
-        mUsersList = new ArrayList<>();
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("users").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int i = 0;
-                mUsersList.clear();
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    if(uidContacts.size() > i && String.valueOf(dataSnapshot.getKey()).equals(uidContacts.get(i))){
-                        User user = dataSnapshot.getValue(User.class);
-                        mUsersList.add(user);
-                        i++;
-                    }
-                    buildRecyclerView(mUsersList);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void deleteContacts(String uid){
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("contact").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mDatabase.child("contact").child(currentUser.getUid()).child(uid).removeValue();
-            getMyContacts();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
 }

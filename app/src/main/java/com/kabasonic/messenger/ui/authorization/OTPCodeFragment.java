@@ -1,4 +1,4 @@
-package com.kabasonic.messenger.ui.authorization.otpcode;
+package com.kabasonic.messenger.ui.authorization;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
@@ -36,6 +37,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
+import com.kabasonic.messenger.ui.authorization.OTPCodeFragmentArgs;
+import com.kabasonic.messenger.ui.authorization.OTPCodeFragmentDirections;
 
 import java.util.concurrent.TimeUnit;
 
@@ -56,6 +59,7 @@ public class OTPCodeFragment extends Fragment {
     public PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     public PhoneAuthProvider.ForceResendingToken mResendToken;
     private String mVerificationId;
+
 
     private DatabaseReference  mDatabase;
     private View mView;
@@ -212,11 +216,13 @@ public class OTPCodeFragment extends Fragment {
 
     private void navFragments(boolean result){
         if(result){
-            NavDirections action = OTPCodeFragmentDirections.actionOTPCodeFragmentToMessagesFragment();
-            Navigation.findNavController(this.mView).navigate(action);
+            //NavDirections action = OTPCodeFragmentDirections.actionOTPCodeFragmentToMessagesFragment();
+            //Navigation.findNavController(this.mView).navigate(action);
+            Navigation.findNavController(getView()).navigate(R.id.messagesFragment);
         } else{
             NavDirections action = OTPCodeFragmentDirections.actionOTPCodeFragmentToRegistrationFragment();
             Navigation.findNavController(this.mView).navigate(action);
+            //Navigation.findNavController(getView()).navigate(R.id.registrationFragment);
         }
 
     }

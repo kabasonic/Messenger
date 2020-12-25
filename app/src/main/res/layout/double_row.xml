@@ -15,7 +15,7 @@
                 android:id="@+id/imageDoubleRow"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:src="@drawable/image_profile_test"
+                android:src="@drawable/default_user_image"
                 android:layout_gravity="center" />
 
 
