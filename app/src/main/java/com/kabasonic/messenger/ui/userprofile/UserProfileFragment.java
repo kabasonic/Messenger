@@ -20,8 +20,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,13 +35,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kabasonic.messenger.R;
-import com.kabasonic.messenger.database.Database;
-import com.kabasonic.messenger.models.Contacts;
 import com.kabasonic.messenger.models.ContactsRequest;
-import com.kabasonic.messenger.ui.adapters.AdapterProfileDoubleItem;
+import com.kabasonic.messenger.ui.adapters.AdapterMyProfile;
 import com.kabasonic.messenger.ui.adapters.items.RowItem;
-import com.kabasonic.messenger.ui.bottomnavigation.profile.ProfileFragment;
-import com.kabasonic.messenger.ui.bottomnavigation.profile.ProfileFragmentDirections;
 import com.kabasonic.messenger.ui.userchat.UserChat;
 
 import java.util.ArrayList;
@@ -201,7 +195,7 @@ public class UserProfileFragment extends Fragment {
         for (int i = 0; i < imagesOne.length; i++) {
             mArraList.add(new RowItem(imagesOne[i], userinfo[i], subtitleLV[i]));
         }
-        AdapterProfileDoubleItem adapterThreeRow = new AdapterProfileDoubleItem(getContext(), R.layout.double_row_profile, mArraList);
+        AdapterMyProfile adapterThreeRow = new AdapterMyProfile(getContext(), R.layout.double_row_profile, mArraList);
         mLvUser.setAdapter(adapterThreeRow);
     }
 

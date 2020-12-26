@@ -1,5 +1,7 @@
 package com.kabasonic.messenger.ui.adapters.items;
 
+import com.kabasonic.messenger.models.User;
+
 public class RowItem {
 
     private int mIcon;
@@ -38,6 +40,8 @@ public class RowItem {
         this.mTime = mTime;
         this.mCountMessage = mCountMessage;
     }
+
+
 
     public int getmIcon() {
         return mIcon;

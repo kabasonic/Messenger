@@ -5,22 +5,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -28,23 +24,13 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.User;
 import com.kabasonic.messenger.ui.adapters.AdapterContactItem;
-import com.kabasonic.messenger.ui.bottomnavigation.LoadingDialog;
-import com.kabasonic.messenger.ui.bottomnavigation.contacts.viewmodels.AllContactsViewModel;
 import com.kabasonic.messenger.ui.bottomnavigation.contacts.viewmodels.OnlineContactsViewModel;
 import com.kabasonic.messenger.ui.userchat.UserChat;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OnlineContactsFragment extends Fragment {

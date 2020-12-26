@@ -6,11 +6,10 @@ import androidx.room.PrimaryKey;
 
 import com.google.firebase.database.IgnoreExtraProperties;
 
-@Entity (tableName = "user_table")
+
 @IgnoreExtraProperties
 public class User {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+
     public String uid;
     public String imageUser;
     public String firstName;
@@ -25,15 +24,6 @@ public class User {
 //    public User() {
 //        // Default constructor required for calls to DataSnapshot.getValue(User.class)
 //    }
-
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public User() {
 

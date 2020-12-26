@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import android.text.Editable;
@@ -89,9 +90,9 @@ public class RegistrationFragment extends Fragment {
 
     }
     private void navFragments() {
-//        NavDirections action = RegistrationFragmentDirections.actionRegistrationFragmentToMessagesFragment();
-//        Navigation.findNavController(this.mView).navigate(action);
-        Navigation.findNavController(getView()).navigate(R.id.messagesFragment);
+        NavDirections action = RegistrationFragmentDirections.actionRegistrationFragmentToMessagesFragment();
+        Navigation.findNavController(getView()).navigate(action);
+
     }
 
 

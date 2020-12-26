@@ -16,11 +16,12 @@ import com.kabasonic.messenger.ui.adapters.items.RowItem;
 
 import java.util.ArrayList;
 
-public class AdapterProfileDoubleItem extends ArrayAdapter<RowItem> {
+public class AdapterMyProfile extends ArrayAdapter<RowItem> {
 
     Context context;
 
-    public AdapterProfileDoubleItem(Context context, int resourceId, ArrayList<RowItem> item){
+
+    public AdapterMyProfile(Context context, int resourceId, ArrayList<RowItem> item){
         super(context,resourceId,item);
         this.context = context;
     }
@@ -30,6 +31,8 @@ public class AdapterProfileDoubleItem extends ArrayAdapter<RowItem> {
         TextView textTitle;
         TextView textSubtitle;
     }
+
+
 
     @NonNull
     @Override

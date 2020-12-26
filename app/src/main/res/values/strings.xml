@@ -804,7 +804,6 @@
     <!--  Dialog window for Profile PhoneNumber-->
     <string-array name="dialog_phone_number">
         <item>Copy</item>
-        <item>Share contact</item>
     </string-array>
 
     <!--  Dialog window for Profile Bio-->
@@ -849,9 +848,16 @@
     </string-array>
 
     <!--  Dialog window for Create Group-->
-    <string-array name="dialog_create_group">
+    <string-array name="dialog_profile_user_choose_image">
         <item>Add image with gallery</item>
-        <item>Add image with camera</item>
+<!--        <item>Add image with camera</item>-->
+    </string-array>
+
+    <!--  ListView MyProfile-->
+    <string-array name="lv_my_profile">
+        <item>Profile</item>
+        <item>Phone number</item>
+        <item>Bio</item>
     </string-array>
 
 </resources>

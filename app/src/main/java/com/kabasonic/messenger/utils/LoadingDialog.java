@@ -1,4 +1,4 @@
-package com.kabasonic.messenger.ui.bottomnavigation;
+package com.kabasonic.messenger.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;

@@ -16,6 +16,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
@@ -59,10 +61,11 @@ public class OTPCodeFragment extends Fragment {
     public PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     public PhoneAuthProvider.ForceResendingToken mResendToken;
     private String mVerificationId;
-
+    private boolean mResult;
 
     private DatabaseReference  mDatabase;
     private View mView;
+
 
     //private ArrayList<String> uidDatabase = new ArrayList<String>();
     @Override
@@ -121,6 +124,8 @@ public class OTPCodeFragment extends Fragment {
 
         };
 
+
+
     }
 
     @Override
@@ -131,7 +136,12 @@ public class OTPCodeFragment extends Fragment {
             code = otpCode.getText().toString().trim();
             actionKeyboard(false);
             submitCodeVerification(code, verificationCode);
+
+            NavDirections action = OTPCodeFragmentDirections.actionOTPCodeFragmentToRegistrationFragment();
+            Navigation.findNavController(getView()).navigate(action);
+
         });
+
     }
 
     private void formValidate() {
@@ -174,7 +184,7 @@ public class OTPCodeFragment extends Fragment {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "signInWithCredential:success");
 
-                        checkedUserUID();
+                        //checkedUserUID();
 
                         textError.setVisibility(View.INVISIBLE);
                     } else {
@@ -205,23 +215,27 @@ public class OTPCodeFragment extends Fragment {
                         break;
                     }
                 }
+                mResult = result;
                 Log.d(TAG,"Result" + result);
-                navFragments(result);
+                //navFragments(result);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+
     }
 
     private void navFragments(boolean result){
         if(result){
             //NavDirections action = OTPCodeFragmentDirections.actionOTPCodeFragmentToMessagesFragment();
             //Navigation.findNavController(this.mView).navigate(action);
-            Navigation.findNavController(getView()).navigate(R.id.messagesFragment);
+//            Navigation.findNavController(getView()).navigate(R.id.messagesFragment);
+            NavDirections action = OTPCodeFragmentDirections.actionOTPCodeFragmentToMessagesFragment();
+            Navigation.findNavController(getView()).navigate(action);
         } else{
             NavDirections action = OTPCodeFragmentDirections.actionOTPCodeFragmentToRegistrationFragment();
-            Navigation.findNavController(this.mView).navigate(action);
+            Navigation.findNavController(getView()).navigate(action);
             //Navigation.findNavController(getView()).navigate(R.id.registrationFragment);
         }
 

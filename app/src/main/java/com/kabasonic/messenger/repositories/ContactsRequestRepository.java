@@ -53,7 +53,10 @@ public class ContactsRequestRepository {
             }
             @Override
             protected Void doInBackground(Void... voids) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
                 getRequestContact();
+                }
                 try {
                     TimeUnit.SECONDS.sleep(1);
                 } catch (InterruptedException e) {
@@ -167,7 +170,10 @@ public class ContactsRequestRepository {
     }
 
     public MutableLiveData<Integer> getCountRequest() {
-        countRequest();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            countRequest();
+        }
         request.setValue(0);
         return request;
     }
