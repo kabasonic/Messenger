@@ -120,16 +120,31 @@
         android:layout_gravity="end"
         android:orientation="horizontal">
 
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/submitButtonPhone"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_round_done_24"
-            android:visibility="invisible"
-            android:background="@color/colorPrimary"
-            app:tint="@color/colorWhite" />
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/submitButtonPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:src="@drawable/ic_round_done_24"
+                android:visibility="invisible"
+                app:backgroundTint="@color/colorLight"
+                app:tint="@color/colorWhite" />
+
+            <ProgressBar
+                android:id="@+id/progressBarNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+        </FrameLayout>
+
+
+
 
 
     </LinearLayout>

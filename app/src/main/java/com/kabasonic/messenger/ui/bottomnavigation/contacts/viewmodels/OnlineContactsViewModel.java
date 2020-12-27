@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.kabasonic.messenger.models.User;
-import com.kabasonic.messenger.repositories.ContactsOnlineRepository;
+import com.kabasonic.messenger.repositories.contacts.ContactsOnlineRepository;
 
 import java.util.List;
 

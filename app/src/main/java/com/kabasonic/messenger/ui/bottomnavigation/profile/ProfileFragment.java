@@ -55,6 +55,7 @@ import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.ui.adapters.AdapterMyProfile;
 import com.kabasonic.messenger.ui.adapters.items.RowItem;
+import com.kabasonic.messenger.ui.bottomnavigation.profile.viewmodels.ProfileViewModel;
 import com.kabasonic.messenger.utils.LoadingDialog;
 import com.squareup.picasso.Picasso;
 
@@ -134,7 +135,9 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "Clicked FAB");
-                Navigation.findNavController(getView()).navigate(R.id.editUsernameFragment);
+                //Navigation.findNavController(getView()).navigate(R.id.editUsernameFragment);
+                NavDirections action = ProfileFragmentDirections.actionProfileFragmentToEditUsernameFragment();
+                Navigation.findNavController(getView()).navigate(action);
             }
         });
 
@@ -229,7 +232,7 @@ public class ProfileFragment extends Fragment {
                     switch (which) {
                         case 0:
                             if(mPhoneNumber.isEmpty()){
-                                Toast.makeText(getContext(),"Nick name is empty",Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(),"Phone number is empty",Toast.LENGTH_LONG).show();
                             }else{
                                 copyText(mPhoneNumber);
                                 Toast.makeText(getContext(),"Text is copied to the clipboard",Toast.LENGTH_LONG).show();
@@ -279,6 +282,7 @@ public class ProfileFragment extends Fragment {
         ClipData clip = ClipData.newPlainText("Copy text", text);
         clipboard.setPrimaryClip(clip);
     }
+
     private void initViewElements(View view) {
         appBarLayout = (AppBarLayout) view.findViewById(R.id.app_bar_profile);
         mUserName = view.findViewById(R.id.userNameProfile);
@@ -306,6 +310,7 @@ public class ProfileFragment extends Fragment {
             mListView.setVisibility(View.INVISIBLE);
         }
     }
+
     private void dataListView(Map<String, Object> dataMap) {
         String[] userInfo = {"", "", ""};
         for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
@@ -373,6 +378,7 @@ public class ProfileFragment extends Fragment {
             mListAdapter.add(new RowItem(imagesOne[i], userInfo[i], subtitleLV[i]));
         }
     }
+
     private void fileChoose() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -399,6 +405,7 @@ public class ProfileFragment extends Fragment {
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
+
     private void uploadFile() {
         final LoadingDialog loadingDialog = new LoadingDialog(getActivity());
         loadingDialog.startLoadingDialog();

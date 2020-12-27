@@ -131,6 +131,8 @@ public class AllContactsFragment extends Fragment {
 
     }
 
+
+
     @Override
     public void onPause() {
         super.onPause();
@@ -149,6 +151,7 @@ public class AllContactsFragment extends Fragment {
                         Intent intent = new Intent(getContext(), UserChat.class);
                         intent.putExtra("uid", uid);
                         getContext().startActivity(intent);
+
                         break;
                     case 1:
                         Log.i(TAG, "Selected item " + which);
@@ -194,6 +197,7 @@ public class AllContactsFragment extends Fragment {
         menu.findItem(R.id.menu_add_to_contacts).setVisible(false);
         menu.findItem(R.id.menu_logout).setVisible(false);
         menu.findItem(R.id.menu_create_group).setVisible(false);
+        menu.findItem(R.id.menu_settings).setVisible(false);
 
         MenuItem item = menu.findItem(R.id.menu_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);

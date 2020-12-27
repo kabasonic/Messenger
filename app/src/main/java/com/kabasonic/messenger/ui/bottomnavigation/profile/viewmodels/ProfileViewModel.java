@@ -1,4 +1,4 @@
-package com.kabasonic.messenger.ui.bottomnavigation.profile;
+package com.kabasonic.messenger.ui.bottomnavigation.profile.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -21,10 +21,11 @@ public class ProfileViewModel extends ViewModel {
         }
         mRepo = ProfileRepository.getInstance();
         mMyProfile = mRepo.getMyProfile();
-        deleteImage = mRepo.getDeleteImage();
+
     }
 
     public LiveData<String> getDeleteImage(){
+        deleteImage = mRepo.getDeleteImage();
         return deleteImage;
     }
 

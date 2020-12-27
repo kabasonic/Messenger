@@ -14,7 +14,8 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_profile"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="316dp"
+        android:background="@drawable/bk_profile"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -28,10 +29,11 @@
             app:scrimAnimationDuration="600"
             app:title="Title">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/image_profile_app_bar"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_marginTop="16dp"
+                android:layout_height="230dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/default_user_image" />
 
@@ -89,7 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
-        android:background="@color/colorPrimary"
+        app:backgroundTint="@color/colorLight"
         android:src="@drawable/ic_round_edit_24"
         app:layout_anchor="@id/app_bar_profile"
         app:layout_anchorGravity="bottom|right|end" />

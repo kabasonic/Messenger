@@ -2,13 +2,6 @@ package com.kabasonic.messenger.ui.authorization;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavDirections;
-import androidx.navigation.Navigation;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -16,29 +9,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
-import com.kabasonic.messenger.models.User;
+import com.kabasonic.messenger.ui.authorization.viewmodels.RegistrationViewModel;
 
 public class RegistrationFragment extends Fragment {
 
     public static final String TAG = "RegistrationFragment";
 
-    private EditText firstName, lastName;
+    private EditText firstName,
+                     lastName;
     private FloatingActionButton submitRegistration;
-
-    private DatabaseReference mDatabase;
-    MainActivity mActivity;
-    private View mView;
+    private ProgressBar mProgressBar;
+    private MainActivity mActivity;
+    private RegistrationViewModel mViewModel;
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -56,45 +51,35 @@ public class RegistrationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.mView = view;
-        firstName = (EditText) view.findViewById(R.id.firstName);
-        lastName = (EditText) view.findViewById(R.id.lastName);
-        submitRegistration = (FloatingActionButton) view.findViewById(R.id.submitRegistration);
+
+        mViewModel = ViewModelProviders.of(this).get(RegistrationViewModel.class);
+        mViewModel.init();
+
+        initViewElements(view);
         formValidation();
         submitRegistration.setOnClickListener(v -> {
                 actionKeyboard(false);
-                createUser();
-
+                submitRegistration.setVisibility(View.INVISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
+                //createUser();
+                mViewModel.createUser(firstName.getText().toString(),lastName.getText().toString()).observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean aBoolean) {
+                        if(aBoolean){
+                            NavDirections action = RegistrationFragmentDirections.actionRegistrationFragmentToMessagesFragment();
+                            Navigation.findNavController(getView()).navigate(action);
+                        }
+                    }
+                });
         });
     }
 
-    private void createUser(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
-        String userId = user.getUid();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                User user = new User(userId,"",firstName.getText().toString(),lastName.getText().toString(),phoneNumber,"","","");
-                mDatabase.child("users").child(userId).setValue(user);
-                navFragments();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
+    private void initViewElements(View view){
+        firstName = (EditText) view.findViewById(R.id.firstName);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progressBarRegistration);
+        lastName = (EditText) view.findViewById(R.id.lastName);
+        submitRegistration = (FloatingActionButton) view.findViewById(R.id.submitRegistration);
     }
-    private void navFragments() {
-        NavDirections action = RegistrationFragmentDirections.actionRegistrationFragmentToMessagesFragment();
-        Navigation.findNavController(getView()).navigate(action);
-
-    }
-
 
     private void formValidation(){
         firstName.addTextChangedListener(new TextWatcher() {
@@ -113,7 +98,6 @@ public class RegistrationFragment extends Fragment {
         });
 
     }
-
     private void actionKeyboard(boolean action) {
         View view = getActivity().getCurrentFocus();
         if (view != null) {

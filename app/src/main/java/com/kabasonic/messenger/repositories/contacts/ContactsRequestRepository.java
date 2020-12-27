@@ -1,10 +1,9 @@
-package com.kabasonic.messenger.repositories;
+package com.kabasonic.messenger.repositories.contacts;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -15,7 +14,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.internal.Sleeper;
 import com.kabasonic.messenger.models.Contacts;
 import com.kabasonic.messenger.models.User;
 

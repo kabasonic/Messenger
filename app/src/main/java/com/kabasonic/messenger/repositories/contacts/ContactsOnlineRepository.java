@@ -1,7 +1,8 @@
-package com.kabasonic.messenger.repositories;
+package com.kabasonic.messenger.repositories.contacts;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -19,24 +20,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class AllContactsRepository {
+public class ContactsOnlineRepository {
 
-    private static AllContactsRepository instance;
+    public static final String TAG = "ContactsOnlineRepository";
+    private static ContactsOnlineRepository instance;
+
     private ArrayList<User> dataSet = new ArrayList<>();
 
     private ArrayList<String> uidContacts;
     private String uidContact;
     private String mQuery;
 
-    public static AllContactsRepository getInstance(){
-        if(instance == null ){
-            instance = new AllContactsRepository();
+    public static ContactsOnlineRepository getInstance() {
+        if (instance == null) {
+            instance = new ContactsOnlineRepository();
         }
         return instance;
     }
 
     @SuppressLint("StaticFieldLeak")
-    public MutableLiveData<List<User>> getAllContacts(){
+    public MutableLiveData<List<User>> getOnlineContacts(){
         MutableLiveData<List<User>> data = new MutableLiveData<>();
         new AsyncTask<Void,Void,Void>(){
             @Override
@@ -46,7 +49,7 @@ public class AllContactsRepository {
             }
             @Override
             protected Void doInBackground(Void... voids) {
-                getMyContacts();
+                getMyOnlineContacts();
                 try{
                     TimeUnit.SECONDS.sleep(1);
                 }catch (InterruptedException e){
@@ -63,86 +66,13 @@ public class AllContactsRepository {
         return data;
     }
 
-    public MutableLiveData<List<User>> getSearchedUsers(){
-        searchUsers();
-        MutableLiveData<List<User>> data = new MutableLiveData<>();
-        data.postValue(dataSet);
-        return data;
-    }
-
-
     public void setUidContact(String uidContact) {
         this.uidContact = uidContact;
-        deleteContacts();
+        deleteOnlineContacts();
     }
-    private void getMyContacts() {
-        uidContacts = new ArrayList<>();
-        uidContacts.clear();
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("contact").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    //Log.d("Requests UIDS: ", String.valueOf(dataSnapshot.getKey()));
-                    uidContacts.add(String.valueOf(dataSnapshot.getKey()));
-                }
-                if (!uidContacts.isEmpty()) {
-                    //Log.d(TAG,"LIST EMPTY");
-                    showMyContact(uidContacts);
-                }else{
-                    dataSet.clear();
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
-    }
-    private void showMyContact(ArrayList<String> uidContacts) {
-        dataSet.clear();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("users").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int i = 0;
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    if (uidContacts.size() > i && String.valueOf(dataSnapshot.getKey()).equals(uidContacts.get(i))) {
-                        User user = dataSnapshot.getValue(User.class);
-                        dataSet.add(user);
-                        i++;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-    private void deleteContacts() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("contact").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mDatabase.child("contact").child(currentUser.getUid()).child(uidContact).removeValue();
-                getMyContacts();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-    public void setmQuery(String mQuery) {
-        this.mQuery = mQuery;
-    }
-    private void searchUsers() {
+    private void searchUsers(String query) {
         FirebaseUser userId = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child("users").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -152,9 +82,9 @@ public class AllContactsRepository {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     User user = dataSnapshot.getValue(User.class);
                     if (!user.getUid().equals(userId.getUid())) {
-                        if (user.getFirstName().toLowerCase().contains(mQuery.toLowerCase())
-                                || user.getLastName().toLowerCase().contains(mQuery.toLowerCase()) ||
-                                user.getNickName().toLowerCase().contains(mQuery.toLowerCase())) {
+                        if (user.getFirstName().toLowerCase().contains(query.toLowerCase())
+                                || user.getLastName().toLowerCase().contains(query.toLowerCase()) ||
+                                user.getNickName().toLowerCase().contains(query.toLowerCase())) {
                             dataSet.add(user);
                         }
                     }
@@ -166,5 +96,66 @@ public class AllContactsRepository {
             }
         });
     }
+    private void deleteOnlineContacts() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("contact").child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mDatabase.child("contact").child(currentUser.getUid()).child(uidContact).removeValue();
+                getMyOnlineContacts();
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    private void getMyOnlineContacts() {
+        uidContacts = new ArrayList<>();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("contact").child(currentUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                uidContacts.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Log.d("Requests UIDS: ", String.valueOf(dataSnapshot.getKey()));
+                    uidContacts.add(String.valueOf(dataSnapshot.getKey()));
+                }
+                if (!uidContacts.isEmpty()) {
+
+                    showMyOnlineContact(uidContacts);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+    private void showMyOnlineContact(ArrayList<String> uidContacts) {
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int i = 0;
+                dataSet.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    if (uidContacts.size() > i && String.valueOf(dataSnapshot.getKey()).equals(uidContacts.get(i))) {
+                        User user = dataSnapshot.getValue(User.class);
+                        if (user.getStatus().equals("online")) {
+                            dataSet.add(user);
+                        }
+                        i++;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
 }

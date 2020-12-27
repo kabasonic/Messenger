@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +50,7 @@ public class OTPNumberFragment extends Fragment {
     private FirebaseAuth mAuth;
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
     private String verificationCode;
-
+    private ProgressBar mProgressBar;
 
 
     @Override
@@ -73,13 +74,9 @@ public class OTPNumberFragment extends Fragment {
 
         //mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        textViewError = (TextView) view.findViewById(R.id.textError);
-        editCodeCountry = (EditText) view.findViewById(R.id.codeCountry);
-        editPhoneNumber = (EditText) view.findViewById(R.id.phoneNumber);
-        submitButtonPhone = (FloatingActionButton) view.findViewById(R.id.submitButtonPhone);
+        initViewElements(view);
 
         arrayCodeCountry = getResources().getStringArray(R.array.country_code);
-
         mActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         //NavController navController = Navigation.findNavController(mActivity, R.id.fragment);
 
@@ -87,6 +84,8 @@ public class OTPNumberFragment extends Fragment {
 
         submitButtonPhone.setOnClickListener(v -> {
             actionKeyboard("close");
+            mProgressBar.setVisibility(View.VISIBLE);
+            submitButtonPhone.setVisibility(View.INVISIBLE);
             validationNumber(this.mCodeCountry, this.mPhoneNumber);
         });
 
@@ -120,6 +119,15 @@ public class OTPNumberFragment extends Fragment {
                 Log.d(TAG,"End onCodeSent");
             }
         };
+    }
+
+    private void initViewElements(View view){
+        textViewError = (TextView) view.findViewById(R.id.textError);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.progressBarNumber);
+        editCodeCountry = (EditText) view.findViewById(R.id.codeCountry);
+        editPhoneNumber = (EditText) view.findViewById(R.id.phoneNumber);
+        submitButtonPhone = (FloatingActionButton) view.findViewById(R.id.submitButtonPhone);
+
     }
 
     @Override
@@ -185,11 +193,13 @@ public class OTPNumberFragment extends Fragment {
             if (isValid) {
 
                 Toast.makeText(mActivity, "VALID OK", Toast.LENGTH_SHORT).show();
+
                 startPhoneNumberVerification(phoneNumber);
                 // Actions to perform if the number is valid
             } else {
                 Toast.makeText(mActivity, "VALID NOK", Toast.LENGTH_SHORT).show();
                 textViewError.setVisibility(View.VISIBLE);
+                mProgressBar.setVisibility(View.INVISIBLE);
                 // Do necessary actions if its not valid
             }
         } catch (NumberParseException e) {

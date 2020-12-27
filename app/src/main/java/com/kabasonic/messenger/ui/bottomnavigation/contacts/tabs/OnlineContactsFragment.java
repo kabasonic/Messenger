@@ -182,6 +182,7 @@ public class OnlineContactsFragment extends Fragment {
         menu.findItem(R.id.menu_logout).setVisible(false);
         menu.findItem(R.id.menu_create_group).setVisible(false);
         menu.findItem(R.id.menu_search).setVisible(false);
+        menu.findItem(R.id.menu_settings).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

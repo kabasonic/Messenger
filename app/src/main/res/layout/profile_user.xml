@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/clProfileFragment"
     tools:context=".ui.userprofile.UserProfileFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar_profile"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/clProfileFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_profileContact"
+        android:layout_width="match_parent"
+        android:layout_height="316dp"
+        android:background="@drawable/bk_profile"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -19,15 +24,16 @@
             android:layout_height="match_parent"
             android:theme="@style/ProfileToolbar"
             app:contentScrim="@color/colorPrimary"
-            app:layout_scrollFlags="exitUntilCollapsed|snap"
+            app:layout_scrollFlags="exitUntilCollapsed|snap|scroll"
             app:title="Title"
             android:fitsSystemWindows="true"
             app:scrimAnimationDuration="600">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/image_user_profile_appbar"
                 android:layout_width="match_parent"
-                android:layout_height="240dp"
+                android:layout_marginTop="16dp"
+                android:layout_height="230dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/default_user_image" />
 
@@ -110,7 +116,18 @@
         android:layout_marginEnd="16dp"
         android:background="@color/colorPrimary"
         android:layout_marginRight="16dp"
+        app:backgroundTint="@color/colorLight"
         android:src="@drawable/ic_baseline_mode_comment_24"
-        app:layout_anchor="@id/app_bar_profile"
+        app:layout_anchor="@id/app_bar_profileContact"
         app:layout_anchorGravity="bottom|right|end" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar_UserProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+</FrameLayout>

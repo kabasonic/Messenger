@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,21 +73,25 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
 //        String dataTime = (String) df.format("yyyy-MM-dd hh:mm:ssZZZZ a", new java.util.Date());
 
         Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm dd-M-yyyy ");
         String output = dateFormat.format(currentTime);
         holder.time.setText(output);
         holder.message.setText(message);
 
-        if (position == chatList.size() - 1) {
-            if (chatList.get(position).isSeen()) {
-                holder.isSeen.setText("Seen");
-            } else {
-                holder.isSeen.setText("Delivered");
-            }
-        } else {
-            holder.isSeen.setVisibility(View.GONE);
-        }
+        Log.wtf(TAG,"Messege last: " +  String.valueOf(chatList.get(chatList.size()-1).getMessage()));
+        Log.wtf(TAG,"Messege last STATUS: " +  String.valueOf(chatList.get(chatList.size()-1).isSeen()));
 
+//        if (position == chatList.size() - 1) {
+//            if (chatList.get(position).isSeen()) {
+//                //holder.isSeen.setText("Seen");
+//                holder.isSeen.setImageResource(R.drawable.ic_round_done_all_24);
+//            } else {
+//                //holder.isSeen.setText("Delivered");
+//                holder.isSeen.setImageResource(R.drawable.ic_round_done_24);
+//            }
+//        } else {
+//            //holder.isSeen.setVisibility(View.GONE);
+//        }
 
         holder.messageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,15 +186,16 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView message, time, isSeen;
+        ImageView isSeen;
+        TextView message, time;// ,isSeen;
         LinearLayout messageLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             message = itemView.findViewById(R.id.messageTx);
             time = itemView.findViewById(R.id.timeTv);
-            isSeen = itemView.findViewById(R.id.isSeenTv);
+            //isSeen = itemView.findViewById(R.id.isSeenTv);
+            isSeen = itemView.findViewById(R.id.isSeenIm);
             messageLayout = itemView.findViewById(R.id.messageRow);
 
         }

@@ -10,7 +10,7 @@ public class Chat {
     public Chat() {
     }
 
-    public Chat(String message, String receiver, String sender, String timestamp, boolean isSeen) {
+    public Chat(boolean isSeen, String message, String receiver, String sender, String timestamp) {
         this.message = message;
         this.receiver = receiver;
         this.sender = sender;

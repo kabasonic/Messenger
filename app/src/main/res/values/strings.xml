@@ -821,7 +821,6 @@
     <!--  Dialog window for Profile PhoneNumber-->
     <string-array name="dialog_phone_number_contact">
         <item>Copy</item>
-        <item>Share contact</item>
     </string-array>
 
     <!--  Dialog window for Profile Bio-->

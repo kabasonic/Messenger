@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,23 +14,26 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.database.DatabaseReference;
 import com.kabasonic.messenger.R;
-import com.kabasonic.messenger.database.Database;
+import com.kabasonic.messenger.ui.bottomnavigation.profile.editfragments.viewmodels.EditUsernameViewModels;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class EditUsernameFragment extends Fragment {
 
-    private DatabaseReference mDatabase;
+    public static final String TAG ="EditUsernameFragment";
 
-    private String firstName, lastName;
     private EditText mFirstName, mLastName;
     private FloatingActionButton mSubmit;
+    private EditUsernameViewModels mViewModel;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,17 +44,33 @@ public class EditUsernameFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initView(view);
+
+        mViewModel = ViewModelProviders.of(this).get(EditUsernameViewModels.class);
+        mFirstName = getView().findViewById(R.id.firstName);
+        mLastName = getView().findViewById(R.id.lastName);
+        mSubmit = getView().findViewById(R.id.submitRegistration);
+
         validForm();
+
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                firstName = mFirstName.getText().toString().trim();
-                lastName = mLastName.getText().toString().trim();
-                updateUser(firstName,lastName);
-                Navigation.findNavController(getView()).navigate(R.id.profileFragment);
+
+                Map<String,Object> newValues = new HashMap<String,Object>();
+                newValues.put("firstName",mFirstName.getText().toString().trim());
+                newValues.put("lastName",mLastName.getText().toString().trim());
+
+                mViewModel.getStatusUpdate(newValues).observe(getViewLifecycleOwner(), new Observer<String>() {
+                    @Override
+                    public void onChanged(String s) {
+                        Log.d(TAG,"Status update User name: " + s);
+                    }
+                });
+
+                NavDirections action = EditUsernameFragmentDirections.actionEditUsernameFragmentToProfileFragment2();
+                Navigation.findNavController(getView()).navigate(action);
             }
         });
     }
@@ -71,19 +91,4 @@ public class EditUsernameFragment extends Fragment {
             public void afterTextChanged(Editable s) {}
         });
     }
-    private void initView(View view){
-        mFirstName = getView().findViewById(R.id.firstName);
-        mLastName = getView().findViewById(R.id.lastName);
-        mSubmit = getView().findViewById(R.id.submitRegistration);
-    }
-
-    private void updateUser(String firstName, String lastName){
-        Map<String,Object> newValues = new HashMap<String,Object>();
-        newValues.put("firstName",firstName);
-        newValues.put("lastName",lastName);
-
-        Database database = new Database();
-        database.updateUser(newValues);
-    }
-
 }

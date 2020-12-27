@@ -44,15 +44,30 @@
         android:layout_gravity="end"
         android:orientation="horizontal">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/submitRegistration"
-            android:visibility="invisible"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_round_done_24"
-            android:layout_margin="16dp"
-            android:background="@color/colorPrimary"
-            app:tint="@color/colorWhite"/>
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/submitRegistration"
+                android:visibility="invisible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_round_done_24"
+                android:layout_margin="16dp"
+                app:backgroundTint="@color/colorLight"
+                app:tint="@color/colorWhite"/>
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/progressBarRegistration"
+                android:visibility="gone"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
+
+
 
     </LinearLayout>
 

@@ -20,11 +20,6 @@
             app:popUpTo="@id/profileFragment" />
     </fragment>
     <fragment
-        android:id="@+id/contactsFragment"
-        android:name="com.kabasonic.messenger.ui.bottomnavigation.contacts.ContactsFragment"
-        android:label="@string/mobile_nav_contacts"
-        tools:layout="@layout/contacts_fragment" />
-    <fragment
         android:id="@+id/profileFragment"
         android:name="com.kabasonic.messenger.ui.bottomnavigation.profile.ProfileFragment"
         android:label="@string/mobile_nav_profile"
@@ -47,7 +42,7 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_profileFragment_to_ediBioFragment"
-            app:destination="@id/ediBioFragment"
+            app:destination="@id/editBioFragment"
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
@@ -119,15 +114,42 @@
     <fragment
         android:id="@+id/editUsernameFragment"
         android:name="com.kabasonic.messenger.ui.bottomnavigation.profile.editfragments.EditUsernameFragment"
-        android:label="Edit Name" />
+        android:label="Edit Name"
+        tools:layout="@layout/registration_fragment">
+        <action
+            android:id="@+id/action_editUsernameFragment_to_profileFragment2"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
     <fragment
-        android:id="@+id/ediBioFragment"
-        android:name="com.kabasonic.messenger.ui.bottomnavigation.profile.editfragments.EdiBioFragment"
-        android:label="Bio" />
+        android:id="@+id/editBioFragment"
+        android:name="com.kabasonic.messenger.ui.bottomnavigation.profile.editfragments.EditBioFragment"
+        android:label="Bio"
+        tools:layout="@layout/bio_fragment">
+        <action
+            android:id="@+id/action_editBioFragment_to_profileFragment3"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
     <fragment
         android:id="@+id/editNicknameFragment"
         android:name="com.kabasonic.messenger.ui.bottomnavigation.profile.editfragments.EditNicknameFragment"
-        android:label="Nickname" />
+        android:label="Nickname"
+        tools:layout="@layout/nickname_fragment">
+        <action
+            android:id="@+id/action_editNicknameFragment_to_profileFragment2"
+            app:destination="@id/profileFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
     <fragment
         android:id="@+id/userProfileFragment"
         android:name="com.kabasonic.messenger.ui.userprofile.UserProfileFragment"
@@ -176,5 +198,10 @@
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+    <fragment
+        android:id="@+id/contactsFragment"
+        android:name="com.kabasonic.messenger.ui.bottomnavigation.contacts.ContactsFragment"
+        android:label="Contacts"
+        tools:layout="@layout/contacts_fragment" />
 
 </navigation>

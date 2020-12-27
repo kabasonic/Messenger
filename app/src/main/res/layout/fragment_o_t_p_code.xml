@@ -140,15 +140,33 @@
         android:layout_gravity="end"
         android:orientation="horizontal">
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/submitButtonCode"
-            android:background="@color/colorPrimary"
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/submitButtonCode"
+                android:background="@color/colorPrimary"
+                android:layout_width="wrap_content"
+                app:backgroundTint="@color/colorLight"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_round_done_24"
+                android:layout_margin="16dp"
+                android:visibility="invisible"
+                app:tint="@color/colorWhite"/>
+
+            <ProgressBar
+            android:id="@+id/progressBarCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_round_done_24"
-            android:layout_margin="16dp"
-            android:visibility="invisible"
-            app:tint="@color/colorWhite"/>
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+        </FrameLayout>
+
+
     </LinearLayout>
 
 </LinearLayout>

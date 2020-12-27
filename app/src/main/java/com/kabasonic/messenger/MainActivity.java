@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             Animation showBottomNav = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_bottom);
             if (destination.getId() == R.id.OTPNumberFragment ||
                     destination.getId() == R.id.OTPCodeFragment ||
-                    destination.getId() == R.id.ediBioFragment ||
+                    destination.getId() == R.id.editBioFragment ||
                     destination.getId() == R.id.editNicknameFragment ||
                     destination.getId() == R.id.editUsernameFragment ||
                     destination.getId() == R.id.registrationFragment){

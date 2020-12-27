@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_round_done_24"
             android:layout_margin="16dp"
-            android:background="@color/colorPrimary"
+            app:backgroundTint="@color/colorLight"
             app:tint="@color/colorWhite"/>
 
     </LinearLayout>

@@ -147,7 +147,6 @@ public class AdapterContactItem extends RecyclerView.Adapter<AdapterContactItem.
     public void setUsers(List<User> user) {
         this.mRowItems = user;
         Log.d(TAG,"Size rows items " +  mRowItems.size());
-        notifyDataSetChanged();
     }
 
     public void clearAdapterList(){
