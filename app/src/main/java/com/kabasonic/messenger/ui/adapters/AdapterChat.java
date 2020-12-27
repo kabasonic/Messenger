@@ -78,20 +78,16 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
         holder.time.setText(output);
         holder.message.setText(message);
 
-        Log.wtf(TAG,"Messege last: " +  String.valueOf(chatList.get(chatList.size()-1).getMessage()));
-        Log.wtf(TAG,"Messege last STATUS: " +  String.valueOf(chatList.get(chatList.size()-1).isSeen()));
 
-//        if (position == chatList.size() - 1) {
-//            if (chatList.get(position).isSeen()) {
-//                //holder.isSeen.setText("Seen");
-//                holder.isSeen.setImageResource(R.drawable.ic_round_done_all_24);
-//            } else {
-//                //holder.isSeen.setText("Delivered");
-//                holder.isSeen.setImageResource(R.drawable.ic_round_done_24);
-//            }
-//        } else {
-//            //holder.isSeen.setVisibility(View.GONE);
-//        }
+
+
+            if (chatList.get(position).getSeen().equals("true")) {
+                //holder.isSeen.setText("Seen");
+                holder.isSeen.setImageResource(R.drawable.ic_round_done_all_24);
+            } else {
+                //holder.isSeen.setText("Delivered");
+                holder.isSeen.setImageResource(R.drawable.ic_round_done_24);
+            }
 
         holder.messageLayout.setOnClickListener(new View.OnClickListener() {
             @Override

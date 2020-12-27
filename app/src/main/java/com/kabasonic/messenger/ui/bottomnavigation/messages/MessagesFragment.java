@@ -132,7 +132,7 @@ public class MessagesFragment extends Fragment {
                     mRecyclerView.setAdapter(mAdapterMessageItem);
                     mAdapterMessageItem.notifyDataSetChanged();
                     for(int i=0;i<userArrayList.size();i++){
-                        lastMessage(userArrayList.get(i).getUid());
+                        //lastMessage(userArrayList.get(i).getUid());
                     }
                 }
             }
@@ -144,56 +144,56 @@ public class MessagesFragment extends Fragment {
         });
     }
 
-    private void lastMessage(String uid) {
-        Log.d(TAG,"lastMessage UID: " + uid);
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("chat");
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String theLastMessage = "default";
-                String theTime = "default";
-                String theStatusMessage = "default";
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
-                    Chat chat = dataSnapshot.getValue(Chat.class);
-
-                    if(chat==null){
-                        Log.d(TAG,"lastMessage chat null");
-                        continue;
-                    }
-                    String sender = chat.getSender();
-                    String receiver = chat.getReceiver();
-                    if(sender == null || receiver == null){
-                        Log.d(TAG,"lastMessage sender, receiver null");
-                        continue;
-                    }
-                    if (chat.getReceiver().equals(firebaseUser.getUid()) &&
-                        chat.getSender().equals(uid) ||
-                        chat.getReceiver().equals(uid) &&
-                        chat.getSender().equals(firebaseUser.getUid())){
-                        theLastMessage = chat.getMessage();
-                        theTime = chat.getTimestamp();
-                        Log.d(TAG,"theStatusMessage: " + chat.isSeen());
-//                        if(chat.isSeen()){
-//                            theStatusMessage = "true";
-//                        } else {
-//                            theStatusMessage = "false";
-//                        }
-                        Log.d(TAG,"theStatusMessage: " + theStatusMessage);
-                    }
-
-                }
-                mAdapterMessageItem.setStatusMessageMap(uid,theStatusMessage);
-                mAdapterMessageItem.setTimeStampMap(uid,theTime);
-                mAdapterMessageItem.setLastMessageMap(uid,theLastMessage);
-                mAdapterMessageItem.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
+//    private void lastMessage(String uid) {
+//        Log.d(TAG,"lastMessage UID: " + uid);
+//        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("chat");
+//        mDatabase.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                String theLastMessage = "default";
+//                String theTime = "default";
+//                String theStatusMessage = "default";
+//                for(DataSnapshot dataSnapshot: snapshot.getChildren()){
+//                    Chat chat = dataSnapshot.getValue(Chat.class);
+//
+//                    if(chat==null){
+//                        Log.d(TAG,"lastMessage chat null");
+//                        continue;
+//                    }
+//                    String sender = chat.getSender();
+//                    String receiver = chat.getReceiver();
+//                    if(sender == null || receiver == null){
+//                        Log.d(TAG,"lastMessage sender, receiver null");
+//                        continue;
+//                    }
+//                    if (chat.getReceiver().equals(firebaseUser.getUid()) &&
+//                        chat.getSender().equals(uid) ||
+//                        chat.getReceiver().equals(uid) &&
+//                        chat.getSender().equals(firebaseUser.getUid())){
+//                        theLastMessage = chat.getMessage();
+//                        theTime = chat.getTimestamp();
+//                        Log.d(TAG,"theStatusMessage: " + chat.isSeen());
+////                        if(chat.isSeen()){
+////                            theStatusMessage = "true";
+////                        } else {
+////                            theStatusMessage = "false";
+////                        }
+//                        Log.d(TAG,"theStatusMessage: " + theStatusMessage);
+//                    }
+//
+//                }
+//                mAdapterMessageItem.setStatusMessageMap(uid,theStatusMessage);
+//                mAdapterMessageItem.setTimeStampMap(uid,theTime);
+//                mAdapterMessageItem.setLastMessageMap(uid,theLastMessage);
+//                mAdapterMessageItem.notifyDataSetChanged();
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//    }
 
 
 //    private void buildRecyclerView() {

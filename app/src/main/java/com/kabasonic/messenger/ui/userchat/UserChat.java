@@ -58,8 +58,8 @@ public class UserChat extends AppCompatActivity {
 
     private List<Chat> chatList;
     private AdapterChat adapterChat;
-    //private ValueEventListener seenListener;
-    //private DatabaseReference userRefToSeen;
+    private ValueEventListener seenListener;
+    private DatabaseReference userRefToSeen;
     private String currentUser;
 
 
@@ -148,7 +148,7 @@ public class UserChat extends AppCompatActivity {
         });
 
         readMessage();
-
+        seenMessage();
     }
 
     private void initViewElements(){
@@ -174,7 +174,38 @@ public class UserChat extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        //userRefToSeen.removeEventListener(seenListener);
+        Log.d(TAG,"onPause");
+        userRefToSeen.removeEventListener(seenListener);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG,"onDestroy");
+    }
+
+    private void seenMessage() {
+        userRefToSeen = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        seenListener = userRefToSeen.child("chat").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Chat chat = dataSnapshot.getValue(Chat.class);
+                    if(chat.getReceiver().equals(currentUser.getUid())){
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("seen","true");
+                        dataSnapshot.getRef().updateChildren(hashMap);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     private void readMessage() {
@@ -188,7 +219,6 @@ public class UserChat extends AppCompatActivity {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
 
                     Chat chat = dataSnapshot.getValue(Chat.class);
-                    Log.d(TAG,"DAJ MENI TRUE: " + chat.isSeen());
                     if (chat.getReceiver().equals(userUid) && chat.getSender().equals(currentUser) ||
                             chat.getReceiver().equals(currentUser) && chat.getSender().equals(userUid)) {
                         chatList.add(chat);
@@ -207,7 +237,6 @@ public class UserChat extends AppCompatActivity {
             }
         });
     }
-
     private void sendMessage(String message) {
         String timestamp = String.valueOf(System.currentTimeMillis());
 
@@ -219,10 +248,9 @@ public class UserChat extends AppCompatActivity {
         hashMap.put("receiver", userUid);
         hashMap.put("message", message);
         hashMap.put("timestamp", timestamp);
-        hashMap.put("isSeen", false);
+        hashMap.put("seen", "false");
         mDatabase.child("chat").push().setValue(hashMap);
     }
-
     private void getUserFirebase(String uid) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
