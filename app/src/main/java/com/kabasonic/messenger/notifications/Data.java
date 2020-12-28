@@ -6,19 +6,30 @@ public class Data {
     private String body;
     private String title;
     private String sent;
+    private String imageUrl;
+
 
     private Integer image;
 
-    public Data(long l){
+
+    public Data(){
 
     }
 
-    public Data(String user, String body, String title, String sent, Integer image) {
+//    public Data(String user, String body, String title, String sent, Integer image) {
+//        this.user = user;
+//        this.body = body;
+//        this.title = title;
+//        this.sent = sent;
+//        this.image = image;
+//    }
+
+    public Data(String user, String body, String title, String sent, String imageUrl) {
         this.user = user;
         this.body = body;
         this.title = title;
         this.sent = sent;
-        this.image = image;
+        this.imageUrl = imageUrl;
     }
 
     public String getUser() {
@@ -59,5 +70,13 @@ public class Data {
 
     public void setImage(Integer image) {
         this.image = image;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

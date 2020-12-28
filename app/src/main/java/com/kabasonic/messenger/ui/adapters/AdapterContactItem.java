@@ -78,7 +78,7 @@ public class AdapterContactItem extends RecyclerView.Adapter<AdapterContactItem.
         }
 
         try {
-            if (userStatus.equals("online")) {
+            if (userStatus.equals("Online")) {
                 Picasso.get().load(userStatus).placeholder(R.drawable.status_online).into(holder.mStatusUser);
                 holder.mStatusUser.setVisibility(View.VISIBLE);
             } else {

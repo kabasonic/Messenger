@@ -145,7 +145,7 @@ public class ContactsOnlineRepository {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     if (uidContacts.size() > i && String.valueOf(dataSnapshot.getKey()).equals(uidContacts.get(i))) {
                         User user = dataSnapshot.getValue(User.class);
-                        if (user.getStatus().equals("online")) {
+                        if (user.getStatus().equals("Online")) {
                             dataSet.add(user);
                         }
                         i++;

@@ -1,7 +1,7 @@
 package com.kabasonic.messenger.notifications;
 
 public class Token {
-    private String token;
+    String token;
 
     public Token(){
 
