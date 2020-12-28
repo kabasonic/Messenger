@@ -32,6 +32,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kabasonic.messenger.MainActivity;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.ui.userchat.UserChat;
 
@@ -109,7 +110,7 @@ public class FirebaseMessaging extends FirebaseMessagingService {
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int i = Integer.parseInt(user.replaceAll("[\\D]", ""));
-        Intent intent = new Intent(this, UserChat.class);
+        Intent intent = new Intent(this, MainActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("hisUid", user);
         intent.putExtras(bundle);
