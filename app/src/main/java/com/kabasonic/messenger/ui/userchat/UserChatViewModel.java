@@ -12,16 +12,16 @@ import com.kabasonic.messenger.models.Chat;
 import java.util.HashMap;
 import java.util.List;
 
-public class UserProfileViewModel extends ViewModel {
+public class UserChatViewModel extends ViewModel {
 
     private MutableLiveData<HashMap<String, Object>> mUserValues;
     private MutableLiveData<Bitmap> mUserImage;
     private MutableLiveData<List<Chat>> mMessages;
 
-    private UserProfileRepository mRepo;
+    private UserChatRepository mRepo;
 
-    public UserProfileViewModel() {
-        mRepo = UserProfileRepository.getInstance();
+    public UserChatViewModel() {
+        mRepo = UserChatRepository.getInstance();
     }
 
     public LiveData<List<Chat>> getMessages(String hisUid, String myUid){
@@ -48,4 +48,9 @@ public class UserProfileViewModel extends ViewModel {
     public void sentUserMessage(String hisUid, String myUid, String message){
         mRepo.sentActionMessage(hisUid, myUid, message);
     }
+
+    public void createUserChat(String hisUid,String myUid){
+        mRepo.createFirebaseChatLists(hisUid, myUid);
+    }
+
 }

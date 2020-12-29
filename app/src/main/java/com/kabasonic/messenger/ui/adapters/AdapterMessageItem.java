@@ -1,8 +1,6 @@
 package com.kabasonic.messenger.ui.adapters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -23,58 +21,62 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.kabasonic.messenger.R;
 import com.kabasonic.messenger.models.User;
-import com.kabasonic.messenger.notifications.Data;
-import com.kabasonic.messenger.ui.adapters.items.RowItem;
-import com.kabasonic.messenger.ui.userchat.UserChat;
 import com.squareup.picasso.Picasso;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.MessageItemViewHolder> {
 
+    public static final String TAG = "AdapterMessageItem";
 
-    private ArrayList<User> userArrayList;
+    private List<User> userArrayList;
     private Context context;
     private HashMap<String, String> lastMessageMap;
     private HashMap<String, String> timeStampMap;
     private HashMap<String, String> statusMessageMap;
+    private HashMap<String, String> countMessage;
+    private String reciverUID = null;
+    private String myUid = null;
 
-    public AdapterMessageItem(ArrayList<User> userArrayList, Context context) {
-        this.userArrayList = userArrayList;
+    public AdapterMessageItem(Context context) {
+        this.userArrayList = new ArrayList<>();
         this.context = context;
         lastMessageMap = new HashMap<>();
         timeStampMap = new HashMap<>();
         statusMessageMap = new HashMap<>();
+        countMessage = new HashMap<>();
+
     }
 
     private ItemRow mListener;
 
     public interface ItemRow {
-        void onItemClick(int position);
+        void onItemClick(String uid, int position);
+
+        void onItemLongClick(String uid, int position);
     }
 
     public void setOnItemClickListener(ItemRow listener) {
-        mListener = listener;
+        this.mListener = listener;
     }
 
     @NonNull
     @Override
     public MessageItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_item_message, parent, false);
-        return new MessageItemViewHolder(view, mListener);
+        MessageItemViewHolder messageItemViewHolder = new MessageItemViewHolder(view, mListener);
+        return messageItemViewHolder;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull MessageItemViewHolder holder, int position) {
         //get data
+
         String hisUid = userArrayList.get(position).getUid();
         String userImage = userArrayList.get(position).getImageUser();
         String firstName = userArrayList.get(position).getFirstName();
@@ -84,6 +86,8 @@ public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.
         String lastMessage = lastMessageMap.get(hisUid);
         String timeStamp = timeStampMap.get(hisUid);
         String statusMessage = statusMessageMap.get(hisUid);
+        String countMessages = countMessage.get(hisUid);
+
 
         //set data
         String userName = firstName + " " + lastName;
@@ -101,24 +105,37 @@ public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.
         } else {
             holder.mTime.setVisibility(View.VISIBLE);
             long dateLong = Long.parseLong(timeStamp);
-            Date date = new Date(dateLong * 1000);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm a");
+            Date date = new Date(dateLong);
+            //SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
             String output = dateFormat.format(date);
             holder.mTime.setText(output);
         }
 
-        if(statusMessage == null || statusMessage.equals("default")){
+        if (statusMessage == null || statusMessage.equals("default")) {
             holder.mStatusMessage.setVisibility(View.GONE);
-        }else if(statusMessage.equals("true")){
-            Log.d("TAG","Okay true");
+        } else if (statusMessage.equals("true")) {
+            Log.d("TAG", "Okay true");
             holder.mStatusMessage.setImageResource(R.drawable.ic_round_done_all_24);
             holder.mStatusMessage.setVisibility(View.VISIBLE);
-        }else if(statusMessage.equals("false")){
+        } else if (statusMessage.equals("false")) {
             holder.mStatusMessage.setImageResource(R.drawable.ic_round_done_24);
             holder.mStatusMessage.setVisibility(View.VISIBLE);
-            Log.d("TAG","Not okay false");
+            Log.d("TAG", "Not okay false");
         }
 
+        Log.d(TAG,"RECEIVER UID: " + reciverUID);
+        if (countMessages != null) {
+            Log.d("Count message", "Count messages " + countMessages);
+            if (countMessages.equals("0")) {
+                holder.mCountMessage.setVisibility(View.INVISIBLE);
+            } else {
+                if(reciverUID != null && myUid != null && reciverUID.equals(myUid))
+                holder.mCountMessage.setVisibility(View.VISIBLE);
+                holder.mCountMessage.setText(countMessages);
+
+            }
+        }
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
@@ -148,15 +165,6 @@ public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.
         } catch (Exception e) {
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, UserChat.class);
-                intent.putExtra("uid", hisUid);
-                context.startActivity(intent);
-            }
-        });
-
     }
 
     public void setStatusMessageMap(String userUid, String statusMessage) {
@@ -167,12 +175,31 @@ public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.
         timeStampMap.put(userUid, timeStamp);
     }
 
+    public void setCountMessage(String userUid, String countMessages) {
+        countMessage.put(userUid, countMessages);
+    }
+
+    public void setReceiverUID(String reciverUID) {
+        this.reciverUID = reciverUID;
+    }
+
+    public void setMyUid(String myUid) {
+        this.myUid = myUid;
+    }
+
     public void setLastMessageMap(String userUid, String lastMessage) {
         lastMessageMap.put(userUid, lastMessage);
     }
 
+    public void setUserArrayList(List<User> arrayList) {
+        this.userArrayList = arrayList;
+    }
+
     @Override
     public int getItemCount() {
+        if (userArrayList == null) {
+            return 0;
+        }
         return userArrayList.size();
     }
 
@@ -181,10 +208,9 @@ public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.
         public ImageView mStatusUser;
         public TextView mUsername;
         public TextView mMesage;
-        //        public ImageView mMute;
         public ImageView mStatusMessage;
         public TextView mTime;
-//        public TextView mCountMessage;
+        public TextView mCountMessage;
 
         public MessageItemViewHolder(@NonNull View itemView, final ItemRow listener) {
             super(itemView);
@@ -192,18 +218,28 @@ public class AdapterMessageItem extends RecyclerView.Adapter<AdapterMessageItem.
             mStatusUser = itemView.findViewById(R.id.statusUser);
             mUsername = itemView.findViewById(R.id.userName);
             mMesage = itemView.findViewById(R.id.textMessage);
-//            mMute = itemView.findViewById(R.id.muteImage);
             mStatusMessage = itemView.findViewById(R.id.statusMessage);
             mTime = itemView.findViewById(R.id.timeMessage);
-//            mCountMessage = itemView.findViewById(R.id.countMessage);
+            mCountMessage = itemView.findViewById(R.id.countMessage);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(position);
+                        listener.onItemClick(userArrayList.get(position).getUid(), position);
                     }
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onItemLongClick(userArrayList.get(position).getUid(), position);
+                    }
+                    return true;
                 }
             });
 

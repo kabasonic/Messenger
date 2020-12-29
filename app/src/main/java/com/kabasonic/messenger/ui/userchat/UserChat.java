@@ -47,7 +47,7 @@ public class UserChat extends AppCompatActivity {
     private String imageUri;
     private AdapterChat adapterChat;
 
-    private UserProfileViewModel mViewModel;
+    private UserChatViewModel mViewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class UserChat extends AppCompatActivity {
         FirebaseUser userLogin = FirebaseAuth.getInstance().getCurrentUser();
         myUid = userLogin.getUid();
 
-        mViewModel = ViewModelProviders.of(this).get(UserProfileViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(UserChatViewModel.class);
         if(hisUid != null){
             mViewModel.getUserValues(hisUid).observe(this, new Observer<HashMap<String, Object>>() {
                 @Override

@@ -859,4 +859,8 @@
         <item>Bio</item>
     </string-array>
 
+    <string-array name="chatList">
+        <item>Delete chat</item>
+    </string-array>
+
 </resources>

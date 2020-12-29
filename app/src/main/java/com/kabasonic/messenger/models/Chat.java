@@ -1,11 +1,14 @@
 package com.kabasonic.messenger.models;
 
 public class Chat {
+    private String uid;
+    private String myUid;
     private String message;
     private String receiver;
     private String sender;
     private String timestamp;
     private String seen;
+    private String countMessage;
 
     public Chat() {
     }
@@ -57,5 +60,29 @@ public class Chat {
 
     public void setSeen(String seen) {
         this.seen = seen;
+    }
+
+    public String getCountMessage() {
+        return countMessage;
+    }
+
+    public void setCountMessage(String countMessage) {
+        this.countMessage = countMessage;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getMyUid() {
+        return myUid;
+    }
+
+    public void setMyUid(String myUid) {
+        this.myUid = myUid;
     }
 }

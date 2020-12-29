@@ -73,7 +73,8 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
 //        String dataTime = (String) df.format("yyyy-MM-dd hh:mm:ssZZZZ a", new java.util.Date());
 
         Date currentTime = Calendar.getInstance().getTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm dd-M-yyyy ");
+        //SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd-M-yyyy ");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd-M-yyyy ");
         String output = dateFormat.format(currentTime);
         holder.time.setText(output);
         holder.message.setText(message);

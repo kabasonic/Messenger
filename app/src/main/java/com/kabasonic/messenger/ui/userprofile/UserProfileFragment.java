@@ -51,6 +51,7 @@ import com.kabasonic.messenger.ui.adapters.items.RowItem;
 import com.kabasonic.messenger.ui.bottomnavigation.profile.ProfileFragmentDirections;
 import com.kabasonic.messenger.ui.bottomnavigation.profile.viewmodels.ProfileViewModel;
 import com.kabasonic.messenger.ui.userchat.UserChat;
+import com.kabasonic.messenger.ui.userchat.UserChatViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -75,7 +76,7 @@ public class UserProfileFragment extends Fragment {
     private String mBio;
     private String mUsername;
     private MainActivity mActivity;
-
+    private UserChatViewModel chatViewModel;
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -99,6 +100,8 @@ public class UserProfileFragment extends Fragment {
         initView(view);
 
         mViewModel = ViewModelProviders.of(this).get(UserProfileViewModel.class);
+        chatViewModel = ViewModelProviders.of(this).get(UserChatViewModel.class);
+
         mViewModel.init();
         mViewModel.getUserProfile(userCurrentProfile).observe(getViewLifecycleOwner(), new Observer<Map<String, Object>>() {
             @Override
@@ -123,8 +126,11 @@ public class UserProfileFragment extends Fragment {
         mSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FirebaseUser myUid = FirebaseAuth.getInstance().getCurrentUser();
+
                 Intent intent = new Intent(getContext(), UserChat.class);
                 intent.putExtra("uid",userCurrentProfile);
+                chatViewModel.createUserChat(userCurrentProfile,myUid.getUid());
                 getContext().startActivity(intent);
             }
         });

@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,7 +41,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class UserProfileRepository {
+public class UserChatRepository {
     public static final String TAG = "UserProfileRepository";
     public static final String STATUS_ONLINE = "Online";
     public static final String STATUS_OFFLINE = "Offline";
@@ -58,12 +57,12 @@ public class UserProfileRepository {
     private MutableLiveData<List<Chat>> mDataMessages = new MutableLiveData<>();
     private List<Chat> chatList = new ArrayList<>();
     private String imageUri;
-    private static UserProfileRepository instance;
+    private static UserChatRepository instance;
 
 
-    public static UserProfileRepository getInstance() {
+    public static UserChatRepository getInstance() {
         if (instance == null) {
-            instance = new UserProfileRepository();
+            instance = new UserChatRepository();
         }
         return instance;
     }
@@ -98,6 +97,7 @@ public class UserProfileRepository {
             setFirebaseRemoveListener();
         }
     }
+
 
     private void getFirebaseUserValue(String uid) {
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -195,6 +195,7 @@ public class UserProfileRepository {
         });
     }
     private void getFirebaseSeenMessages(String myUid) {
+
         userRefToSeen = FirebaseDatabase.getInstance().getReference().child("chat");
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
@@ -204,6 +205,7 @@ public class UserProfileRepository {
                     if(chat.getReceiver().equals(myUid)){
                         HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("seen","true");
+                        
                         dataSnapshot.getRef().updateChildren(hashMap);
                     }
                 }
@@ -224,15 +226,17 @@ public class UserProfileRepository {
         }
     }
 
-
     public void sentActionMessage(String hisUid, String myUid, String message){
         notify = true;
         createFirebaseChatLists(hisUid,myUid);
         sendFirebaseMessage(hisUid,myUid,message);
     }
-    private void createFirebaseChatLists(String hisUid, String myUid){
+
+
+
+    public void createFirebaseChatLists(String hisUid, String myUid){
         DatabaseReference chatlist1 = FirebaseDatabase.getInstance().getReference();
-        chatlist1.child("chatlist").child(myUid).child(hisUid).addValueEventListener(new ValueEventListener() {
+        chatlist1.child("chatlist").child(myUid).child(hisUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.exists()){
@@ -244,7 +248,7 @@ public class UserProfileRepository {
             public void onCancelled(@NonNull DatabaseError error) {}
         });
         DatabaseReference chatlist2 = FirebaseDatabase.getInstance().getReference();
-        chatlist2.child("chatlist").child(hisUid).child(myUid).addValueEventListener(new ValueEventListener() {
+        chatlist2.child("chatlist").child(hisUid).child(myUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(!snapshot.exists()){

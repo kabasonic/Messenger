@@ -120,7 +120,7 @@
                     android:layout_gravity="right"
                     android:textColor="@color/colorWhite"
                     android:gravity="center"
-                    android:visibility="invisible"
+                    android:visibility="gone"
                     android:background="@drawable/count_messages"/>
 
         </LinearLayout>
