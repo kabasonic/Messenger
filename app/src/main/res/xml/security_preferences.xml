@@ -1,0 +1,66 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:icon="@drawable/ic_round_lock_24"
+        android:title="Security">
+
+        <SwitchPreferenceCompat
+            app:key="sync"
+            app:title="User password for application" />
+
+        <Preference
+            app:fragment="com.kabasonic.messenger.LockScreenFragment"
+            app:dependency="sync"
+            android:key="PREF_CLICK"
+            android:summary="Has been set 4 number pin"
+            android:title="Set password" />
+
+    </PreferenceCategory>
+
+    <!--    <PreferenceCategory-->
+    <!--        android:icon="@drawable/ic_round_lock_24"-->
+    <!--        android:title="Security">-->
+
+    <!--        <Preference-->
+    <!--                    app:fragment=""-->
+    <!--                    app:key="signature"-->
+    <!--                    app:title="@string/signature_title"-->
+    <!--                    app:useSimpleSummaryProvider="true" />-->
+
+    <!--    </PreferenceCategory>-->
+
+
+</PreferenceScreen>
+
+    <!--    <PreferenceCategory app:title="@string/messages_header">-->
+
+    <!--        <EditTextPreference-->
+    <!--            app:key="signature"-->
+    <!--            app:title="@string/signature_title"-->
+    <!--            app:useSimpleSummaryProvider="true" />-->
+
+    <!--        <ListPreference-->
+    <!--            app:defaultValue="reply"-->
+    <!--            app:entries="@array/reply_entries"-->
+    <!--            app:entryValues="@array/reply_values"-->
+    <!--            app:key="reply"-->
+    <!--            app:title="@string/reply_title"-->
+    <!--            app:useSimpleSummaryProvider="true" />-->
+
+    <!--    </PreferenceCategory>-->
+
+    <!--    <PreferenceCategory app:title="@string/sync_header">-->
+
+    <!--        <SwitchPreferenceCompat-->
+    <!--            app:key="sync"-->
+    <!--            app:title="@string/sync_title" />-->
+
+    <!--        <SwitchPreferenceCompat-->
+    <!--            app:dependency="sync"-->
+    <!--            app:key="attachment"-->
+    <!--            app:summaryOff="@string/attachment_summary_off"-->
+    <!--            app:summaryOn="@string/attachment_summary_on"-->
+    <!--            app:title="@string/attachment_title" />-->
+
+    <!--    </PreferenceCategory>-->

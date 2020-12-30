@@ -18,6 +18,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -36,6 +37,7 @@ import com.kabasonic.messenger.ui.adapters.AdapterChat;
 import com.kabasonic.messenger.ui.bottomnavigation.contacts.viewmodels.RequestContactsViewModel;
 import com.kabasonic.messenger.ui.onboarding.ScreenSlidePagerActivity;
 import com.kabasonic.messenger.ui.userchat.UserChat;
+import com.kabasonic.messenger.utils.Constant;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,10 +55,37 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseUser user;
 
+    SharedPreferences sharedPreferences, app_preferences;
+
+    int appTheme;
+    int themeColor;
+    int appColor;
+    Constant constant;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        appColor = app_preferences.getInt("color", 0);
+        appTheme = app_preferences.getInt("theme", 0);
+        themeColor = appColor;
+        constant.color = appColor;
+
+        if (themeColor == 0){
+            setTheme(Constant.theme);
+        }else if (appTheme == 0){
+            setTheme(Constant.theme);
+        }else{
+            setTheme(appTheme);
+        }
+
+
+
+
+
         //Set theme for Splash screen
-        setTheme(R.style.AppTheme);
+        //setTheme(R.style.AppTheme);
+
+
         //Check and show onboarding
         checkStartOnBoarding();
         super.onCreate(savedInstanceState);

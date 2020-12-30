@@ -23,4 +23,43 @@
          <item name="colorPrimaryDark">@android:color/white</item>
     </style>
 
+    <style name="AppTheme_red" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryAppRed</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkAppRed</item>
+        <item name="colorAccent">@color/colorLightAppRed</item>
+    </style>
+
+    <style name="AppTheme_blue" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryAppBlue</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkAppBlue</item>
+        <item name="colorAccent">@color/colorLightAppBlue</item>
+    </style>
+
+    <style name="AppTheme_green" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryAppGreen</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkAppGreen</item>
+        <item name="colorAccent">@color/colorLightAppGreen</item>
+    </style>
+
+
+    <style name="AppTheme_pink" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryAppPink</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkAppPink</item>
+        <item name="colorAccent">@color/colorLightAppPink</item>
+    </style>
+
+
+    <style name="AppTheme_purple" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimaryAppPurple</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkAppPurple</item>
+        <item name="colorAccent">@color/colorLightAppPurple</item>
+    </style>
+
+
+
 </resources>
