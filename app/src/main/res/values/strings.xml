@@ -38,9 +38,9 @@
 
     <!--  First list profile titles  -->
     <string-array name="listOneTitleProfile">
-        <item>Nickname</item>
-        <item>+48 731 468 217</item>
-        <item>Jacek, 18 lat, przekladam tarcze, alkoholik.</item>
+        <item>Default Nickname</item>
+        <item>Default phone number</item>
+        <item>Default bio</item>
     </string-array>
 
     <!--  First list profile subtitles -->
@@ -842,7 +842,6 @@
 
     <!--  Dialog window for Message-->
     <string-array name="dialog_row_message">
-        <item>Edit message</item>
         <item>Delete message</item>
     </string-array>
 

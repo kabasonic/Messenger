@@ -494,11 +494,6 @@ public class ProfileFragment extends Fragment {
         if (idMenuItem == R.id.menu_logout) {
             logoutUser();
         }
-
-        if (idMenuItem == R.id.menu_settings) {
-            NavDirections action = ProfileFragmentDirections.actionProfileFragmentToSettingsFragment();
-            Navigation.findNavController(getView()).navigate(action);
-        }
         return super.onOptionsItemSelected(item);
     }
 

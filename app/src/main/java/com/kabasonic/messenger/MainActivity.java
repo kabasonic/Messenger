@@ -64,26 +64,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        appColor = app_preferences.getInt("color", 0);
-        appTheme = app_preferences.getInt("theme", 0);
-        themeColor = appColor;
-        constant.color = appColor;
-
-        if (themeColor == 0){
-            setTheme(Constant.theme);
-        }else if (appTheme == 0){
-            setTheme(Constant.theme);
-        }else{
-            setTheme(appTheme);
-        }
+//        app_preferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        appColor = app_preferences.getInt("color", 0);
+//        appTheme = app_preferences.getInt("theme", 0);
+//        themeColor = appColor;
+//        constant.color = appColor;
+//
+//        if (themeColor == 0){
+//            setTheme(Constant.theme);
+//        }else if (appTheme == 0){
+//            setTheme(Constant.theme);
+//        }else{
+//            setTheme(appTheme);
+//        }
 
 
 
 
 
         //Set theme for Splash screen
-        //setTheme(R.style.AppTheme);
+        setTheme(R.style.AppTheme);
 
 
         //Check and show onboarding

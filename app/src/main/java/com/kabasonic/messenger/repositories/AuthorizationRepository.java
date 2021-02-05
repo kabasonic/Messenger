@@ -43,7 +43,6 @@ public class AuthorizationRepository {
         String phoneNumber = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
         String userId = user.getUid();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
         mDatabase.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -57,7 +56,6 @@ public class AuthorizationRepository {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-
     }
     private void checkedUserUID(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

@@ -330,7 +330,7 @@ public class UserProfileFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.main_menu, menu);
         menu.findItem(R.id.menu_search).setVisible(false);
-        menu.findItem(R.id.menu_settings).setVisible(false);
+
         menu.findItem(R.id.menu_logout).setVisible(false);
         menu.findItem(R.id.menu_create_group).setVisible(false);
 

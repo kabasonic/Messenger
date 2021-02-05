@@ -100,9 +100,6 @@ public class AdapterChat extends RecyclerView.Adapter<AdapterChat.ViewHolder> {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-                                editMessage(position);
-                                break;
-                            case 1:
                                  mSelectedItems = new ArrayList();
                                 builder.setTitle("Delete message");
                                 builder.setMessage("Are you sure to delete this message?");
